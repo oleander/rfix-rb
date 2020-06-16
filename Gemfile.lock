@@ -146,7 +146,7 @@ PLATFORMS
 DEPENDENCIES
   aruba
   cli-ui!
-  ffi (= 1.12.2)
+  ffi (<= 1.12.2)
   git_fame!
   pry
   rake (~> 12.0)
