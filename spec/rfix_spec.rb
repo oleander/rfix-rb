@@ -256,13 +256,13 @@ RSpec.describe Rfix, type: :aruba do
 
     it "displays help when an invalid command is given" do
       default_cmd("not-a-command")
-      expect(all_output).to include("Invalid command")
+      expect(all_output).to include("Valid rfix")
       expect(last_command_started).to have_exit_status(1)
     end
 
     it "displays help even when an invalid command is given" do
       default_cmd("not-a-command", help: true)
-      expect(all_output).to_not include("Invalid command")
+      expect(all_output).to_not include("Valid rfix")
       expect(all_output).to include(*rubocop_help_arg)
       expect(last_command_started).to have_exit_status(0)
     end
