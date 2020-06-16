@@ -12,6 +12,10 @@ module Rfix::Log
     CLI::UI.puts("{{x}} #{message}")
   end
 
+  def say_error_sub(message)
+    CLI::UI.puts("#{message}")
+  end
+
   def say_debug(message)
     CLI::UI.puts("{{*}} #{message}")
   end
