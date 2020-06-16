@@ -8,13 +8,14 @@ rvm:
 os:
   - osx
   - linux
-install:
-  - gem update --system
+before_install:
+  - yes | gem update --system --force
   - gem uninstall bundler
   - gem install bundler -v 2.1.4
   - bundle config git.allow_insecure true
+install:
   - bundle install
-script:
   - bundle exec rake setup
+script:
   - bundle exec rake spec
   - bundle exec rake install
