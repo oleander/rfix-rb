@@ -93,6 +93,20 @@ RSpec.describe Rfix, type: :aruba do
       setup_test_branch(upstream: :master)
     end
 
+    describe "all" do
+      describe "with" do
+        it "does not alter files" do
+          expect { default_cmd("all", dry: true) }.to change { no_changed_files }.by(0)
+        end
+      end
+
+      describe "without" do
+        it "does alter files" do
+          expect { default_cmd("all", dry: false) }.to change { no_changed_files }.by(15)
+        end
+      end
+    end
+
     describe "branch" do
       it "makes no change when used" do
         expect { branch_cmd(dry: true) }.to_not change { no_changed_files }
