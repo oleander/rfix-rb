@@ -1,7 +1,9 @@
 language: ruby
 rvm:
+  - 2.3.0
   - 2.5.0
-  - ruby-head
+  - 2.6.2
+  - 2.7.1
 os:
   - osx
   - linux
@@ -16,4 +18,4 @@ install:
 script:
   - bundle exec rake git:config
   - bundle exec rake spec
-  - bundle exec rake install  
+  - bundle exec rake install
