@@ -98,7 +98,7 @@ RSpec.describe Rfix, type: :aruba do
       end
 
       it "makes change when left out" do
-        expect { branch_cmd(dry: false) }.to change { no_changed_files }.by(4)
+        expect { branch_cmd(dry: false) }.to change { no_changed_files }.by(5)
       end
     end
 
@@ -120,7 +120,7 @@ RSpec.describe Rfix, type: :aruba do
       end
 
       it "makes change when left out" do
-        expect { origin_cmd(dry: false) }.to change { no_changed_files }.by(4)
+        expect { origin_cmd(dry: false) }.to change { no_changed_files }.by(5)
       end
     end
   end
@@ -236,7 +236,7 @@ RSpec.describe Rfix, type: :aruba do
       describe "with" do
         it "origin" do
           origin_cmd(dry: false)
-          expect(all_output).to include("22 offenses")
+          expect(all_output).to include("37 offenses")
           expect(all_output).to include("corrected")
           expect(last_command_started).to have_exit_status(0)
           expect(no_changed_files).to eq(4)
@@ -253,7 +253,7 @@ RSpec.describe Rfix, type: :aruba do
 
         it "branch" do
           branch_cmd(dry: false)
-          expect(all_output).to include("22 offenses")
+          expect(all_output).to include("37 offenses")
           expect(all_output).to include("corrected")
           expect(last_command_started).to have_exit_status(0)
           expect(no_changed_files).to eq(4)
