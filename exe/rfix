@@ -23,17 +23,17 @@ base_config = {
   color: true,
   force_exclusion: true,
   auto_correct: true,
-  formatters: ["Rfix::Formatter"],
+  formatters: ["Rfix::Formatter"]
 }
 
 # For version 0.80.x .. 0.83.x:
 # Otherwise it will exit with status code = 1
 if (0.80..0.83).include?(RuboCop::Version::STRING.to_f)
-  if is_dry
-    base_config[:fail_level] = :autocorrect
-  else
-    base_config[:fail_level] = :warning
-  end
+  base_config[:fail_level] = if is_dry
+                               :autocorrect
+                             else
+                               :warning
+                             end
 end
 
 def load_config
@@ -79,14 +79,10 @@ when "branch"
   # Catches:
   # NOT OK: branch --help
   # OK branch master --help
-  if reference.start_with?("--")
-    say_abort abort_message
-  end
+  say_abort abort_message if reference.start_with?("--")
 
   # Check if branch exists
-  unless Rfix.has_branch?(reference)
-    say_abort "Branch {{yellow:#{reference}}} does not exist"
-  end
+  say_abort "Branch {{yellow:#{reference}}} does not exist" unless Rfix.has_branch?(reference)
 else
   unless display_help
     default_help = "[--args] [--dry] [--help]"
@@ -120,9 +116,7 @@ say "Will compare against {{yellow:#{reference}}}"
 
 Rfix.load_tracked!(reference)
 
-if paths.empty?
-  paths = Rfix.paths
-end
+paths = Rfix.paths if paths.empty?
 
 if paths.empty?
   say_exit "No files to run against"

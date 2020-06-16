@@ -51,6 +51,7 @@ module Rfix
 
     def render_file(file, offenses)
       return if offenses.empty?
+
       path = Rfix.to_relative(path: file)
       url = to_url(file, path)
       offenses.each do |offense|

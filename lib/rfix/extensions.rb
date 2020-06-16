@@ -80,6 +80,7 @@ module Rfix::Ext
     def icon
       return check.green if corrected?
       return check.lightgreen if correctable?
+
       cross.indianred
     end
   end

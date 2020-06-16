@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.description   = "Write a longer description or delete this line."
   spec.homepage      = "https://github.com/oleander/rfix"
   spec.license       = "MIT"
-  spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
+  spec.required_ruby_version = Gem::Requirement.new(">= 2.5.0")
 
   spec.metadata["homepage_uri"] = spec.homepage
   # Specify which files should be added to the gem when it is released.
@@ -32,6 +32,4 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "rainbow", "~> 3.0"
   spec.add_runtime_dependency "rouge", "~> 3.20"
   spec.add_runtime_dependency "rubocop", "~> 0.80"
-
-  spec.required_ruby_version = '>= 2.5.0'
 end
