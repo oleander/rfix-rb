@@ -10,7 +10,7 @@ module Rfix
       theme = Rouge::Themes::Gruvbox.new
       @formatter = Rouge::Formatters::TerminalTruecolor.new(theme)
       @lexer = Rouge::Lexers::Ruby.new
-      out "#{mark}{{*}} Loading {{yellow:#{files.count}}} files"
+      out "{{*}} Loading {{yellow:#{files.count}}} files"
       out("\n")
       @pg = CLI::UI::Progress.new
       @total = files.count
@@ -38,23 +38,14 @@ module Rfix
 
     def render_file(file, offenses)
       return if offenses.empty?
-
       path = Rfix.to_relative(path: file)
-
-      # if offenses.count == 1
-      #   return render_one_offens(path, file, offenses.first)
-      # end
-
       url = to_url(file, path)
-
       offenses.each do |offense|
         out("\n\n")
-        # unless offenses.last == offense
         url = to_url("#{file}:#{offense.where}", dim("#{path}:#{offense.where}"))
         CLI::UI::Frame.open("#{offense.icon} #{offense.msg}", color: :reset)
         report_line(file, offense, offense.location, offense.highlighted_area)
         CLI::UI::Frame.close("#{url} » #{offense.code}", color: :reset)
-        # end
       end
     end
 
@@ -103,36 +94,7 @@ module Rfix
     def report_line(_file, offense, _location, highlighted_area)
       extra = "  "
       src = highlighted_source_line(offense).lines.map { |line| extra + line }.join("\n")
-
-      # src = Rfix.source(file).buffer.source
-      # src = highlighted_area.source
-      # pp highlighted_area or rescue nil
-      # pp location or rescue nil
-      # pp offense
-      # start_col = location.begin_pos
-      # end_col = location.end_pos
-      # col_range = (start_col...end_col)
-      # # src = File.read(file)
-      #
-      # pre = '    '
-      # x_pre = '⮑   '
-      #
-      # _, tokens = @lexer.lex(src).reduce([0, []]) do |(column, acc), (token, value)|
-      #   length = value.length
-      #   if col_range.include?(column)
-      #     value = Rainbow(value).inverse.italic
-      #   end
-      #   [column + length, acc + [[token, value]]]
-      # end
-      #
       lines = @formatter.format(@lexer.lex(src)).gsub('\\e', CLI::UI::ANSI::ESC).lines.map(&:chomp)
-      #
-      # line = offense.last_line - 1
-      # a = (lines.slice([line - 2, -1].max, 2) || []).map { |l| pre + l }
-      # b = [x_pre + lines[line]]
-      # c = (lines.slice(line + 1, 2) || []).map { |l| pre + l }
-      # d = (a + b + c).join("\n")
-
       out("\n\n")
       out(lines.join("\n"), format: false)
       b_pos = highlighted_area.begin_pos + extra.length
