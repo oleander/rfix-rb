@@ -250,7 +250,7 @@ RSpec.describe Rfix, type: :aruba do
   describe "fails" do
     it "displays help when no command is given" do
       default_cmd("")
-      expect(all_output).to include("Invalid command")
+      expect(all_output).to include("Valid rfix")
       expect(last_command_started).to have_exit_status(1)
     end
 
