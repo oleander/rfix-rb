@@ -1,0 +1,105 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "rfix"
+require "rubocop"
+require "rfix/formatter"
+require "cli/ui"
+
+op = RuboCop::Options.new
+
+extend Rfix::Log
+CLI::UI::StdoutRouter.enable
+
+say "Using version {{yellow:#{RuboCop::Version.version}}} of RuboCop"
+
+base_config = {
+  color: true,
+  force_exclusion: true,
+  auto_correct: true,
+  # cache: 'false', # TODO
+  formatters: ["Rfix::Formatter"]
+}
+
+case ARGV.shift
+when "local"
+  reference = Rfix.ref_since_push
+when "origin"
+  reference = Rfix.ref_since_origin
+when "branch"
+  unless reference = ARGV.shift
+    say_abort "No branch passed"
+  end
+
+  say_abort "No branch passed" if reference.start_with?("--")
+
+  # Check if branch exists
+  say_abort "Branch {{yellow:#{reference}}} does not exist" unless Rfix.has_branch?(reference)
+
+  say "Run against the {{yellow:#{reference}}} branch"
+else
+  CLI::UI::Prompt.ask("What mode to run in?") do |handler|
+    handler.option("local") { |_selection| reference = Rfix.ref_since_push }
+    handler.option("origin") { |_selection| reference = Rfix.ref_since_origin }
+    # handler.option('branch')   { |selection| reference = selection }
+  end
+end
+
+# CLI::UI::Spinner.spin('Loading RuboCop {{@widget/status:1:2:3:4}}') do |spinner|
+say "Run against {{yellow:#{reference}}} reference"
+# spinner.update_title('Loading tracked files')
+Rfix.load_tracked!(reference)
+
+say "Current directory {{yellow:#{Dir.pwd}}}"
+op.on("--untracked", "Include untracked files") do
+  # spinner.update_title('Loading untracked files')
+  Rfix.load_untracked!
+end
+
+should_list_files = false
+op.on("--list-files", "List files found by git") do
+  should_list_files = true
+end
+
+op.on("--dry", "No auto correct") do
+  say "Only dry run"
+  base_config.merge!({
+                       auto_correct: false
+                     })
+end
+
+limit_files = false
+op.on("--limit-files NUM", Integer, "Limit number of files") do |limit|
+  limit_files = limit
+end
+
+options, paths = op.parse(ARGV)
+
+paths = Rfix.paths if paths.empty?
+
+if paths.empty?
+  say "No files to run against"
+  exit 0
+end
+
+if limit_files
+  say "Limit number of files to {{yellow:#{limit_files}}}"
+  paths = paths.take(limit_files)
+end
+
+if should_list_files
+  say "Found {{yellow:#{paths.count}}} files"
+  paths.each do |path|
+    say "\t" + Rfix.to_relative(path: path)
+  end
+end
+
+options = base_config.merge(options)
+config  = RuboCop::ConfigStore.new
+env     = RuboCop::CLI::Environment.new(options, config, paths)
+
+begin
+  exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
+rescue RuboCop::Error => e
+  say_abort e.message
+end

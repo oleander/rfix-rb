@@ -1,0 +1,8 @@
+language: ruby
+rvm: 2.5.0
+os: osx
+script:
+  - bundle install
+  - bundle exec rake setup
+  - bundle exec rake spec
+  - bundle exec rake install
