@@ -14,7 +14,7 @@ module Rfix::Ext
   module Runner
     # Called _after_ @source has been 'auto fixed' by Rubocop
     def check_for_infinite_loop(source, offences)
-      Rfix.refresh!(source); super
+      Rfix.refresh!(source); super # TODO: Before or after?
     end
 
     # def process_file(file)

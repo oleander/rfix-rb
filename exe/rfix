@@ -73,6 +73,14 @@ op.on("--limit-files NUM", Integer, "Limit number of files") do |limit|
   limit_files = limit
 end
 
+config = RuboCop::ConfigStore.new
+config.force_default_config!
+
+op.on("--config PATH", "A configuration file") do |path|
+  say "Load config from {{yellow:#{path}}}"
+  config.for(path)
+end
+
 options, paths = op.parse(ARGV)
 
 paths = Rfix.paths if paths.empty?
@@ -95,8 +103,7 @@ if should_list_files
 end
 
 options = base_config.merge(options)
-config  = RuboCop::ConfigStore.new
-env     = RuboCop::CLI::Environment.new(options, config, paths)
+env = RuboCop::CLI::Environment.new(options, config, paths)
 
 begin
   exit RuboCop::CLI::Command::ExecuteRunner.new(env).run

@@ -1,7 +1,2 @@
 NewCops:
   Enabled: true
-Style/StringLiterals:
-  EnforcedStyle: single_quotes
-AllCops:
-  Exclude:
-    - 'vendor/**/*'
