@@ -4,7 +4,7 @@ RSpec.describe Rfix, type: :aruba do
 
   let(:ignore) { ".gitignore" }
   let(:repo) { "git-fame-rb" }
-  let(:rubocop_help_arg) { ["--parallel", "--limit-files"] }
+  let(:rubocop_help_arg) { ["--parallel"] }
 
   around do |example|
     copy "%/git-fame-rb", repo
