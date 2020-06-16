@@ -95,12 +95,15 @@ when "branch"
   say_abort "Branch {{yellow:#{reference}}} does not exist" unless Rfix.has_branch?(reference)
 else
   unless display_help
-    say_error "Valid rfix commands are"
-    say_error_sub "\t{{italic:rfix branch <a branch>}}"
-    say_error_sub "\t{{italic:rfix origin}}"
-    say_error_sub "\tr{{italic:fix local}}"
-    say_error_sub "\tr{{italic:fix all}}"
-    say_error_sub "\tr{{italic:fix info}}"
+    say_error "Valid rfix commands are:"
+    say_error_sub "\n"
+    say_error_sub "\t{{bold:rfix branch <branch>}} -- {{italic:Fix changes made between HEAD and <branch>}}"
+    say_error_sub "\t{{bold:rfix origin}}          -- {{italic:Fix changes made between HEAD and origin branch}}"
+    say_error_sub "\tr{{bold:fix local}}           -- {{italic:Fix changes not yet pushed to upstream branch}}"
+    say_error_sub "\tr{{bold:fix info}}            -- {{italic:Display runtime dependencies and their versions}}"
+    say_error_sub "\tr{{bold:fix all}}             -- {{italic:Fix all files in this repository}} {{warning:(not recommended)}}"
+    say_error_sub "\n"
+    say_error_sub "\t{{italic:Optional args: --dry --help --list-files --limit-files --config --untracked}}"
     exit 1
   end
 
