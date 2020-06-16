@@ -79,4 +79,15 @@ namespace :git do
   end
 end
 
+namespace :update do
+  task :gemfiles do
+    Dir.glob("ci/Gemfile*").reject do |path|
+      File.extname(path) == ".lock"
+    end.each do |gemfile|
+      say "Update #{gemfile}"
+      cmd("bundle", "update", "--gemfile", gemfile)
+    end
+  end
+end
+
 task local: [:setup, :install]
