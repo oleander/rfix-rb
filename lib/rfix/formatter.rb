@@ -11,7 +11,7 @@ module Rfix
       theme = Rouge::Themes::Gruvbox.new
       @formatter = Rouge::Formatters::TerminalTruecolor.new(theme)
       @lexer = Rouge::Lexers::Ruby.new
-      out "{{*}} Loading {{yellow:#{files.count}}} files"
+      out "{{v}} Loading {{yellow:#{files.count}}} files"
       out("\n")
       @pg = CLI::UI::Progress.new
       @total = files.count
@@ -26,7 +26,7 @@ module Rfix
 
       offenses = @files.values.flatten
       corrected = offenses.select(&:corrected?)
-
+      out("\n")
       report_summary(files.size, offenses.count, corrected.count)
     end
 
