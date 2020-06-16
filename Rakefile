@@ -47,12 +47,35 @@ task setup: [:bundle_install] do
   setup(gem: "git-fame-rb")
 end
 
+def osx?
+  ENV.fetch("TRAVIS_OS_NAME") == "osx"
+end
+
+def brew_url(ref:)
+  "https://raw.githubusercontent.com/Homebrew/homebrew-core/#{ref}/Formula/git.rb"
+end
+
 namespace :git do
   task :config do
     cmd("git config --global user.email hello@world.com")
     cmd("git config --global user.name John Doe")
     result = cmd("git config --global -l").first
     say "Git config set to {{yellow:#{result}}}"
+  end
+
+  namespace :install do
+    task :osx do
+      say "Installing git on OS X"
+      cmd("brew install #{brew_url(ref: "140da7e09919887e1040f726db22dafd0cffe4d9")}")
+    end
+
+    task :linux do
+      say("Skip linux for now")
+    end
+
+    task :guess do
+      osx? ? Rake::Task["git:install:osx"].invoke : Rake::Task["git:install:linux"].invoke
+    end
   end
 end
 
