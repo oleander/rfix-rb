@@ -47,7 +47,12 @@ RSpec.describe Rfix, type: :aruba do
 
   describe "info" do
     before { default_cmd("info") }
-    it { is_expected.to include(*["Rfix", "RuboCop", "OS", "Git", "Ruby"]) }
+    subject { last_command_started }
+
+    ["Rfix", "RuboCop", "OS", "Git", "Ruby"].each do |param|
+      it { is_expected.to have_output(/#{param}/)}
+    end
+
     it { is_expected.to have_exit_status(0) }
   end
 

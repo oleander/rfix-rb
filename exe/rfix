@@ -95,13 +95,13 @@ when "branch"
   say_abort "Branch {{yellow:#{reference}}} does not exist" unless Rfix.has_branch?(reference)
 else
   unless display_help
-    default_help = "[--args] [--dry] [--help]"
-    say_error "Invalid command {{red:#{cmd}}}"
-    say_error "Valid rfix calls are"
-    say_error "\trfix branch <a branch> #{default_help}"
-    say_error "\trfix origin #{default_help}"
-    say_abort "\trfix local #{default_help}"
-    say_abort "\trfix all #{default_help}"
+    say_error "Invalid command {{italic:#{cmd || "<blank>"}}}, valid rfix calls are"
+    say_error "\t{{italic:rfix branch <a branch>}}"
+    say_error "\t{{italic:rfix origin}}"
+    say_error "\tr{{italic:fix local}}"
+    say_error "\tr{{italic:fix all}}"
+    say_error "\tr{{italic:fix info}}"
+    exit 0
   end
 
   ARGV.unshift(cmd)
