@@ -26,12 +26,12 @@ module Rfix::Support
     cmd("git status --short | wc -l").first.to_i
   end
 
-  def origin_cmd(*args)
-    default_cmd("origin", *args)
+  def origin_cmd(**args)
+    default_cmd("origin", **args)
   end
 
-  def local_cmd(*args)
-    default_cmd("local", *args)
+  def local_cmd(**args)
+    default_cmd("local", **args)
   end
 
   def branch_cmd(branch: "master", **args)
