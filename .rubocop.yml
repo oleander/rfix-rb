@@ -59,8 +59,10 @@ Style/MultilineBlockChain:
 Style/StringLiterals:
   EnforcedStyle: double_quotes
 Layout/MultilineAssignmentLayout:
-  EnforcedStyle: same_line
+  EnforcedStyle: new_line
 Style/GuardClause:
   Enabled: false
 Style/AsciiComments:
   Enabled: false
+Style/ConditionalAssignment:
+  EnforcedStyle: assign_inside_condition

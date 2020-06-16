@@ -29,11 +29,11 @@ base_config = {
 # For version 0.80.x .. 0.83.x:
 # Otherwise it will exit with status code = 1
 if (0.80..0.83).include?(RuboCop::Version::STRING.to_f)
-  base_config[:fail_level] = if is_dry
-                               :autocorrect
-                             else
-                               :warning
-                             end
+  if is_dry
+    base_config[:fail_level] = :autocorrect
+  else
+    base_config[:fail_level] = :warning
+  end
 end
 
 def load_config
