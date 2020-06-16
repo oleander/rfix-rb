@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["linus@oleander.nu"]
 
   spec.summary       = "RuboCop CLI that only complains about your latest changes"
-  spec.description   = "$ rfix <local|branch|origin|info|all> [--dry] [--help]"
+  spec.description   = "$ rfix local|branch|origin|info|all [--dry] [--help]"
   spec.homepage      = "https://github.com/oleander/rfix-rb"
   spec.license       = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.5.0")
