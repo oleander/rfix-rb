@@ -45,6 +45,12 @@ RSpec.describe Rfix, type: :aruba do
     it { is_expected.to include("no upstream") }
   end
 
+  describe "info" do
+    before { default_cmd("info") }
+    it { is_expected.to include(*["Rfix", "RuboCop", "OS", "Git", "Ruby"]) }
+    it { is_expected.to have_exit_status(0) }
+  end
+
   describe "--untrackeed" do
     let(:filename) { "my-file.rb" }
 

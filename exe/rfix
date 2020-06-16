@@ -18,7 +18,7 @@ extend Rfix::Log
 Rfix.init!
 CLI::UI::StdoutRouter.enable
 
-say "Using RuboCop {{yellow:v#{RuboCop::Version.version}}}"
+say "Using RuboCop {{yellow:#{RuboCop::Version.version}}}"
 
 base_config = {
   color: true,
@@ -67,6 +67,12 @@ options.on("--config PATH", "A configuration file") do |path|
 end
 
 case cmd = ARGV.shift
+when "info"
+  say "Using Rfix {{yellow:#{Rfix::VERSION}}}"
+  say "Using OS {{yellow:#{Rfix.current_os}}}"
+  say "Using Git {{yellow:#{Rfix.git_version}}}"
+  say "Using Ruby {{yellow:#{Rfix.ruby_version}}}"
+  exit 0
 when "local"
   reference = Rfix.ref_since_push
 when "origin"

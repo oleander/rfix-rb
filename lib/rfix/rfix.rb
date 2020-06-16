@@ -2,6 +2,7 @@
 
 require "rubocop"
 require "optparse"
+require "rbconfig"
 require "rfix/git_file"
 require "rfix/git_helper"
 require "rfix/log"
@@ -11,6 +12,18 @@ require "rfix/untracked_file"
 module Rfix
   include GitHelper
   include Log
+
+  def git_version
+    cmd("git --version").last.split(/\s+/, 3).last
+  end
+
+  def ruby_version
+    RbConfig::CONFIG["ruby_version"] || "<unknown>"
+  end
+
+  def current_os
+    RbConfig::CONFIG["host_os"] || "<unknown>"
+  end
 
   def global_enable!
     @global_enable = true
