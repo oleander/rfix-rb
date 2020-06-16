@@ -1,7 +1,4 @@
 language: ruby
-before_install:
-  - git config --global user.email "hello@world.com"
-  - git config --global user.name "John Doe"
 rvm:
   - 2.5.0
   - ruby-head
@@ -9,6 +6,8 @@ os:
   - osx
   - linux
 script:
+  - git config --global user.email "hello@world.com"
+  - git config --global user.name "John Doe"
   - gem update --system
   - gem uninstall bundler
   - gem install bundler -v 2.1.4
