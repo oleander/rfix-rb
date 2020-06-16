@@ -38,10 +38,10 @@ end
 
 def load_config
   yield
-rescue RuboCop::Error => error
-  say_abort "[Config] #{error}"
-rescue TypeError => error
-  say_abort "[Config] #{error}"
+rescue RuboCop::Error => e
+  say_abort "[Config] #{e}"
+rescue TypeError => e
+  say_abort "[Config] #{e}"
 end
 
 options.on("--dry", "No auto correct") do
