@@ -22,7 +22,7 @@ module Rfix::Log
   end
 
   def say_exit(message)
-    CLI::UI.puts("{{x}} #{message}")
+    CLI::UI.puts("{{?}} #{message}")
     exit 0
   end
 end

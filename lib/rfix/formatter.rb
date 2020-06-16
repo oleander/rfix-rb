@@ -29,11 +29,19 @@ module Rfix
       report_summary(files.size, offenses.count, corrected.count)
     end
 
-    def to_url(url, title)
+    def to_clickable(url, title)
       esc = CLI::UI::ANSI::ESC
       cmd = esc + "]8;;"
       slash = "\x07"
-      cmd + "atom://#{url}#{slash}#{title}" + cmd + slash
+      cmd + "#{url}#{slash}#{title}" + cmd + slash
+    end
+
+    def to_path(path, title)
+      to_clickable(File.join("atom://", path), title)
+    end
+
+    def to_url(url, title)
+      to_clickable(url, title)
     end
 
     def render_file(file, offenses)
@@ -42,10 +50,11 @@ module Rfix
       url = to_url(file, path)
       offenses.each do |offense|
         out("\n\n")
-        url = to_url("#{file}:#{offense.where}", dim("#{path}:#{offense.where}"))
+        clickable_path = to_path("#{file}:#{offense.line}", "#{path}:#{offense.where}")
+        clickable_code = to_url("https://www.rubydoc.info/gems/rubocop/RuboCop/Cop/#{offense.code}", offense.code)
         CLI::UI::Frame.open("#{offense.icon} #{offense.msg}", color: :reset)
         report_line(file, offense, offense.location, offense.highlighted_area)
-        CLI::UI::Frame.close("#{url} » #{offense.code}", color: :reset)
+        CLI::UI::Frame.close("#{clickable_path} » #{clickable_code}", color: :reset)
       end
     end
 
