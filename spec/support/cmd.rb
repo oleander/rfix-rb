@@ -15,6 +15,8 @@ module Rfix::Support
   def add_file_and_commit(file: "file.rb")
     add_file(file: file)
     cmd "git add #{file}"
+    cmd 'git config user.email "you@example.com"'
+    cmd 'git config user.name "Your Name"'
     cmd 'git commit --author="John Doe <john@doe.org>" -m "my commit"'
   end
 
