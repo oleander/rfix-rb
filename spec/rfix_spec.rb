@@ -4,6 +4,7 @@ RSpec.describe Rfix, type: :aruba do
 
   let(:ignore) { ".gitignore" }
   let(:repo) { "git-fame-rb" }
+  let(:rubocop_help_arg) { ["--parallel", "--limit-files"] }
 
   around do |example|
     copy "%/git-fame-rb", repo
@@ -126,16 +127,14 @@ RSpec.describe Rfix, type: :aruba do
   end
 
   describe "--help" do
-    let(:rubocop_arg) { ["--parallel", "--limit-files"] }
-
     describe "with" do
       before { default_cmd("", help: true) }
-      it { is_expected.to include(*rubocop_arg) }
+      it { is_expected.to include(*rubocop_help_arg) }
     end
 
     describe "without" do
       before { default_cmd("", help: false) }
-      it { is_expected.not_to include(*rubocop_arg) }
+      it { is_expected.not_to include(*rubocop_help_arg) }
     end
   end
 
@@ -220,6 +219,27 @@ RSpec.describe Rfix, type: :aruba do
         it { is_expected.to have_output(/no files/i) }
         it { is_expected.to have_exit_status(0) }
       end
+    end
+  end
+
+  describe "fails" do
+    it "displays help when no command is given" do
+      default_cmd("")
+      expect(all_output).to include("Invalid command")
+      expect(last_command_started).to have_exit_status(1)
+    end
+
+    it "displays help when an invalid command is given" do
+      default_cmd("not-a-command")
+      expect(all_output).to include("Invalid command")
+      expect(last_command_started).to have_exit_status(1)
+    end
+
+    it "displays help even when an invalid command is given" do
+      default_cmd("not-a-command", help: true)
+      expect(all_output).to_not include("Invalid command")
+      expect(all_output).to include(*rubocop_help_arg)
+      expect(last_command_started).to have_exit_status(0)
     end
   end
 
