@@ -6,6 +6,10 @@ rvm:
 os:
   - osx
   - linux
+gemfile:
+  - Gemfile
+  - ci/Gemfile.rubocop-0.80
+  - ci/Gemfile.rubocop-0.85
 before_install:
   - yes | gem update --system --force
   - gem uninstall bundler
@@ -15,7 +19,6 @@ install:
   - bundle install
   - bundle exec rake setup
   - bundle exec rake git:config
-  - bundle exec rake git:install:guess
 script:
   - bundle exec rake spec
   - bundle exec rake install

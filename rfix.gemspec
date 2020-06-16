@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "rainbow", "~> 3.0"
   spec.add_runtime_dependency "rouge", "~> 3.20"
-  spec.add_runtime_dependency "rubocop", "~> 0.85"
+  spec.add_runtime_dependency "rubocop", "~> 0.80"
 
   spec.required_ruby_version = '>= 2.5.0'
 end
