@@ -47,4 +47,13 @@ task setup: [:bundle_install] do
   setup(gem: "git-fame-rb")
 end
 
+namespace :git do
+  task :config do
+    cmd("git config --global user.email hello@world.com")
+    cmd("git config --global user.name John Doe")
+    result = cmd("git config --global -l").first
+    say "Git config set to {{yellow:#{result}}}"
+  end
+end
+
 task local: [:setup, :install]

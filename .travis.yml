@@ -1,7 +1,4 @@
 language: ruby
-before_install:
-  - git config --global user.email "hello@world.com"
-  - git config --global user.name "John Doe"
 rvm:
   - 2.5.0
   - ruby-head
@@ -17,5 +14,6 @@ install:
   - bundle install
   - bundle exec rake setup
 script:
+  - bundle exec rake git:config
   - bundle exec rake spec
   - bundle exec rake install
