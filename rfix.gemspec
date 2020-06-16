@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Linus Oleander"]
   spec.email         = ["linus@oleander.nu"]
 
-  spec.summary       = "Write a short summary, because RubyGems requires one."
-  spec.description   = "Write a longer description or delete this line."
+  spec.summary       = "RuboCop wrapper that only complains about your latest changes"
+  spec.description   = spec.summary + "."
   spec.homepage      = "https://github.com/oleander/rfix"
   spec.license       = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.5.0")
