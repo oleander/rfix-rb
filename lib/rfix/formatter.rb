@@ -38,7 +38,7 @@ module Rfix
     end
 
     def to_path(path, title)
-      to_clickable(File.join("atom://", path), title)
+      to_clickable("file://#{path}", title)
     end
 
     def to_url(url, title)
@@ -55,11 +55,11 @@ module Rfix
       url = to_url(file, path)
       offenses.each do |offense|
         out("\n\n")
-        clickable_path = to_path("#{file}:#{offense.line}", "#{path}:#{offense.where}")
+        clickable_path = "{{italic:#{path}:#{offense.where}}}"
         clickable_code = to_url("https://www.rubydoc.info/gems/rubocop/RuboCop/Cop/#{offense.code}", offense.code)
         CLI::UI::Frame.open("#{offense.icon} #{offense.msg}", color: :reset)
         report_line(file, offense, offense.location, offense.highlighted_area)
-        CLI::UI::Frame.close("#{clickable_path} » #{clickable_code}", color: :reset)
+        CLI::UI::Frame.close("#{clickable_path} » {{italic:#{clickable_code}}}", color: :reset)
       end
     end
 
