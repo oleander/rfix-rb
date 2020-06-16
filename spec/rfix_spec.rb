@@ -102,7 +102,7 @@ RSpec.describe Rfix, type: :aruba do
 
       describe "without" do
         it "does alter files" do
-          expect { default_cmd("all", dry: false) }.to change { no_changed_files }.by(15)
+          expect { default_cmd("all", dry: false) }.to change { no_changed_files }.by(19)
         end
       end
     end
