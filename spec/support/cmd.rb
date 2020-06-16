@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-require 'shellwords'
+
+require "shellwords"
 
 module Rfix::Support
   def setup_test_branch(upstream: false)
@@ -41,7 +42,7 @@ module Rfix::Support
   end
 
   def root_path
-    File.expand_path('../..', __FILE__)
+    File.expand_path("..", __dir__)
   end
 
   def config_path

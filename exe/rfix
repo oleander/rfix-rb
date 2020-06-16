@@ -15,6 +15,7 @@ is_dry            = ARGV.include?("--dry")
 config_path       = false
 
 extend Rfix::Log
+Rfix.init!
 CLI::UI::StdoutRouter.enable
 
 say "Using RuboCop {{yellow:v#{RuboCop::Version.version}}}"
@@ -70,6 +71,9 @@ when "local"
   reference = Rfix.ref_since_push
 when "origin"
   reference = Rfix.ref_since_origin
+when "all"
+  reference = false
+  Rfix.global_enable!
 when "branch"
   abort_message = "No branch passed as second argument"
   unless reference = ARGV.shift
@@ -91,6 +95,7 @@ else
     say_error "\trfix branch <a branch> #{default_help}"
     say_error "\trfix origin #{default_help}"
     say_abort "\trfix local #{default_help}"
+    say_abort "\trfix all #{default_help}"
   end
 
   ARGV.unshift(cmd)
@@ -112,14 +117,14 @@ else
   end
 end
 
-say "Compare against {{yellow:#{reference}}}"
+if ref = reference
+  say "Compare against {{yellow:#{ref}}}"
 
-Rfix.load_tracked!(reference)
+  Rfix.load_tracked!(ref)
 
-paths = Rfix.paths if paths.empty?
+  paths = Rfix.paths if paths.empty?
 
-if paths.empty?
-  say_exit "No files to run against"
+  say_exit "No files to run against" if paths.empty?
 end
 
 if limit = limit_files

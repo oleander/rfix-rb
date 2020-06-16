@@ -12,8 +12,21 @@ module Rfix
   include GitHelper
   include Log
 
+  def global_enable!
+    @global_enable = true
+  end
+
+  def global_enable?
+    @global_enable
+  end
+
+  def init!
+    @files ||= {}
+    @global_enable = false
+  end
+
   def files
-    (@files || {}).values
+    @files.values
   end
 
   def spin
@@ -21,7 +34,7 @@ module Rfix
   end
 
   def paths
-    (@files || {}).keys
+    @files.keys
   end
 
   def root_dir
@@ -33,6 +46,8 @@ module Rfix
   end
 
   def enabled?(path, line)
+    return true if global_enable?
+
     @files[path]&.include?(line)
   end
 
