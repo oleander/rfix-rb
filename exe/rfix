@@ -36,6 +36,14 @@ if (0.80..0.83).include?(RuboCop::Version::STRING.to_f)
   end
 end
 
+def load_config
+  yield
+rescue RuboCop::Error => error
+  say_abort "[Config] #{error}"
+rescue TypeError => error
+  say_abort "[Config] #{error}"
+end
+
 options.on("--dry", "No auto correct") do
   say "Will run rfix in {{red:read-only}} mode"
   base_config.merge!({ auto_correct: false })
@@ -99,12 +107,12 @@ rescue OptionParser::MissingArgument => e
 end
 
 if path = config_path
-  begin
+  load_config do
     config.options_config = path
-  rescue RuboCop::ConfigNotFoundError => e
-    say_abort "[Config] #{e} : #{path}"
-  rescue Errno::EISDIR => e
-    say_abort "[Config] #{e} : #{path}"
+  end
+else
+  load_config do
+    config.for(Dir.pwd)
   end
 end
 
