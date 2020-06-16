@@ -12,8 +12,8 @@ options           = RuboCop::Options.new
 config            = RuboCop::ConfigStore.new
 display_help      = ARGV.include?("--help")
 is_dry            = ARGV.include?("--dry")
+config_path       = false
 
-config.force_default_config!
 extend Rfix::Log
 CLI::UI::StdoutRouter.enable
 
@@ -54,7 +54,7 @@ options.on("--limit-files NUM", Integer, "Limit number of files") do |limit|
 end
 
 options.on("--config PATH", "A configuration file") do |path|
-  config.for(path)
+  config_path = path
 end
 
 case cmd = ARGV.shift
@@ -92,7 +92,21 @@ else
   ARGV.unshift(cmd)
 end
 
-options, paths = options.parse(ARGV)
+begin
+  options, paths = options.parse(ARGV)
+rescue OptionParser::MissingArgument => e
+  say_abort "[Parser] #{e}"
+end
+
+if path = config_path
+  begin
+    config.options_config = path
+  rescue RuboCop::ConfigNotFoundError => e
+    say_abort "[Config] #{e} : #{path}"
+  rescue Errno::EISDIR => e
+    say_abort "[Config] #{e} : #{path}"
+  end
+end
 
 say "Will compare against {{yellow:#{reference}}}"
 
