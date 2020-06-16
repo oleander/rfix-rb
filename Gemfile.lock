@@ -21,7 +21,7 @@ GIT
 PATH
   remote: .
   specs:
-    rfix (1.0.4)
+    rfix (1.0.5)
       rainbow (~> 3.0)
       rouge (~> 3.20)
       rubocop (~> 0.80)
