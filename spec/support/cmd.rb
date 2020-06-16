@@ -45,7 +45,7 @@ module Rfix::Support
   end
 
   def config_path
-    Shellwords.escape File.join(root_path, "spec/fixtures/rubocop.yml")
+    Shellwords.escape File.join(root_path, "fixtures/rubocop.yml")
   end
 
   def default_cmd(cmd, dry: true, untracked: false, help: false)
