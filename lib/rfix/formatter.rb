@@ -3,6 +3,7 @@
 require "rubocop"
 require "rouge"
 require "rainbow"
+require "shellwords"
 
 module Rfix
   class Formatter < RuboCop::Formatter::SimpleTextFormatter
@@ -33,7 +34,7 @@ module Rfix
       esc = CLI::UI::ANSI::ESC
       cmd = esc + "]8;;"
       slash = "\x07"
-      cmd + "#{url}#{slash}#{title}" + cmd + slash
+      cmd + "#{escape(url)}#{slash}#{escape(title)}" + cmd + slash
     end
 
     def to_path(path, title)
@@ -42,6 +43,10 @@ module Rfix
 
     def to_url(url, title)
       to_clickable(url, title)
+    end
+
+    def escape(str)
+      Shellwords.escape(str)
     end
 
     def render_file(file, offenses)
