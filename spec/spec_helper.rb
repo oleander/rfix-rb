@@ -17,10 +17,8 @@ Dir[File.join(__dir__, "../spec/support/*.rb")].each(&method(:require))
 
 RSpec.configure do |config|
   config.example_status_persistence_file_path = ".rspec_status"
-  # config.shared_context_metadata_behavior = :apply_to_host_groups
   config.include Rfix::Cmd
   config.include Rfix::Log
-  # config.include Aruba::Api
   config.order = :random
 
   config.disable_monkey_patching!
