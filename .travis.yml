@@ -1,7 +1,14 @@
 language: ruby
-rvm: 2.5.0
-os: osx
+rvm:
+  - 2.5.0
+  - ruby-head
+os:
+  - osx
+  - linux
 script:
+  - gem update --system
+  - gem install bundler
+  - bundler update --bundler
   - bundle install
   - bundle exec rake setup
   - bundle exec rake spec
