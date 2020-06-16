@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+  # frozen_string_literal: true
 
 require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
@@ -30,6 +30,7 @@ def setup(gem:)
   dest = dest_for(name: gem)
   say "Load dest {{yellow:#{dest}}}"
 
+  FileUtils.mkdir_p(dest)
   say "Copy files"
   FileUtils.copy_entry source, dest, true, true, true
 end
