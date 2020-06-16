@@ -11,19 +11,29 @@ limit_files       = false
 options           = RuboCop::Options.new
 config            = RuboCop::ConfigStore.new
 display_help      = ARGV.include?("--help")
+is_dry            = ARGV.include?("--dry")
 
 config.force_default_config!
 extend Rfix::Log
 CLI::UI::StdoutRouter.enable
 
-say "Using version {{yellow:#{RuboCop::Version.version}}} of RuboCop"
+say "Using {{yellow:v#{RuboCop::Version.version}}} of RuboCop"
 
 base_config = {
   color: true,
   force_exclusion: true,
   auto_correct: true,
-  formatters: ["Rfix::Formatter"]
+  formatters: ["Rfix::Formatter"],
 }
+
+# Otherwise it will exits with status code = 1
+if RuboCop::Version::STRING == "0.80.0"
+  if is_dry
+    base_config[:fail_level] = :autocorrect
+  else
+    base_config[:fail_level] = :warning
+  end
+end
 
 options.on("--dry", "No auto correct") do
   say "Will run rfix in {{red:read-only}} mode"
