@@ -101,7 +101,7 @@ else
     say_error "\tr{{italic:fix local}}"
     say_error "\tr{{italic:fix all}}"
     say_error "\tr{{italic:fix info}}"
-    exit 0
+    exit 1
   end
 
   ARGV.unshift(cmd)
