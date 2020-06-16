@@ -26,8 +26,9 @@ base_config = {
   formatters: ["Rfix::Formatter"],
 }
 
-# Otherwise it will exits with status code = 1
-if RuboCop::Version::STRING == "0.80.0"
+# For version 0.80.x .. 0.83.x:
+# Otherwise it will exit with status code = 1
+if (0.80..0.83).include?(RuboCop::Version::STRING.to_f)
   if is_dry
     base_config[:fail_level] = :autocorrect
   else
