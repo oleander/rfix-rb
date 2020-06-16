@@ -224,15 +224,15 @@ RSpec.describe Rfix, type: :aruba do
   end
 
   describe "change" do
+    before do
+      setup_test_branch(upstream: :master)
+    end
+
     it "defaults to zero" do
       expect(no_changed_files).to eq(0)
     end
 
     describe "run" do
-      before do
-        setup_test_branch(upstream: :master)
-      end
-
       describe "with" do
         it "origin" do
           origin_cmd(dry: false)
