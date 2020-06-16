@@ -6,7 +6,9 @@ require "rubocop"
 require "rfix/formatter"
 require "cli/ui"
 
-op = RuboCop::Options.new
+options = RuboCop::Options.new
+config = RuboCop::ConfigStore.new
+config.force_default_config!
 
 extend Rfix::Log
 CLI::UI::StdoutRouter.enable
@@ -17,7 +19,6 @@ base_config = {
   color: true,
   force_exclusion: true,
   auto_correct: true,
-  # cache: 'false', # TODO
   formatters: ["Rfix::Formatter"]
 }
 
@@ -27,16 +28,24 @@ when "local"
 when "origin"
   reference = Rfix.ref_since_origin
 when "branch"
+  abort_message = "No branch passed as second argument"
   unless reference = ARGV.shift
-    say_abort "No branch passed"
+    say_abort abort_message
   end
 
-  say_abort "No branch passed" if reference.start_with?("--")
+  # Catches:
+  # NOT OK: branch --help
+  # OK branch master --help
+  if reference.start_with?("--")
+    say_abort abort_message
+  end
 
   # Check if branch exists
-  say_abort "Branch {{yellow:#{reference}}} does not exist" unless Rfix.has_branch?(reference)
+  unless Rfix.has_branch?(reference)
+    say_abort "Branch {{yellow:#{reference}}} does not exist"
+  end
 
-  say "Run against the {{yellow:#{reference}}} branch"
+  say "Will compare against {{yellow:#{reference}}}"
 else
   CLI::UI::Prompt.ask("What mode to run in?") do |handler|
     handler.option("local") { |_selection| reference = Rfix.ref_since_push }
@@ -51,17 +60,17 @@ say "Run against {{yellow:#{reference}}} reference"
 Rfix.load_tracked!(reference)
 
 say "Current directory {{yellow:#{Dir.pwd}}}"
-op.on("--untracked", "Include untracked files") do
+options.on("--untracked", "Include untracked files") do
   # spinner.update_title('Loading untracked files')
   Rfix.load_untracked!
 end
 
 should_list_files = false
-op.on("--list-files", "List files found by git") do
+options.on("--list-files", "List files found by git") do
   should_list_files = true
 end
 
-op.on("--dry", "No auto correct") do
+options.on("--dry", "No auto correct") do
   say "Only dry run"
   base_config.merge!({
                        auto_correct: false
@@ -69,19 +78,16 @@ op.on("--dry", "No auto correct") do
 end
 
 limit_files = false
-op.on("--limit-files NUM", Integer, "Limit number of files") do |limit|
+options.on("--limit-files NUM", Integer, "Limit number of files") do |limit|
   limit_files = limit
 end
 
-config = RuboCop::ConfigStore.new
-config.force_default_config!
-
-op.on("--config PATH", "A configuration file") do |path|
+options.on("--config PATH", "A configuration file") do |path|
   say "Load config from {{yellow:#{path}}}"
   config.for(path)
 end
 
-options, paths = op.parse(ARGV)
+options, paths = options.parse(ARGV)
 
 paths = Rfix.paths if paths.empty?
 

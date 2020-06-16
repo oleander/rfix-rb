@@ -16,22 +16,6 @@ module Rfix::Ext
     def check_for_infinite_loop(source, offences)
       Rfix.refresh!(source); super # TODO: Before or after?
     end
-
-    # def process_file(file)
-    #   Rfix.spin.add(file) { super }
-    # end
-
-    # def inspect_files(files)
-    #   files.uniq.each do |file|
-    #     Rfix.spin.add(Rfix.to_relative(path: file)) do
-    #       sleep(0.4)
-    #       file_offenses(file)
-    #     end
-    #   end
-    #
-    #   Rfix.spin.wait
-    #   super
-    # end
   end
 
   module Options
