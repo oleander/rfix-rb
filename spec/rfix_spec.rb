@@ -126,16 +126,16 @@ RSpec.describe Rfix, type: :aruba do
   end
 
   describe "--help" do
-    let(:rubocop_arg) { "--display-only-failed" }
+    let(:rubocop_arg) { ["--display-only-failed", "--limit-files"] }
 
     describe "with" do
-      before { origin_cmd(help: true) }
-      it { is_expected.to include(rubocop_arg) }
+      before { default_cmd("", help: true) }
+      it { is_expected.to include(*rubocop_arg) }
     end
 
     describe "without" do
-      before { origin_cmd(help: false) }
-      it { is_expected.not_to include(rubocop_arg) }
+      before { default_cmd("", help: false) }
+      it { is_expected.not_to include(*rubocop_arg) }
     end
   end
 
