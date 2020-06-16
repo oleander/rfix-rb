@@ -126,7 +126,7 @@ RSpec.describe Rfix, type: :aruba do
   end
 
   describe "--help" do
-    let(:rubocop_arg) { ["--display-only-failed", "--limit-files"] }
+    let(:rubocop_arg) { ["--parallel", "--limit-files"] }
 
     describe "with" do
       before { default_cmd("", help: true) }
