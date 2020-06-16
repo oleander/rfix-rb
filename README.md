@@ -1,10 +1,12 @@
 # Rfix [![Build Status](https://travis-ci.org/oleander/rfix-rb.svg?branch=master)](https://travis-ci.org/oleander/rfix-rb)
 
+RuboCop CLI that only complains about your latest changes
+
 ## Installation
 
 ``` shell
-gem install rfix
-rfix <local|branch 'any branch'|origin> [--dry] [--help]
+$ gem install rfix
+$ rfix <local|branch|origin|info|all> [--dry] [--help]
 ```
 
 ## Development
