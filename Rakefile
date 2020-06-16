@@ -81,7 +81,7 @@ end
 
 namespace :update do
   task :gemfiles do
-    Dir.glob("ci/Gemfile*").reject do |path|
+    Dir.glob("ci/Gemfile*").unshift("Gemfile").reject do |path|
       File.extname(path) == ".lock"
     end.each do |gemfile|
       say "Update #{gemfile}"
