@@ -2,56 +2,7 @@
 
 require "rubocop"
 require "rouge"
-# require 'cli-ui/lib/cli/ui'
 require "rainbow"
-
-# https://github.com/rubocop-hq/rubocop/blob/5ffddbb92926122a4f3fc1bf8ae29d5be31d481f/lib/rubocop/cop/mixin/range_help.rb
-
-class RuboCop::Cop::Offense
-  def where
-    line.to_s + ":" + real_column.to_s
-  end
-
-  def msg
-    m = message.split(": ", 2).last.delete("\n")
-    CLI::UI.resolve_text("{{italic:#{m}}}", truncate_to: CLI::UI::Terminal.width - 10)
-  end
-
-  def code
-    message.split(": ", 2).first
-  end
-
-  def star
-    Rainbow("⭑")
-  end
-
-  def cross
-    Rainbow("✗")
-  end
-
-  def check
-    Rainbow("✓")
-  end
-
-  def level
-    colors = {
-      refactor: star.lightcyan,
-      convention: star.lightblue,
-      warning: star.lightyellow,
-      error: cross.indianred,
-      fatal: cross.lightsalmon
-    }
-
-    colors[severity.name]
-  end
-
-  def icon
-    return check.green if corrected?
-    return check.lightgreen if correctable?
-
-    cross.indianred
-  end
-end
 
 module Rfix
   class Formatter < RuboCop::Formatter::SimpleTextFormatter

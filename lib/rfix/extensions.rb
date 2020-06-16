@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rubocop"
+require "rainbow"
 
 module Rfix::Ext
   module CommentConfig
@@ -34,8 +35,57 @@ module Rfix::Ext
       @ons += [[args, block]]
     end
   end
+
+  module Offense
+    def where
+      line.to_s + ":" + real_column.to_s
+    end
+
+    def info
+      message.split(": ", 2).last.delete("\n")
+    end
+
+    def msg
+      CLI::UI.resolve_text("{{italic:#{info}}}", truncate_to: CLI::UI::Terminal.width - 10)
+    end
+
+    def code
+      message.split(": ", 2).first
+    end
+
+    def star
+      Rainbow("⭑")
+    end
+
+    def cross
+      Rainbow("✗")
+    end
+
+    def check
+      Rainbow("✓")
+    end
+
+    def level
+      colors = {
+        refactor: star.lightcyan,
+        convention: star.lightblue,
+        warning: star.lightyellow,
+        error: cross.indianred,
+        fatal: cross.lightsalmon
+      }
+
+      colors[severity.name]
+    end
+
+    def icon
+      return check.green if corrected?
+      return check.lightgreen if correctable?
+      cross.indianred
+    end
+  end
 end
 
 RuboCop::Options.prepend(Rfix::Ext::Options)
 RuboCop::Runner.prepend(Rfix::Ext::Runner)
 RuboCop::CommentConfig.prepend(Rfix::Ext::CommentConfig)
+RuboCop::Cop::Offense.prepend(Rfix::Ext::Offense)
