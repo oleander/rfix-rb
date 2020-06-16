@@ -28,6 +28,7 @@ guard :rspec, cmd: "bundle exec rspec" do
   require "guard/rspec/dsl"
   dsl = Guard::RSpec::Dsl.new(self)
 
+  watch("lib/**/*.rb")
   # Feel free to open issues for suggestions and improvements
 
   # RSpec files
