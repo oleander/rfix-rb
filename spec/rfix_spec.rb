@@ -239,13 +239,13 @@ RSpec.describe Rfix, type: :aruba do
           expect(all_output).to include("37 offenses")
           expect(all_output).to include("corrected")
           expect(last_command_started).to have_exit_status(0)
-          expect(no_changed_files).to eq(4)
+          expect(no_changed_files).to eq(5)
         end
 
         it "local" do
           add_file_and_commit
           local_cmd(dry: false)
-          expect(all_output).to include("2 offenses")
+          expect(all_output).to include("3 offenses")
           expect(all_output).to include("corrected")
           expect(last_command_started).to have_exit_status(0)
           expect(no_changed_files).to eq(1)
@@ -256,7 +256,7 @@ RSpec.describe Rfix, type: :aruba do
           expect(all_output).to include("37 offenses")
           expect(all_output).to include("corrected")
           expect(last_command_started).to have_exit_status(0)
-          expect(no_changed_files).to eq(4)
+          expect(no_changed_files).to eq(5)
         end
       end
 
