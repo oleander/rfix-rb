@@ -16,4 +16,4 @@ install:
 script:
   - bundle exec rake git:config
   - bundle exec rake spec
-  - bundle exec rake install
+  - bundle exec rake install  

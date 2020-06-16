@@ -10,6 +10,7 @@ should_list_files = false
 limit_files       = false
 options           = RuboCop::Options.new
 config            = RuboCop::ConfigStore.new
+display_help      = ARGV.include?("--help")
 
 config.force_default_config!
 extend Rfix::Log
@@ -24,7 +25,28 @@ base_config = {
   formatters: ["Rfix::Formatter"]
 }
 
-case ARGV.shift
+options.on("--dry", "No auto correct") do
+  say "Will run rfix in {{red:read-only}} mode"
+  base_config.merge!({ auto_correct: false })
+end
+
+options.on("--untracked", "Include untracked files") do
+  Rfix.load_untracked!
+end
+
+options.on("--list-files", "List files found by git") do
+  should_list_files = true
+end
+
+options.on("--limit-files NUM", Integer, "Limit number of files") do |limit|
+  limit_files = limit
+end
+
+options.on("--config PATH", "A configuration file") do |path|
+  config.for(path)
+end
+
+case cmd = ARGV.shift
 when "local"
   reference = Rfix.ref_since_push
 when "origin"
@@ -46,34 +68,24 @@ when "branch"
   unless Rfix.has_branch?(reference)
     say_abort "Branch {{yellow:#{reference}}} does not exist"
   end
+else
+  unless display_help
+    default_help = "[--args] [--dry] [--help]"
+    say_error "Invalid command {{red:#{cmd}}}"
+    say_error "Valid rfix calls are"
+    say_error "\trfix branch <a branch> #{default_help}"
+    say_error "\trfix origin #{default_help}"
+    say_abort "\trfix local #{default_help}"
+  end
+
+  ARGV.unshift(cmd)
 end
+
+options, paths = options.parse(ARGV)
 
 say "Will compare against {{yellow:#{reference}}}"
 
 Rfix.load_tracked!(reference)
-
-options.on("--untracked", "Include untracked files") do
-  Rfix.load_untracked!
-end
-
-options.on("--list-files", "List files found by git") do
-  should_list_files = true
-end
-
-options.on("--dry", "No auto correct") do
-  say "Will run rfix in {{red:read-only}} mode"
-  base_config.merge!({ auto_correct: false })
-end
-
-options.on("--limit-files NUM", Integer, "Limit number of files") do |limit|
-  limit_files = limit
-end
-
-options.on("--config PATH", "A configuration file") do |path|
-  config.for(path)
-end
-
-options, paths = options.parse(ARGV)
 
 if paths.empty?
   paths = Rfix.paths
