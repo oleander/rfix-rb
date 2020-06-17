@@ -27,4 +27,4 @@ install:
 script:
   - bundle exec rake spec
   - bundle exec rake install
-  - rfix --help
+  - rfix info
