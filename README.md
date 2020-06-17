@@ -1,4 +1,4 @@
-# Rfix [![Build Status](https://travis-ci.org/oleander/rfix-rb.svg?branch=master)](https://travis-ci.org/oleander/rfix-rb)
+# Rfix [![Build Status](https://travis-ci.org/oleander/rfix-rb.svg?branch=master)](https://travis-ci.org/oleander/rfix-rb) ![Gem](https://img.shields.io/gem/dt/rfix)
 
 RuboCop CLI that only complains about your latest changes
 
