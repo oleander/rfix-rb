@@ -88,7 +88,9 @@ module Rfix
 
   # Ref since last push
   def ref_since_push
-    git("rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}").first
+    git("rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}") do
+      [ref_since_origin]
+    end.first
   end
 
   # Original branch, usually master

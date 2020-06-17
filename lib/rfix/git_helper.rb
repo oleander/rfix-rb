@@ -9,8 +9,8 @@ module Rfix::GitHelper
   include Rfix::Log
   include Rfix::Cmd
 
-  def git(*args)
-    cmd("git", *args)
+  def git(*args, &block)
+    cmd("git", *args, &block)
   end
 
   def params

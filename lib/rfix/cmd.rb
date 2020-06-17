@@ -16,7 +16,7 @@ module Rfix::Cmd
       say_error "[Cmd] {{italic:#{args.join(" ")}}}"
       say_error "[Pwd] {{italic:#{Dir.pwd}}}"
       say_error "[Err] {{error:#{err.strip}}}"
-      
+
       exit status.exitstatus
     end
 

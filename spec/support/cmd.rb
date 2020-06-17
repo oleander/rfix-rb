@@ -21,6 +21,10 @@ module Rfix::Support
     cmd 'git commit --author="John Doe <john@doe.org>" -m "my commit"'
   end
 
+  def ref_for_branch(branch: "master")
+    cmd("git", "rev-parse", branch).first
+  end
+
   def add_file(file: "file.rb")
     cmd %(echo '"hello"' > #{file})
   end

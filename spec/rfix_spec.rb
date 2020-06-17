@@ -42,7 +42,8 @@ RSpec.describe Rfix, type: :aruba do
       local_cmd
     end
 
-    it { is_expected.to include("no upstream") }
+    it { is_expected.to_not include("no upstream") }
+    it { is_expected.to include(ref_for_branch) }
   end
 
   describe "info" do
