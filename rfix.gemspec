@@ -5,10 +5,15 @@ require_relative "lib/rfix/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "rfix"
-  spec.version       = Rfix::VERSION
+
   if ENV["TRAVIS"]
-    spec.version = "#{spec.version}-pre.#{ENV.fetch("TRAVIS_BUILD_NUMBER")}"
+    spec.version = "#{Rfix::VERSION}-pre.#{ENV.fetch('TRAVIS_BUILD_NUMBER')}"
+  else
+    # rubocop:disable Gemspec/DuplicatedAssignment
+    spec.version = Rfix::VERSION
+    # rubocop:enable Gemspec/DuplicatedAssignment
   end
+
   spec.authors       = ["Linus Oleander"]
   spec.email         = ["linus@oleander.nu"]
 

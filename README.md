@@ -24,7 +24,7 @@ $ rfix <local|branch|origin|info|all> [--dry] [--help]
 PreCommit:
   RFix:
     enabled: true
-    command: ["rfix", "local", "--dry"]
+    command: ["rfix", "local", "--untracked", "--dry"]
     description: "Lint changes since last push using RuboCop"
     parallelize: true
 ```
