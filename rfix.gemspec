@@ -6,6 +6,9 @@ require_relative "lib/rfix/version"
 Gem::Specification.new do |spec|
   spec.name          = "rfix"
   spec.version       = Rfix::VERSION
+  if ENV["TRAVIS"]
+    spec.version = "#{spec.version}-pre.#{ENV.fetch("TRAVIS_BUILD_NUMBER")}"
+  end
   spec.authors       = ["Linus Oleander"]
   spec.email         = ["linus@oleander.nu"]
 

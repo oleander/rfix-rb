@@ -28,3 +28,11 @@ script:
   - bundle exec rake spec
   - bundle exec rake install
   - rfix info
+deploy:
+  provider: rubygems
+  api_key:
+    secure: SJ5rZtQxDnY7aeWIb+gZ1OEV2rDHz8jvMBStHtzPDVtpQeUoo6DJB4FN4Vt5i7VaVk1otkAdOgyANzOQDSB0/1mMBUcy902zKrrUISALeIXp2FpsvjijRdKD0hLJaeX00n/MEJpw671NbzCNboEdiMnCrxSgd775qeQibcv72iRGIY07xv/BLUCtLTmqtjQFQAvcYEFpMQsRE6XEnkRSEOigSsYvNKZrygG4AgUaNY4rcOPqP+Yl26BFHw833GBQeuGgD5a310k3xYwpPc+9I+pTVHcpc4qh2m9kPcNuyDE3OjAMqE3XVn9WXeciZnQR6AQ94n6+5CJyTD3NEv5n58i4kyCLB71YfmPJjO+04+EiCUSZjeECkwACNguzOisdV8Z/vDzfNhI5tvNL7lv3jU05F/lw8LXKR30GBte5BquPY4DjjjXKgKoKl0tbo1bBT0u8LItEaFYoGqRmUiXiHFQNaH02pjBFkjUsyyEgnscWTDtoPxEjyP4aLnW+ESxnJxpwMHHiHPmplrPmK+3hYrTYz9saZyIajLIfcxcGcSSWEHXt2gV5i80pHJFQCc1qV/9d3g8s8sy3N9eKzV6SMYspFTtdKe2Pf7m/nwFt235/ibx0Z4Gyb1TZKze7phv9yAzvAaIb28I3Ye6S2S/ALemlKiu1A/XWtNtOxo8xMNE=
+  gem: rfix
+  on:
+    repo: oleander/rfix-rb
+  cleanup: 'false'
