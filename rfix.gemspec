@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = "rfix"
 
   if ENV["TRAVIS"]
-    spec.version = "#{Rfix::VERSION}-pre.#{ENV.fetch('TRAVIS_BUILD_NUMBER')}"
+    spec.version = "#{Rfix::VERSION}-#{ENV.fetch('TRAVIS_BUILD_NUMBER')}"
   else
     # rubocop:disable Gemspec/DuplicatedAssignment
     spec.version = Rfix::VERSION
