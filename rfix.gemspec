@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["linus@oleander.nu"]
 
   spec.summary       = "RuboCop CLI that only complains about your latest changes"
-  spec.description   = unindent(<<-TEXT)
+  spec.description   = <<~TEXT
     #{spec.summary}
     Uses 'git diff' to determine what changes were made then runs RuboCop against them
 
