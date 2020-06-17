@@ -18,6 +18,17 @@ $ rfix <local|branch|origin|info|all> [--dry] [--help]
 - `bundle exec rake local`
 - `bundle exec rake spec`
 
+## Overcommit
+
+``` yaml
+PreCommit:
+  RFix:
+    enabled: true
+    command: ["rfix", "local", "--dry"]
+    description: "Lint changes since last push using RuboCop"
+    parallelize: true
+```
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/oleander/rfix.
