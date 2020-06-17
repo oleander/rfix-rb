@@ -37,4 +37,5 @@ jobs:
       gem: rfix
       on:
         repo: oleander/rfix-rb
+        tags: false
       cleanup: 'false'
