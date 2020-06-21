@@ -83,14 +83,24 @@ def dirty?
   !cmd_succeeded?("git diff --quiet")
 end
 
+def gemfiles
+  Dir.glob("ci/Gemfile*").unshift("Gemfile").reject do |path|
+    [".lock", ".base"].include?(File.extname(path))
+  end
+end
+
 namespace :gemfile do
   task :update do
-    # say_abort "Dirty repository, commit first" if dirty?
-    Dir.glob("ci/Gemfile*").unshift("Gemfile").reject do |path|
-      File.extname(path) == ".lock"
-    end.each do |gemfile|
+    gemfiles.each do |gemfile|
       say "Update #{gemfile}"
       cmd("bundle", "update", "--gemfile", gemfile)
+    end
+  end
+
+  task :install do
+    gemfiles.each do |gemfile|
+      say "Bundle install #{gemfile}"
+      cmd("bundle", "install", "--gemfile", gemfile)
     end
   end
 
