@@ -1,18 +1,5 @@
 RSpec.describe Rfix, type: :aruba do
-  include Rfix::Support
-  include Aruba::Api
-
-  let(:ignore) { ".gitignore" }
-  let(:repo) { "git-fame-rb" }
   let(:rubocop_help_arg) { ["--parallel"] }
-
-  around do |example|
-    copy "%/oleander/git-fame-rb", repo
-
-    cd(repo) do
-      example.run
-    end
-  end
 
   subject { all_output }
 
@@ -250,19 +237,19 @@ RSpec.describe Rfix, type: :aruba do
 
   describe "fails" do
     it "displays help when no command is given" do
-      default_cmd("")
+      expect { default_cmd("") }.to_not change { no_changed_files }
       expect(all_output).to include("Valid rfix")
       expect(last_command_started).to have_exit_status(1)
     end
 
     it "displays help when an invalid command is given" do
-      default_cmd("not-a-command")
+      expect { default_cmd("not-a-command") }.to_not change { no_changed_files }
       expect(all_output).to include("Valid rfix")
       expect(last_command_started).to have_exit_status(1)
     end
 
     it "displays help even when an invalid command is given" do
-      default_cmd("not-a-command", help: true)
+      expect { default_cmd("not-a-command", help: true) }.to_not change { no_changed_files }
       expect(all_output).to_not include("Valid rfix")
       expect(all_output).to include(*rubocop_help_arg)
       expect(last_command_started).to have_exit_status(0)
@@ -281,52 +268,46 @@ RSpec.describe Rfix, type: :aruba do
     describe "run" do
       describe "with" do
         it "origin" do
-          origin_cmd(dry: false)
+          expect { origin_cmd(dry: false) }.to change { no_changed_files }.by(5)
           expect(all_output).to include("37 offenses corrected")
           expect(all_output).to include("37 offenses detected")
           expect(last_command_started).to have_exit_status(0)
-          expect(no_changed_files).to eq(5)
         end
 
         it "local" do
           add_file_and_commit
-          local_cmd(dry: false)
+          expect { local_cmd(dry: false) }.to change { no_changed_files }.by(1)
           expect(all_output).to include("4 offenses detected")
           expect(all_output).to include("4 offenses corrected")
           expect(last_command_started).to have_exit_status(0)
-          expect(no_changed_files).to eq(1)
         end
 
         it "branch" do
-          branch_cmd(dry: false)
+          expect { branch_cmd(dry: false) }.to change { no_changed_files }.by(5)
           expect(all_output).to include("37 offenses detected")
           expect(all_output).to include("37 offenses corrected")
           expect(last_command_started).to have_exit_status(0)
-          expect(no_changed_files).to eq(5)
         end
       end
 
       describe "without" do
         it "origin" do
-          origin_cmd(dry: true)
+          expect { origin_cmd(dry: true) }.to_not change { no_changed_files }
           expect(all_output).not_to include("corrected")
           expect(last_command_started).to have_exit_status(1)
-          expect(no_changed_files).to eq(0)
         end
 
         it "local" do
           add_file_and_commit
-          local_cmd(dry: true)
+          expect { local_cmd(dry: true) }.to_not change { no_changed_files }
           expect(all_output).not_to include("corrected")
           expect(last_command_started).to have_exit_status(1)
-          expect(no_changed_files).to eq(0)
         end
 
         it "branch" do
-          branch_cmd(dry: true)
+          expect { branch_cmd(dry: true) }.to_not change { no_changed_files }
           expect(all_output).not_to include("corrected")
           expect(last_command_started).to have_exit_status(1)
-          expect(no_changed_files).to eq(0)
         end
       end
     end

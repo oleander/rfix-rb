@@ -7,11 +7,12 @@ require "rfix/log"
 module Rfix::Cmd
   include Rfix::Log
 
-  def cmd(*args)
+  def cmd(*args, quiet: false)
     out, err, status = Open3.capture3(*args)
 
     unless status.success?
       return yield if block_given?
+      return if quiet
 
       say_error "[Cmd] {{italic:#{args.join(' ')}}}"
       say_error "[Pwd] {{italic:#{Dir.pwd}}}"

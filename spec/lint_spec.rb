@@ -1,18 +1,5 @@
 RSpec.describe "lint", type: :aruba do
-  include Rfix::Support
-  include Aruba::Api
-
-  let(:ignore) { ".gitignore" }
-  let(:repo) { "git-fame-rb" }
   let(:rubocop_help_arg) { ["--parallel"] }
-
-  around do |example|
-    copy "%/oleander/git-fame-rb", repo
-
-    cd(repo) do
-      example.run
-    end
-  end
 
   describe "read-only" do
     before { add_file_and_commit }

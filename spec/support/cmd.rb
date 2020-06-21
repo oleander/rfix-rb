@@ -57,6 +57,13 @@ module Rfix::Support
     Shellwords.escape File.join(root_path, "fixtures/rubocop.yml")
   end
 
+  # def add_config
+  #   copy "%/rubocop.yml", ".rubocop.yml"
+  #   copy "%/rubocop-line-length-5.yml", ".rubocop-line-length-5.yml"
+  #   git("add .rubocop*.yml")
+  #   git("commit", "--amend", "-m", "Add RuboCop configuration files")
+  # end
+
   def default_cmd(cmd, dry: true, untracked: false, help: false)
     cmd = cmd.dup
     cmd << " --dry" if dry
