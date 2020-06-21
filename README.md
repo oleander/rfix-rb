@@ -46,12 +46,13 @@ $ rfix                 # Displays this list of supported commands
   - `$ git clone https://github.com/oleander/rfix-rb`
   - `$ cd rfix-rb`
 2. Downloads fixtures and run time dependencies
-  - `$ bundle exec rake setup`
+  - `$ make dir fetch`
+  - `$ bundle install`
 
 ### Install from repository
 
 ``` shell
-$ bundle exec rake local
+$ bundle exec rake install
 ```
 
 ### Run tests
