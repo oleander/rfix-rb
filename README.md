@@ -4,11 +4,11 @@ RuboCop CLI that only lints and auto-fixes code you committed by utilizing `git-
 
 Includes a RuboCop formatter with syntax highlighting and build in hyperlinks for offense documentation.
 
-Holds the same CLI arguments as RuboCop. Run `rfix --help` for a complete list or `rfix` for supported commands. Here are a few examples to get you  started:
+Holds the same CLI arguments as RuboCop. Run `rfix --help` for a complete list or `rfix` for supported commands. Here are a few examples to get you started:
 
-- `$ rfix local --list-files` Auto-fixes commits and lists files not yet pushed to upstream
-- `$ rfix branch stable --dry` Lints commits between `HEAD` and `stable`
-- `$ rfix origin --untracked` Auto-fixes untracked files and commits since first branching
+- `rfix local` Auto-fixes commits not yet pushed to upstream
+- `rfix origin` Auto-fixes commits between `HEAD` and origin branch
+- `rfix lint` Lints commits and untracked files not yet pushed to upstream
 
 ![Printscreen](resources/ps.png)
 
