@@ -3,29 +3,41 @@
 require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
 require 'fileutils'
-require 'rfix'
-require 'rfix/rake_helper'
+
+$:.unshift File.join("lib")
+require_relative 'lib/rfix'
+require_relative 'lib/rfix/rake_helper'
 
 RSpec::Core::RakeTask.new(:spec)
 extend RakeHelper
 
 task default: :spec
 
+desc "Install gems not in the gemspec or gemfile"
+namespace :vendor do
+  task :download do
+    say "Download external gems, hold on ..."
+    clone(github: "shopify/cli-ui", ref: "ef976df676f4")
+    clone(github: "oleander/git-fame-rb", ref: "a9b9c25bbab1")
+  end
+
+  task :clear do
+    say "Remove and create vendor folder"
+    FileUtils.remove_dir("vendor")
+    FileUtils.mkdir("vendor")
+  end
+end
+
+desc "Install dependencies in the correct order"
 namespace :bundle do
   task :install do
-    no_gemspec do
-      say "Running {{command:bundle install}} without gemspec"
-      cmd "bundle install"
-    end
-
-    setup(gem: "git-fame-rb")
-    setup(gem: "cli-ui")
-
     say "Running {{command:bundle install}} with gemspec"
     cmd "bundle install"
   end
 end
 
+
+desc "Set user.* for global git user"
 namespace :git do
   task :config do
     cmd("git config --global user.email hello@world.com")
@@ -58,6 +70,15 @@ namespace :gemfile do
     end
   end
 
+  namespace :locks do
+    task :clear do
+      gemlocks.each do |lock|
+        say "Remove #{lock}"
+        FileUtils.remove_file(lock, true)
+      end
+    end
+  end
+
   task :install do
     gemfiles.each do |gemfile|
       say "Bundle install #{gemfile}"
@@ -78,6 +99,7 @@ task :bump do
   cmd("gem", "bump", "-c", "-m", "Bump version to %{version}")
 end
 
+task clear: ["vendor:clear", "gemfile:locks:clear"]
+task setup: ["vendor:download", "gemfile:install"]
 task local: [:setup, :install]
-
-# gem bump --pretend | cat
+task reset: [:clear, :setup]

@@ -47,7 +47,7 @@ Gem::Specification.new do |spec|
 
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
-  spec.require_paths = ["lib", "vendor/cli-ui/lib"]
+  spec.require_paths = ["lib", "vendor/shopify/cli-ui/lib"]
 
   spec.requirements << "git, v2.0+"
 
@@ -59,16 +59,4 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "aruba", "~> 1.0"
   spec.add_development_dependency "rake", "~> 12.3"
-
-  path1 = File.join(source_for(name: "cli-ui"), "lib")
-  path2 = File.join(__dir__, "lib")
-
-  $LOAD_PATH.unshift path1
-  $LOAD_PATH.unshift path2
-
-  require File.join(path1, "cli/ui")
-  require File.join(path2, "rfix")
-  # require_relative "lib/rfix"
-
-  spec.post_install_message = Rfix.thanks
 end
