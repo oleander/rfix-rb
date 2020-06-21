@@ -52,24 +52,18 @@ module Rfix
     @config
   end
 
-  def set_fail_level(lint)
-    if if lint
-       else
-         @config[:fail_level] = :warning
-      end
-    end
-  end
-
   def no_auto_correct!
     @config[:auto_correct] = false
   end
 
   def load_config
-    yield
+    yield @store
   rescue RuboCop::Error => e
-    say_abort "[Config] #{e}"
+    say_abort "[Config:RuboCop] #{e}"
   rescue TypeError => e
-    say_abort "[Config] #{e}"
+    say_abort "[Config:Type] #{e}"
+  rescue Psych::SyntaxError => e
+    say_abort "[Config:Syntax] #{e}"
   end
 
   def lint_mode!
@@ -98,6 +92,14 @@ module Rfix
     @global_enable
   end
 
+  def store
+    @store
+  end
+
+  def clear_cache!
+    RuboCop::ResultCache.cleanup(@store, true)
+  end
+
   def init!
     @files ||= {}
     @global_enable = false
@@ -108,6 +110,7 @@ module Rfix
       formatters: ["Rfix::Formatter"]
     }
 
+    @store = RuboCop::ConfigStore.new
     @config[:fail_level] = :autocorrect if old?
   end
 
@@ -156,7 +159,7 @@ module Rfix
   end
 
   def has_branch?(name)
-    Open3.capture2e("git", "cat-file", "-t", name).last.success?
+    cmd_succeeded?("git", "cat-file", "-t", name)
   end
 
   # Ref since last push

@@ -79,15 +79,30 @@ namespace :git do
   end
 end
 
-namespace :update do
-  task :gemfiles do
+def dirty?
+  !cmd_succeeded?("git diff --quiet")
+end
+
+namespace :gemfile do
+  task :update do
+    say_abort "Dirty repository, commit first" if dirty?
     Dir.glob("ci/Gemfile*").unshift("Gemfile").reject do |path|
       File.extname(path) == ".lock"
     end.each do |gemfile|
       say "Update #{gemfile}"
-      cmd("bundle", "update", "--gemfile", gemfile)
+      cmd("bin/bundle", "update", "--gemfile", gemfile)
     end
+  end
+
+  task commit: :update do
+    cmd("git", "commit", "-a", "-m", "Ran bundle install")
   end
 end
 
+task :rehash do
+  cmd("rbenv", "rehash")
+end
+
 task local: [:setup, :install]
+
+# gem bump --pretend | cat

@@ -23,6 +23,10 @@ module Rfix::Cmd
     out.lines.map(&:chomp)
   end
 
+  def cmd_succeeded?(*cmd)
+    Open3.capture2e(*cmd).last.success?
+  end
+
   def params
     [
       "--word-diff-regex=[^[:space:]]",

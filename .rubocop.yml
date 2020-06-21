@@ -66,3 +66,7 @@ Style/AsciiComments:
   Enabled: false
 Style/ConditionalAssignment:
   EnforcedStyle: assign_inside_condition
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+Style/Semicolon:
+  Enabled: false
