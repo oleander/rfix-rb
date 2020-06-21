@@ -5,20 +5,22 @@ require "shellwords"
 module Rfix::Support
   def setup_test_branch(upstream: false)
     checkout("test")
+
     if branch = upstream
       cmd "git branch --set-upstream-to origin/#{branch}"
     end
   end
 
   def checkout(branch)
-    git("checkout", branch)
+    git("checkout", branch.to_s)
   end
 
   def git(*args)
     Rfix::Git.git(*args)
   end
 
-  def add_file_and_commit(file: "file.rb")
+  def add_file_and_commit(file: "file.rb", branch: nil)
+    # checkout(branch) if branch
     add_file(file: file)
     cmd "git add #{file}"
     cmd 'git config user.email "you@example.com"'
@@ -26,8 +28,8 @@ module Rfix::Support
     cmd 'git commit --author="John Doe <john@doe.org>" -m "my commit"'
   end
 
-  def ref_for_branch(branch: "master")
-    cmd("git", "rev-parse", branch).first
+  def ref_for_branch(branch: "test")
+    "origin/#{branch}"
   end
 
   def add_file(file: "file.rb", content: '"hello"')
@@ -77,6 +79,7 @@ module Rfix::Support
     cmd << " --no-color"
     cmd << " --list-files"
     cmd << " --config #{config_path}"
+
     run_command_and_stop("rfix #{cmd}", fail_on_error: false)
   end
 end

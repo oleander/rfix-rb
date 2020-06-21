@@ -117,14 +117,14 @@ RSpec.describe Rfix, type: :aruba do
     end
 
     describe "local" do
-      before { add_file_and_commit }
+      before { add_file_and_commit(branch: "master") }
 
       it "makes no change when used" do
         expect { local_cmd(dry: true) }.to_not change { no_changed_files }
       end
 
       it "makes change when left out" do
-        expect { local_cmd(dry: false) }.to change { no_changed_files }.by(1)
+        expect { local_cmd(dry: false); say all_output }.to change { no_changed_files }.by(1)
       end
     end
 
