@@ -19,7 +19,9 @@ module Rfix::GitHelper
       "--no-renames",
       "--no-merges",
       "--first-parent",
-      "--diff-filter=AM",
+      "--find-renames",
+      "--find-copies",
+      "--diff-filter=AMCR",
       "-U0",
       "--no-color",
       "-p"
