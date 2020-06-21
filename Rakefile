@@ -50,6 +50,8 @@ namespace :setup do
   task production: :bundle_install do
     setup(gem: "cli-ui")
   end
+
+  task all: [:development, :production]
 end
 
 def osx?

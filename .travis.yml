@@ -24,12 +24,11 @@ gemfile:
 before_install:
   - yes | gem update --system --force
   - gem install bundler
-  - bundle config set without 'development'
   - bundle config set deployment 'true'
   - bundle config git.allow_insecure true
 install:
   - bundle install
-  - bundle exec rake setup:production
+  - bundle exec rake setup:all
   - bundle exec rake git:config
 script:
   - bundle exec rake spec
