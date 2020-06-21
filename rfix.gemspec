@@ -43,7 +43,7 @@ Gem::Specification.new do |spec|
     `git ls-files -z`.split("\x0").reject(&validate_file)
   end
 
-  spec.files += Dir.glob("vendor/cli-ui/lib/**/*").reject(&validate_file)
+  spec.files += Dir.glob("vendor/shopify/cli-ui/lib/**/*").reject(&validate_file)
 
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }

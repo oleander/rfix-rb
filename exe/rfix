@@ -5,7 +5,7 @@
 require "rfix"
 require "rubocop"
 require "rfix/formatter"
-require "cli/ui"
+require "cli-ui"
 
 should_list_files = false
 limit_files       = false

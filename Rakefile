@@ -3,11 +3,13 @@
 require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
 require 'fileutils'
+# require 'rfix'
 
-$:.unshift File.join("lib")
-$:.unshift File.join("vendor/shopify/cli-ui/lib")
-require_relative 'lib/rfix'
-require_relative 'lib/rfix/rake_helper'
+# $:.unshift File.join("lib")
+# $:.unshift File.join("vendor/shopify/cli-ui/lib")
+# require_relative 'lib/rfix'
+require "rfix"
+require "rfix/rake_helper"
 
 RSpec::Core::RakeTask.new(:spec)
 extend RakeHelper
@@ -24,8 +26,8 @@ namespace :vendor do
 
   task :clear do
     say "Remove and create vendor folder"
-    FileUtils.remove_dir("vendor")
-    FileUtils.mkdir("vendor")
+    FileUtils.remove_dir("vendor/shopify")
+    FileUtils.remove_dir("vendor/oleander")
   end
 end
 

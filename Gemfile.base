@@ -8,5 +8,3 @@ group :development do
 end
 
 gemspec
-
-gem "cli-ui", path: "vendor/shopify/cli-ui"

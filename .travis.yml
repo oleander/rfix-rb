@@ -26,11 +26,11 @@ before_install:
   - gem install bundler
   - bundle config set deployment 'true'
   - bundle config git.allow_insecure true
-  - gem install rake
-  - gem install rspec
+  - bundle config --local local.cli-ui vendor/shopify/cli-ui
+  - bundle install
 install:
-  - rake setup
-  - rake git:config
+  - bundle exec rake vendor:download
+  - bundle exec rake git:config
 script:
   - bundle exec rake spec
   - bundle exec rake install
