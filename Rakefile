@@ -18,15 +18,11 @@ namespace :bundle do
       cmd "bundle install"
     end
 
-    say "Running {{command:bundle install}} with gemspec"
-    cmd "bundle install"
-  end
-end
-
-namespace :symlink do
-  task gems: ["bundle:install"] do
     setup(gem: "git-fame-rb")
     setup(gem: "cli-ui")
+
+    say "Running {{command:bundle install}} with gemspec"
+    cmd "bundle install"
   end
 end
 
