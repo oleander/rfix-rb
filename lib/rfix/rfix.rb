@@ -32,7 +32,7 @@ module Rfix
     tx << "{{i}} {{bold:Readme}} {{italic:https://github.com/oleander/rfix-rb/blob/master/README.md}}"
     tx << "{{i}} {{bold:Travis}} {{italic:https://travis-ci.org/github/oleander/rfix-rb}}"
     tx << ""
-    tx << "{{italic:~ Made with <3 by Linus}}\n\n"
+    tx << "{{italic:~ Linus}}\n\n"
     CLI::UI.fmt(tx.join("\n"), enable_color: true)
   end
 
