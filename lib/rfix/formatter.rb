@@ -30,37 +30,14 @@ module Rfix
       report_summary(files.size, offenses.count, corrected.count)
     end
 
-    def to_clickable(url, title)
-      esc = CLI::UI::ANSI::ESC
-      cmd = esc + "]8;;"
-      slash = "\x07"
-      cmd + "#{escape(url)}#{slash}#{escape(title)}" + cmd + slash
-    end
-
-    def to_path(path, title)
-      to_clickable("file://#{path}", title)
-    end
-
-    def to_url(url, title)
-      to_clickable(url, title)
-    end
-
-    def escape(str)
-      Shellwords.escape(str)
-    end
-
     def render_file(file, offenses)
       return if offenses.empty?
 
-      path = Rfix.to_relative(path: file)
-      url = to_url(file, path)
       offenses.each do |offense|
         out("\n\n")
-        clickable_path = "{{italic:#{path}:#{offense.where}}}"
-        clickable_code = to_url("https://www.rubydoc.info/gems/rubocop/RuboCop/Cop/#{offense.code}", offense.code)
         CLI::UI::Frame.open("#{offense.icon} #{offense.msg}", color: :reset)
         report_line(file, offense, offense.location, offense.highlighted_area)
-        CLI::UI::Frame.close("#{clickable_path} » {{italic:#{clickable_code}}}", color: :reset)
+        CLI::UI::Frame.close("#{offense.clickable_severity} » #{offense.clickable_path}") #, color: :reset)
       end
     end
 
