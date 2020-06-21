@@ -74,15 +74,7 @@ when "branch"
 else
   unless display_help
     say_error "Valid rfix commands are:"
-    say_error_sub "\n"
-    say_error_sub "\t{{bold:rfix branch <branch>}} -- {{italic:Fix changes made between HEAD and <branch>}}"
-    say_error_sub "\t{{bold:rfix origin}}          -- {{italic:Fix changes made between HEAD and origin branch}}"
-    say_error_sub "\t{{bold:rfix local}}           -- {{italic:Fix changes not yet pushed to upstream branch}}"
-    say_error_sub "\t{{bold:rfix info}}            -- {{italic:Display runtime dependencies and their versions}}"
-    say_error_sub "\t{{bold:rfix all}}             -- {{italic:Fix all files in this repository}} {{warning:(not recommended)}}"
-    say_error_sub "\t{{bold:rfix lint}}            -- {{italic:Shortcut for 'local --dry --untracked'}}"
-    say_error_sub "\n"
-    say_error_sub "\t{{italic:Optional args: --dry --help --list-files --limit-files --config --untracked}}"
+    say_error Rfix.help
     exit 1
   end
 

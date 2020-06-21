@@ -13,6 +13,39 @@ module Rfix
   include GitHelper
   include Log
 
+  def thanks
+    tx = []
+    tx << "\n{{v}} Thank you for installing {{green:rfix v#{Rfix::VERSION}}}!\n"
+    tx << "{{i}} Run {{command:rfix}} for avalible commands or any of the following to get started:"
+    tx << ""
+    # tx << "Here are a few examples that might be useful:"
+    indent = " " * 3
+    tx << "#{indent}{{command:rfix local}}   {{italic:# Auto-fixes commits not yet pushed to upstream}}"
+    tx << "#{indent}{{command:rfix origin}}  {{italic:# Auto-fixes commits between HEAD and origin branch}}"
+    tx << "#{indent}{{command:rfix lint}}    {{italic:# Lints commits and untracked files not yet pushed to upstream}}"
+    tx << ""
+    tx << "{{*}} {{bold:ProTip:}} Append {{command:--dry}} to run {{command:rfix}} in read-only mode"
+    tx << ""
+    tx << "{{i}} {{bold:Issues}} {{italic:https://github.com/oleander/rfix-rb/issues}}"
+    tx << "{{i}} {{bold:Readme}} {{italic:https://github.com/oleander/rfix-rb/blob/master/README.md}}"
+    tx << "{{i}} {{bold:Travis}} {{italic:https://travis-ci.org/github/oleander/rfix-rb}}"
+    tx << ""
+    tx << "{{italic:~ Made with <3 by Linus}}\n\n"
+    CLI::UI.fmt(tx.join("\n"), enable_color: true)
+  end
+
+  def help
+    cmds = []
+    cmds << "\t{{bold:rfix [cmd] [options]}} -- {{italic:--dry --help --list-files --limit-files --config --untracked}}"
+    cmds << "\t{{bold:rfix branch <branch>}} -- {{italic:Fix changes made between HEAD and <branch>}}"
+    cmds << "\t{{bold:rfix origin}}          -- {{italic:Fix changes made between HEAD and origin branch}}"
+    cmds << "\t{{bold:rfix local}}           -- {{italic:Fix changes not yet pushed to upstream branch}}"
+    cmds << "\t{{bold:rfix info}}            -- {{italic:Display runtime dependencies and their versions}}"
+    cmds << "\t{{bold:rfix all}}             -- {{italic:Fix all files in this repository}} {{warning:(not recommended)}}"
+    cmds << "\t{{bold:rfix lint}}            -- {{italic:Shortcut for 'local --dry --untracked'}}"
+    CLI::UI.fmt(cmds.join("\n"), enable_color: true)
+  end
+
   def config
     @config
   end
