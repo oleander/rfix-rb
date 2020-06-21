@@ -1,2 +1,5 @@
 AllCops:
   UseCache: false
+# Changed in 84.0: https://github.com/rubocop-hq/rubocop/blob/master/CHANGELOG.md#changes-2
+Layout/LineLength:
+  Max: 120

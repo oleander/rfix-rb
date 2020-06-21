@@ -283,8 +283,8 @@ RSpec.describe Rfix, type: :aruba do
         it "origin" do
           origin_cmd(dry: false)
           expect(all_output).to include("37 offenses corrected")
-          expect(all_output).to include("43 offenses detected")
-          expect(last_command_started).to have_exit_status(1)
+          expect(all_output).to include("37 offenses detected")
+          expect(last_command_started).to have_exit_status(0)
           expect(no_changed_files).to eq(5)
         end
 
@@ -299,9 +299,9 @@ RSpec.describe Rfix, type: :aruba do
 
         it "branch" do
           branch_cmd(dry: false)
-          expect(all_output).to include("43 offenses detected")
+          expect(all_output).to include("37 offenses detected")
           expect(all_output).to include("37 offenses corrected")
-          expect(last_command_started).to have_exit_status(1)
+          expect(last_command_started).to have_exit_status(0)
           expect(no_changed_files).to eq(5)
         end
       end
