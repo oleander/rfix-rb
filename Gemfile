@@ -6,7 +6,7 @@ ruby ">= 2.5.0"
 gem "rainbow", "~> 3.0"
 gem "rouge", "~> 3.2"
 
-gem "cli-ui", github: "Shopify/cli-ui", ref: "ef976df676f4", require: true
+gem "cli-ui", github: "Shopify/cli-ui", ref: "ef976df676f4"
 
 group :development do
   gem "aruba"
