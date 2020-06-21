@@ -68,7 +68,7 @@ module Rfix
 
   def lint_mode!
     @config[:auto_correct] = false
-    @config[:fail_level] = :warning if old?
+    @config[:fail_level] = :autocorrect if old?
     load_untracked!
   end
 
@@ -111,7 +111,7 @@ module Rfix
     }
 
     @store = RuboCop::ConfigStore.new
-    @config[:fail_level] = :autocorrect if old?
+    @config[:fail_level] = :warning if old?
   end
 
   def files
