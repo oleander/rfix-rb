@@ -27,6 +27,7 @@ before_install:
   - bundle config set deployment 'true'
   - bundle config git.allow_insecure true
   - gem install rake
+  - gem install rspec
 install:
   - rake setup
   - rake git:config
