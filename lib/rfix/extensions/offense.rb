@@ -51,7 +51,8 @@ module Rfix::Ext
     def icon
       return check.green if corrected?
       return star.yellow if correctable?
-      return cross.red
+
+      cross.red
     end
 
     def to_clickable(url, title)

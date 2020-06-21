@@ -37,7 +37,7 @@ module Rfix
         out("\n\n")
         CLI::UI::Frame.open("#{offense.icon} #{offense.msg}", color: :reset)
         report_line(file, offense, offense.location, offense.highlighted_area)
-        CLI::UI::Frame.close("#{offense.clickable_severity} » #{offense.clickable_path}") #, color: :reset)
+        CLI::UI::Frame.close("#{offense.clickable_severity} » #{offense.clickable_path}") # , color: :reset)
       end
     end
 
