@@ -16,7 +16,7 @@ module Rfix::Ext
     # Called _after_ @source has been 'auto fixed' by Rubocop
     def check_for_infinite_loop(source, offences)
       # rubocop:disable Style/Semicolon
-      Rfix.refresh!(source); super # TODO: Before or after?
+      Rfix.refresh!(source); super
       # rubocop:enable Style/Semicolon
     end
   end
