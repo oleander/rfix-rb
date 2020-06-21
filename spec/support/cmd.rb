@@ -62,6 +62,7 @@ module Rfix::Support
     cmd << " --dry" if dry
     cmd << " --untracked" if untracked
     cmd << " --help" if help
+    cmd << " --no-color"
     cmd << " --list-files"
     cmd << " --config #{config_path}"
     run_command_and_stop("rfix #{cmd}", fail_on_error: false)

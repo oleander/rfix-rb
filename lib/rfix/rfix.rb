@@ -56,6 +56,10 @@ module Rfix
     @config[:auto_correct] = false
   end
 
+  def auto_correct!
+    @config[:auto_correct] = true
+  end
+
   def load_config
     yield @store
   rescue RuboCop::Error => e
@@ -67,8 +71,7 @@ module Rfix
   end
 
   def lint_mode!
-    @config[:auto_correct] = false
-    @config[:fail_level] = :autocorrect if old?
+    no_auto_correct!
     load_untracked!
   end
 
@@ -104,14 +107,12 @@ module Rfix
     @files ||= {}
     @global_enable = false
     @config = {
-      color: true,
       force_exclusion: true,
-      auto_correct: true,
       formatters: ["Rfix::Formatter"]
     }
 
     @store = RuboCop::ConfigStore.new
-    @config[:fail_level] = :warning if old?
+    auto_correct!
   end
 
   def files

@@ -282,26 +282,26 @@ RSpec.describe Rfix, type: :aruba do
       describe "with" do
         it "origin" do
           origin_cmd(dry: false)
-          expect(all_output).to include("37 offenses")
-          expect(all_output).to include("corrected")
-          expect(last_command_started).to have_exit_status(0)
+          expect(all_output).to include("37 offenses corrected")
+          expect(all_output).to include("43 offenses detected")
+          expect(last_command_started).to have_exit_status(1)
           expect(no_changed_files).to eq(5)
         end
 
         it "local" do
           add_file_and_commit
           local_cmd(dry: false)
-          expect(all_output).to include("4 offenses")
-          expect(all_output).to include("corrected")
+          expect(all_output).to include("4 offenses detected")
+          expect(all_output).to include("4 offenses corrected")
           expect(last_command_started).to have_exit_status(0)
           expect(no_changed_files).to eq(1)
         end
 
         it "branch" do
           branch_cmd(dry: false)
-          expect(all_output).to include("37 offenses")
-          expect(all_output).to include("corrected")
-          expect(last_command_started).to have_exit_status(0)
+          expect(all_output).to include("43 offenses detected")
+          expect(all_output).to include("37 offenses corrected")
+          expect(last_command_started).to have_exit_status(1)
           expect(no_changed_files).to eq(5)
         end
       end
