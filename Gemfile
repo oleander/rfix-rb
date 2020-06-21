@@ -14,4 +14,4 @@ gem 'guard-rspec', require: false
 gem 'gem-release', require: false
 
 gem 'cli-ui', github: 'Shopify/cli-ui', ref: 'ef976df676f4', require: false
-gem 'git_fame', github: 'oleander/git-fame-rb', ref: 'a9b9c25bbab1', require: false
+gem 'git_fame', github: 'oleander/git-fame-rb', ref: 'a9b9c25bbab1', require: false, submodules: false

@@ -85,7 +85,7 @@ end
 
 namespace :gemfile do
   task :update do
-    say_abort "Dirty repository, commit first" if dirty?
+    # say_abort "Dirty repository, commit first" if dirty?
     Dir.glob("ci/Gemfile*").unshift("Gemfile").reject do |path|
       File.extname(path) == ".lock"
     end.each do |gemfile|
