@@ -1,2 +1,2 @@
-eval_gemfile("Gemfile.base")
+eval_gemfile("../Gemfile.base")
 gem "rubocop", "0.85.0"

@@ -10,6 +10,16 @@ include Rfix::Cmd
 
 RSpec::Core::RakeTask.new(:spec)
 
+def dirty?
+  !cmd_succeeded?("git diff --quiet")
+end
+
+def gemfiles
+  Dir.glob("ci/Gemfile*").unshift("Gemfile").reject do |path|
+    [".lock", ".base"].include?(File.extname(path))
+  end
+end
+
 def source_for(name:)
   bundle_root = Bundler.bundle_path.join('bundler/gems')
   path = Dir.glob(bundle_root.join("#{name}-*").to_s).first
@@ -21,37 +31,34 @@ def dest_for(name:)
 end
 
 def setup(gem:)
-  say "Setup gem {{yellow:#{gem}}}"
+  say "Gem {{info:#{gem}}}"
   Bundler.setup(gem)
 
   source = source_for(name: gem)
-  say "Load source {{yellow:#{source}}}"
+  say "Source {{info:#{source}}}"
 
   dest = dest_for(name: gem)
-  say "Load dest {{yellow:#{dest}}}"
+  say "Dest {{info:#{dest}}}"
 
   FileUtils.mkdir_p(dest)
-  say "Copy files"
-  FileUtils.copy_entry source, dest, true, true, true
+  say "Symlink {{info:#{gem}}}"
+  FileUtils.symlink(source, dest, force: true)
 end
 
-task default: :spec
-
-task :bundle_install do
-  say "Running bundle install"
-  cmd "bundle install"
+def no_gemspec
+  say "Disable gemspec group"
+  cmd("bundle config set without 'gemspec'")
+  yield
+  say "Enable gemspec group"
+  cmd("bundle config unset without")
 end
 
-namespace :setup do
-  task development: [:production, :bundle_install] do
-    setup(gem: "git-fame-rb")
-  end
-
-  task production: :bundle_install do
-    setup(gem: "cli-ui")
-  end
-
-  task all: [:development, :production]
+def deployment
+  say "Enable deployment"
+  cmd("bundle config set deployment 'true'")
+  yield
+  say "Disable deployment"
+  cmd("bundle config set deployment 'false'")
 end
 
 def osx?
@@ -60,6 +67,27 @@ end
 
 def brew_url(ref:)
   "https://raw.githubusercontent.com/Homebrew/homebrew-core/#{ref}/Formula/git.rb"
+end
+
+task default: :spec
+
+namespace :bundle do
+  task :install do
+    no_gemspec do
+      say "Running {{command:bundle install}} without gemspec"
+      cmd "bundle install"
+    end
+
+    say "Running {{command:bundle install}} with gemspec"
+    cmd "bundle install"
+  end
+end
+
+namespace :symlink do
+  task gems: ["bundle:install"] do
+    setup(gem: "git-fame-rb")
+    setup(gem: "cli-ui")
+  end
 end
 
 namespace :git do
@@ -83,16 +111,6 @@ namespace :git do
     task :guess do
       osx? ? Rake::Task["git:install:osx"].invoke : Rake::Task["git:install:linux"].invoke
     end
-  end
-end
-
-def dirty?
-  !cmd_succeeded?("git diff --quiet")
-end
-
-def gemfiles
-  Dir.glob("ci/Gemfile*").unshift("Gemfile").reject do |path|
-    [".lock", ".base"].include?(File.extname(path))
   end
 end
 

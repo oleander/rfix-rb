@@ -1,4 +1,4 @@
-require "bundler/setup"
+require "bundler"
 
 module GemHelper
   def source_for(name:)

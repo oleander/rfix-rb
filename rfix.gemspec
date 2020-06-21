@@ -54,6 +54,11 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "rainbow", "~> 3.0"
   spec.add_runtime_dependency "rouge", "~> 3.20"
   spec.add_runtime_dependency "rubocop", "~> 0.80"
+  spec.add_runtime_dependency "cli-ui", "~> 1.3"
+
+  spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "aruba", "~> 1.0"
+  spec.add_development_dependency "rake", "~> 12.3"
 
   path1 = File.join(source_for(name: "cli-ui"), "lib")
   path2 = File.join(__dir__, "lib")
