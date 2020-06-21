@@ -56,19 +56,29 @@ $ bundle exec rake spec
 
 ## Overcommit
 
+Add the following to your `.overcommit.yml`, then run `overcommit --install` and `overcommit --sign pre-commit`. It will lint commits not yet pushed to upstream branch everytime `git commit` is ran.
+
 ``` yaml
 PreCommit:
   RFix:
     enabled: true
-    command: ["rfix", "local", "--untracked", "--dry"]
-    description: "Lint changes since last push using RuboCop"
+    command: ["rfix", "lint"]
+    description: "Lint unchanged commits using RuboCop"
     parallelize: true
 ```
+
+### From scratch
+
+1. `gem install overcommit rfix`
+2. `curl https://raw.githubusercontent.com/oleander/rfix-rb/master/resouces/overcommit.yml > .overcommit.yml`
+3. `overcommit --install`
+4. `overcommit --sign pre-commit`
+
+Run `overcommit --run` to test the new hook.
 
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/oleander/rfix.
-
 
 ## License
 
