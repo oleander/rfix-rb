@@ -53,8 +53,9 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "rubocop", "~> 0.80"
 
   spec.require_paths.each { |path| $LOAD_PATH.unshift path }
+  
+  require_relative "vendor/cli-ui/lib/cli/ui"
   require_relative "lib/rfix"
-  # require_relative "vendor/cli-ui/lib/cli/ui"
 
   spec.post_install_message = Rfix.thanks
 end
