@@ -2,14 +2,35 @@
 
 RuboCop CLI that only complains about your latest changes. Includes a RuboCop formatter with syntax highlighting and build in hyperlinks for offense documentation. Supports both linting (`rfix lint`) and the RuboCops autofix feature (`rfix local|origin|branch`) for the changes you made.
 
+Supports the same CLI arguments as RuboCop. Run `rfix --help` for the complete list.
+
 ![Printscreen](resources/ps.png)
 
 ## Installation
 
 ``` shell
-$ gem install rfix
-$ rfix <local|branch|origin|info|all> [--dry] [--help]
+$ gem install rfix --pre
 ```
+
+## Help
+
+``` shell
+$ rfix branch <branch> # Fix changes made between HEAD and <branch>
+$ rfix origin          # Fix changes made between HEAD and origin branch
+$ rfix local           # Fix changes not yet pushed to upstream branch
+$ rfix info            # Display runtime dependencies and their versions
+$ rfix all             # Fix all files in this repository (not recommended)
+$ rfix lint            # Shortcut for 'rfix local --dry --untracked'
+$ rfix                 # Displays this list of supported commands
+```
+
+### Arguments
+
+- `--dry` Turns off RuboCops autofix feature (read-only mode)
+- `--help` Displays RubyCops and Rfix supported arguments
+- `--list-files` List all files being passed to RubyCop
+- `--untracked` Include files not tracked by git
+- `--config` Configuration file, defaults to `.rubocop.yml`
 
 ## Development
 
