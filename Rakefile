@@ -90,7 +90,7 @@ namespace :gemfile do
       File.extname(path) == ".lock"
     end.each do |gemfile|
       say "Update #{gemfile}"
-      cmd("bin/bundle", "update", "--gemfile", gemfile)
+      cmd("bundle", "update", "--gemfile", gemfile)
     end
   end
 
