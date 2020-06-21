@@ -1,15 +1,21 @@
-# Rfix [![Build Status](https://travis-ci.org/oleander/rfix-rb.svg?branch=master)](https://travis-ci.org/oleander/rfix-rb) [![Gem](https://img.shields.io/gem/dt/rfix)](https://rubygems.org/gems/rfix)
+# :bug: Rfix [![Build Status](https://travis-ci.org/oleander/rfix-rb.svg?branch=master)](https://travis-ci.org/oleander/rfix-rb) [![Gem](https://img.shields.io/gem/dt/rfix)](https://rubygems.org/gems/rfix)
 
-RuboCop CLI that only complains about your latest changes. Includes a RuboCop formatter with syntax highlighting and build in hyperlinks for offense documentation. Supports both linting (`rfix lint`) and the RuboCops autofix feature (`rfix local|origin|branch`) for the changes you made.
+RuboCop CLI that only runs against code and commits you made. Build on-top of `git log`, `git diff` and `rubocop`. Rfix CLI makes it possible to lint (`rfix lint`) and auto-fix (`rfix local|origin|branch`) code change since a certain point in history. Auto-fix lines commited since branching (`rfix origin`), since last push to upstream (`rfix local`) or a specific branch (`rfix branch stable`).
 
-Supports the same CLI arguments as RuboCop. Run `rfix --help` for the complete list.
+Includes a RuboCop formatter with syntax highlighting and build in hyperlinks for offense documentation.
+
+Holds the same CLI arguments as RuboCop. Run `rfix --help` for a complete list or `rfix` for supported commands. Here are a few examples to get you  started:
+
+- `$ rfix local --list-files` Auto-fixes commits and lists files not yet pushed to upstream
+- `$ rfix branch stable --dry` Lints commits between `HEAD` and `stable`
+- `$ rfix origin --untracked` Auto-fixes untracked files and commits since first branching
 
 ![Printscreen](resources/ps.png)
 
 ## Installation
 
 ``` shell
-$ gem install rfix --pre
+$ gem install rfix [--pre]
 ```
 
 ## Help
@@ -56,7 +62,7 @@ $ bundle exec rake spec
 
 ## Overcommit
 
-Add the following to your `.overcommit.yml`, then run `overcommit --install` and `overcommit --sign pre-commit`. It will lint commits not yet pushed to upstream branch everytime `git commit` is ran.
+Add the following to your `.overcommit.yml`, then run `overcommit --install` and `overcommit --sign pre-commit`. Lints commits not yet pushed to your upstream branch whenever `git commit` is ran.
 
 ``` yaml
 PreCommit:
