@@ -58,6 +58,7 @@ module Rfix
 
   def debug!
     @debug = true
+    @config[:debug] = true
   end
 
   def number_of_commits_since
@@ -122,13 +123,13 @@ module Rfix
   def init!
     @files ||= {}
     @global_enable = false
+    @debug = false
     @config = {
       force_exclusion: true,
       formatters: ["Rfix::Formatter"]
     }
 
     @store = RuboCop::ConfigStore.new
-    @debug = false
     auto_correct!
   end
 
@@ -171,7 +172,7 @@ module Rfix
   end
 
   def load_tracked!(reference)
-    cached(git("log", "--name-only", "--pretty=format:", *params, "#{reference}..HEAD").map do |path|
+    cached(git("log", "--name-only", "--pretty=format:", *params, "#{reference}...HEAD").map do |path|
       TrackedFile.new(path, reference, root_dir)
     end.select(&:file?).to_set)
   end

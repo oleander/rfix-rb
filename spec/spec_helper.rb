@@ -4,8 +4,8 @@ require "rfix"
 require "aruba/rspec"
 
 Aruba.configure do |config|
+  # config.command_launcher = :in_process
   config.allow_absolute_paths = true
-  config.fixtures_directories = ["vendor", "spec/fixtures"]
   config.activate_announcer_on_command_failure = [:stdout, :stderr]
   config.command_runtime_environment = {
     "OVERCOMMIT_DISABLE" => "1",

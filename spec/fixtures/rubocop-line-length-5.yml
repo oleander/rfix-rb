@@ -1,4 +1,4 @@
 inherit_from:
-  - .rubocop.yml
+  - .rubocop-default.yml
 Layout/LineLength:
   Max: 5
