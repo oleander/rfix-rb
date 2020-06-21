@@ -1,6 +1,6 @@
 # :bug: Rfix [![Build Status](https://travis-ci.org/oleander/rfix-rb.svg?branch=master)](https://travis-ci.org/oleander/rfix-rb) [![Gem](https://img.shields.io/gem/dt/rfix)](https://rubygems.org/gems/rfix)
 
-RuboCop CLI that only runs against code and commits you made. Build on-top of `git log`, `git diff` and `rubocop`. Rfix CLI makes it possible to lint (`rfix lint`) and auto-fix (`rfix local|origin|branch`) code change since a certain point in history. Auto-fix lines commited since branching (`rfix origin`), since last push to upstream (`rfix local`) or a specific branch (`rfix branch stable`).
+RuboCop CLI that only lints and auto-fixes code you committed by utilizing `git-log` and `git-diff`. Rfix CLI makes it possible to lint (`rfix lint`) and auto-fix (`rfix local|origin|branch`) code changes since a certain point in history. You can auto-fix code committed since creating the current branch (`rfix origin`) or since pushing to upstream (`rfix local`).
 
 Includes a RuboCop formatter with syntax highlighting and build in hyperlinks for offense documentation.
 

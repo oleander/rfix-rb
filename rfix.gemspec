@@ -17,18 +17,14 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Linus Oleander"]
   spec.email         = ["linus@oleander.nu"]
 
-  spec.summary       = "RuboCop CLI that only complains about your latest changes"
+  spec.summary       = "RuboCop CLI that only lints and auto-fixes code you committed by utilizing `git-log` and `git-diff`"
+
   spec.description   = <<~TEXT
-     #{spec.summary}
-     Uses 'git diff' to determine what changes were made then runs RuboCop against them
+  RuboCop CLI that only lints and auto-fixes code you committed by utilizing `git-log` and `git-diff`. Rfix CLI makes it possible to lint (`rfix lint`) and auto-fix (`rfix local|origin|branch`) code changes since a certain point in history. You can auto-fix code committed since creating the current branch (`rfix origin`) or since pushing to upstream (`rfix local`).
 
-    $ rfix branch <branch> -- Fix changes made between HEAD and <branch>
-    $ rfix origin          -- Fix changes made between HEAD and origin branch
-    $ rfix local           -- Fix changes not yet pushed to upstream branch
-    $ rfix info            -- Display runtime dependencies and their versions
-    $ rfix all             -- Fix all files in this repository (not recommended)
+  Includes a RuboCop formatter with syntax highlighting and build in hyperlinks for offense documentation.
 
-     Optional args: --dry --help --list-files --limit-files --config --untracked
+  Holds the same CLI arguments as RuboCop. Run `rfix --help` for a complete list or `rfix` for supported commands.
   TEXT
   spec.homepage      = "https://github.com/oleander/rfix-rb"
   spec.license       = "MIT"
