@@ -20,8 +20,10 @@ RSpec.configure do |config|
   config.include Rfix::Cmd
   config.include Rfix::Log
   config.order = :random
-  config.filter_run focus: true
-  config.run_all_when_everything_filtered = true
+  unless ENV["CI"]
+    config.filter_run focus: true
+    config.run_all_when_everything_filtered = true
+  end
   config.disable_monkey_patching!
 
   config.expect_with :rspec do |expectations|
