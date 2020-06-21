@@ -23,7 +23,8 @@ gemfile:
   - ci/Gemfile.rubocop-0.85.1
 before_install:
   - yes | gem update --system --force
-  - gem install bundler
+  - gem uninstall bundler
+  - gem install bundler -v "$(grep -A 1 "BUNDLED WITH" Gemfile.lock | tail -n 1)"
   - bundle config git.allow_insecure true
   - bundle config --local local.cli-ui vendor/shopify/cli-ui
   - make dir fetch
