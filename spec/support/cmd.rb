@@ -15,12 +15,16 @@ module Rfix::Support
     git("checkout", branch.to_s)
   end
 
+  def upstream(branch)
+    cmd "git branch --set-upstream-to origin/#{branch}"
+  end
+
   def git(*args)
     Rfix::Git.git(*args)
   end
 
   def add_file_and_commit(file: "file.rb", branch: nil)
-    # checkout(branch) if branch
+    checkout(branch) if branch
     add_file(file: file)
     cmd "git add #{file}"
     cmd 'git config user.email "you@example.com"'

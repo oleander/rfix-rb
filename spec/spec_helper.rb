@@ -55,7 +55,6 @@ RSpec.configure do |config|
     Rfix::Git.git("checkout", "-b", "test", root: src_repo)
     Rfix::Git.git("reset", "--hard", "a9b9c25", root: src_repo)
     Rfix::Git.git("checkout", "master", root: src_repo)
-
     Rfix::Git.git("bundle", "create", bundle_path, "--all", root: src_repo)
 
     if Rfix::Git.dirty?(src_repo)

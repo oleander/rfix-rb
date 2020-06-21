@@ -124,7 +124,7 @@ RSpec.describe Rfix, type: :aruba do
       end
 
       it "makes change when left out" do
-        expect { local_cmd(dry: false); say all_output }.to change { no_changed_files }.by(1)
+        expect { local_cmd(dry: false) }.to change { no_changed_files }.by(1)
       end
     end
 
@@ -153,7 +153,7 @@ RSpec.describe Rfix, type: :aruba do
 
   describe "fixed" do
     before do
-      setup_test_branch(upstream: :master)
+      setup_test_branch(upstream: :test)
     end
 
     describe "origin" do
@@ -174,7 +174,7 @@ RSpec.describe Rfix, type: :aruba do
 
   describe "local" do
     before do
-      setup_test_branch(upstream: :master)
+      setup_test_branch(upstream: :test)
       add_file_and_commit(file: "file.rb")
     end
 
@@ -203,6 +203,8 @@ RSpec.describe Rfix, type: :aruba do
 
       describe "local" do
         it "handles new files" do
+          checkout("test")
+          upstream("test")
           add_file_and_commit(file: "file.rb")
           local_cmd
           expect(all_output).to include("1 files")
@@ -275,7 +277,10 @@ RSpec.describe Rfix, type: :aruba do
         end
 
         it "local" do
-          add_file_and_commit
+          checkout("test")
+          upstream("test")
+          expect { local_cmd(dry: false) }.to change { no_changed_files }.by(0)
+          add_file_and_commit # Add a file
           expect { local_cmd(dry: false) }.to change { no_changed_files }.by(1)
           expect(all_output).to include("4 offenses detected")
           expect(all_output).to include("4 offenses corrected")
@@ -298,6 +303,7 @@ RSpec.describe Rfix, type: :aruba do
         end
 
         it "local" do
+          expect { local_cmd(dry: true) }.to_not change { no_changed_files }
           add_file_and_commit
           expect { local_cmd(dry: true) }.to_not change { no_changed_files }
           expect(all_output).not_to include("corrected")
