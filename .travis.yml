@@ -24,7 +24,6 @@ gemfile:
 before_install:
   - yes | gem update --system --force
   - gem install bundler
-  - bundle config set deployment 'true'
   - bundle config git.allow_insecure true
   - bundle config --local local.cli-ui vendor/shopify/cli-ui
   - make dir fetch
