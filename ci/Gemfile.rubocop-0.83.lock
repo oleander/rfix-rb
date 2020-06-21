@@ -1,5 +1,5 @@
 PATH
-  remote: ..
+  remote: .
   specs:
     rfix (1.0.8)
       rainbow (~> 3.0)
