@@ -19,16 +19,16 @@ Gem::Specification.new do |spec|
 
   spec.summary       = "RuboCop CLI that only complains about your latest changes"
   spec.description   = <<~TEXT
-    #{spec.summary}
-    Uses 'git diff' to determine what changes were made then runs RuboCop against them
+     #{spec.summary}
+     Uses 'git diff' to determine what changes were made then runs RuboCop against them
 
-  	$ rfix branch <branch> -- Fix changes made between HEAD and <branch>
-  	$ rfix origin          -- Fix changes made between HEAD and origin branch
-  	$ rfix local           -- Fix changes not yet pushed to upstream branch
-  	$ rfix info            -- Display runtime dependencies and their versions
-  	$ rfix all             -- Fix all files in this repository (not recommended)
+    $ rfix branch <branch> -- Fix changes made between HEAD and <branch>
+    $ rfix origin          -- Fix changes made between HEAD and origin branch
+    $ rfix local           -- Fix changes not yet pushed to upstream branch
+    $ rfix info            -- Display runtime dependencies and their versions
+    $ rfix all             -- Fix all files in this repository (not recommended)
 
-    Optional args: --dry --help --list-files --limit-files --config --untracked
+     Optional args: --dry --help --list-files --limit-files --config --untracked
   TEXT
   spec.homepage      = "https://github.com/oleander/rfix-rb"
   spec.license       = "MIT"

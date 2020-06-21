@@ -50,8 +50,8 @@ RSpec.describe Rfix, type: :aruba do
     before { default_cmd("info") }
     subject { last_command_started }
 
-    ["Rfix", "RuboCop", "OS", "Git", "Ruby"].each do |param|
-      it { is_expected.to have_output(/#{param}/)}
+    %w[Rfix RuboCop OS Git Ruby].each do |param|
+      it { is_expected.to have_output(/#{param}/) }
     end
 
     it { is_expected.to have_exit_status(0) }
@@ -99,7 +99,6 @@ RSpec.describe Rfix, type: :aruba do
       end
     end
   end
-
 
   describe "lint" do
     before { add_file_and_commit }

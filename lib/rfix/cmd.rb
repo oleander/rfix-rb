@@ -13,7 +13,7 @@ module Rfix::Cmd
     unless status.success?
       return yield if block_given?
 
-      say_error "[Cmd] {{italic:#{args.join(" ")}}}"
+      say_error "[Cmd] {{italic:#{args.join(' ')}}}"
       say_error "[Pwd] {{italic:#{Dir.pwd}}}"
       say_error "[Err] {{error:#{err.strip}}}"
 

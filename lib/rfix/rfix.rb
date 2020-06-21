@@ -18,10 +18,9 @@ module Rfix
   end
 
   def set_fail_level(lint)
-    if
-      if lint
-      else
-        @config[:fail_level] = :warning
+    if if lint
+       else
+         @config[:fail_level] = :warning
       end
     end
   end
@@ -40,9 +39,7 @@ module Rfix
 
   def lint_mode!
     @config[:auto_correct] = false
-    if old?
-      @config[:fail_level] = :warning
-    end
+    @config[:fail_level] = :warning if old?
     load_untracked!
   end
 
@@ -76,9 +73,7 @@ module Rfix
       formatters: ["Rfix::Formatter"]
     }
 
-    if old?
-      @config[:fail_level] = :autocorrect
-    end
+    @config[:fail_level] = :autocorrect if old?
   end
 
   def files

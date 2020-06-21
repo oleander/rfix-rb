@@ -13,7 +13,7 @@ module Rfix::Log
   end
 
   def say_error_sub(message)
-    CLI::UI.puts("#{message}")
+    CLI::UI.puts(message.to_s)
   end
 
   def say_debug(message)
