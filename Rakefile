@@ -42,9 +42,14 @@ task :bundle_install do
   cmd "bundle install"
 end
 
-task setup: [:bundle_install] do
-  setup(gem: "cli-ui")
-  setup(gem: "git-fame-rb")
+namespace :setup do
+  task development: [:production, :bundle_install] do
+    setup(gem: "git-fame-rb")
+  end
+
+  task production: :bundle_install do
+    setup(gem: "cli-ui")
+  end
 end
 
 def osx?

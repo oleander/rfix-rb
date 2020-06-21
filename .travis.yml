@@ -29,7 +29,7 @@ before_install:
   - bundle config git.allow_insecure true
 install:
   - bundle install
-  - bundle exec rake setup
+  - bundle exec rake setup:production
   - bundle exec rake git:config
 script:
   - bundle exec rake spec
