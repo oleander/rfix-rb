@@ -24,10 +24,6 @@ if ARGV.include?("--debug")
   Rfix.debug!
 end
 
-say "Using RuboCop {{yellow:#{RuboCop::Version.version}}}"
-say_debug "Current directory {{italic:#{Dir.pwd}}}"
-say_debug "[Ruby] {{italic:#{RbConfig.ruby}}}"
-
 options.on("--untracked", "Include untracked files") do
   Rfix.load_untracked!
 end
@@ -69,6 +65,8 @@ when "local"
   reference = Rfix.ref_since_push
 when "origin"
   reference = Rfix.ref_since_origin
+when "welcome"
+  abort Rfix.thanks
 when "all"
   reference = false
   Rfix.global_enable!
@@ -94,6 +92,10 @@ else
 
   ARGV.unshift(cmd)
 end
+
+say "Using RuboCop {{yellow:#{RuboCop::Version.version}}}"
+say_debug "Current directory {{italic:#{Dir.pwd}}}"
+say_debug "[Ruby] {{italic:#{RbConfig.ruby}}}"
 
 begin
   options, paths = options.parse(ARGV)

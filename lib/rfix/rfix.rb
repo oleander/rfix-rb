@@ -21,10 +21,10 @@ module Rfix
     tx << "{{i}} Run {{command:rfix}} for avalible commands or any of the following to get started:"
     tx << ""
     # tx << "Here are a few examples that might be useful:"
-    indent = " " * 3
-    tx << "#{indent}{{command:rfix local}}   {{italic:# Auto-fixes commits not yet pushed to upstream}}"
-    tx << "#{indent}{{command:rfix origin}}  {{italic:# Auto-fixes commits between HEAD and origin branch}}"
-    tx << "#{indent}{{command:rfix lint}}    {{italic:# Lints commits and untracked files not yet pushed to upstream}}"
+    indent = " " * 2
+    tx << "#{indent}{{command:$ rfix local}}   {{italic:# Auto-fixes commits not yet pushed to upstream}}"
+    tx << "#{indent}{{command:$ rfix origin}}  {{italic:# Auto-fixes commits between HEAD and origin branch}}"
+    tx << "#{indent}{{command:$ rfix lint}}    {{italic:# Lints commits and untracked files not yet pushed to upstream}}"
     tx << ""
     tx << "{{*}} {{bold:ProTip:}} Append {{command:--dry}} to run {{command:rfix}} in read-only mode"
     tx << ""
