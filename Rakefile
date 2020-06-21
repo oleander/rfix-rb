@@ -96,6 +96,7 @@ end
 task :bump do
   cmd("gem", "bump", "-c", "-m", "Bump version to %{version}")
   cmd("bundle", "install")
+  cmd("git add Gemfile.lock")
   cmd("git commit --amend --no-edit")
 end
 
