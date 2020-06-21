@@ -2,8 +2,11 @@
 
 require "pathname"
 require_relative "lib/rfix/version"
+require_relative "lib/rfix/gem_helper"
 
 Gem::Specification.new do |spec|
+  extend GemHelper
+
   spec.name          = "rfix"
 
   if ENV["TRAVIS"]
@@ -52,10 +55,15 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "rouge", "~> 3.20"
   spec.add_runtime_dependency "rubocop", "~> 0.80"
 
-  spec.require_paths.each { |path| $LOAD_PATH.unshift path }
-  
-  require_relative "vendor/cli-ui/lib/cli/ui"
-  require_relative "lib/rfix"
+  path1 = File.join(source_for(name: "cli-ui"), "lib")
+  path2 = File.join(__dir__, "lib")
+
+  $LOAD_PATH.unshift path1
+  $LOAD_PATH.unshift path2
+
+  require File.join(path1, "cli/ui")
+  require File.join(path2, "rfix")
+  # require_relative "lib/rfix"
 
   spec.post_install_message = Rfix.thanks
 end

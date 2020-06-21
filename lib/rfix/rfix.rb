@@ -189,9 +189,7 @@ module Rfix
   end
 
   def list_untrack_files
-    git("status", "-u", "--porcelain", "--no-column").map do |line|
-      line.split(" ", 2).map(&:strip)
-    end.select { |el| el.first == "??" }.map(&:last)
+    git("ls-files", "--exclude-standard", "--others")
   end
 
   def cached(files)
