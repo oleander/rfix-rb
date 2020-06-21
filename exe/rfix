@@ -20,38 +20,13 @@ CLI::UI::StdoutRouter.enable
 
 say "Using RuboCop {{yellow:#{RuboCop::Version.version}}}"
 
-base_config = {
-  color: true,
-  force_exclusion: true,
-  auto_correct: true,
-  formatters: ["Rfix::Formatter"]
-}
-
-# For version 0.80.x .. 0.83.x:
-# Otherwise it will exit with status code = 1
-if (0.80..0.83).include?(RuboCop::Version::STRING.to_f)
-  if is_dry
-    base_config[:fail_level] = :autocorrect
-  else
-    base_config[:fail_level] = :warning
-  end
-end
-
-def load_config
-  yield
-rescue RuboCop::Error => e
-  say_abort "[Config] #{e}"
-rescue TypeError => e
-  say_abort "[Config] #{e}"
+options.on("--untracked", "Include untracked files") do
+  Rfix.load_untracked!
 end
 
 options.on("--dry", "No auto correct") do
   say "Will run rfix in {{red:read-only}} mode"
-  base_config.merge!({ auto_correct: false })
-end
-
-options.on("--untracked", "Include untracked files") do
-  Rfix.load_untracked!
+  Rfix.no_auto_correct!
 end
 
 options.on("--list-files", "List files found by git") do
@@ -73,6 +48,9 @@ when "info"
   say "Using Git {{yellow:#{Rfix.git_version}}}"
   say "Using Ruby {{yellow:#{Rfix.ruby_version}}}"
   exit 0
+when "lint"
+  Rfix.lint_mode!
+  reference = Rfix.ref_since_push
 when "local"
   reference = Rfix.ref_since_push
 when "origin"
@@ -102,6 +80,7 @@ else
     say_error_sub "\t{{bold:rfix local}}           -- {{italic:Fix changes not yet pushed to upstream branch}}"
     say_error_sub "\t{{bold:rfix info}}            -- {{italic:Display runtime dependencies and their versions}}"
     say_error_sub "\t{{bold:rfix all}}             -- {{italic:Fix all files in this repository}} {{warning:(not recommended)}}"
+    say_error_sub "\t{{bold:rfix lint}}             -- {{italic:Shortcut for 'local --dry --untracked'}}"
     say_error_sub "\n"
     say_error_sub "\t{{italic:Optional args: --dry --help --list-files --limit-files --config --untracked}}"
     exit 1
@@ -117,11 +96,11 @@ rescue OptionParser::MissingArgument => e
 end
 
 if path = config_path
-  load_config do
+  Rfix.load_config do
     config.options_config = path
   end
 else
-  load_config do
+  Rfix.load_config do
     config.for(Dir.pwd)
   end
 end
@@ -149,7 +128,7 @@ if should_list_files
 end
 
 env = RuboCop::CLI::Environment.new(
-  base_config.merge(options),
+  Rfix.config.merge(options),
   config,
   paths
 )

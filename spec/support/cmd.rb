@@ -41,6 +41,10 @@ module Rfix::Support
     default_cmd("local", **args)
   end
 
+  def lint_cmd(**args)
+    default_cmd("lint", dry: false, **args)
+  end
+
   def branch_cmd(branch: "master", **args)
     default_cmd("branch #{branch}", **args)
   end

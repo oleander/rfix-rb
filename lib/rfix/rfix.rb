@@ -13,6 +13,39 @@ module Rfix
   include GitHelper
   include Log
 
+  def config
+    @config
+  end
+
+  def set_fail_level(lint)
+    if
+      if lint
+      else
+        @config[:fail_level] = :warning
+      end
+    end
+  end
+
+  def no_auto_correct!
+    @config[:auto_correct] = false
+  end
+
+  def load_config
+    yield
+  rescue RuboCop::Error => e
+    say_abort "[Config] #{e}"
+  rescue TypeError => e
+    say_abort "[Config] #{e}"
+  end
+
+  def lint_mode!
+    @config[:auto_correct] = false
+    if old?
+      @config[:fail_level] = :warning
+    end
+    load_untracked!
+  end
+
   def git_version
     cmd("git --version").last.split(/\s+/, 3).last
   end
@@ -36,6 +69,16 @@ module Rfix
   def init!
     @files ||= {}
     @global_enable = false
+    @config = {
+      color: true,
+      force_exclusion: true,
+      auto_correct: true,
+      formatters: ["Rfix::Formatter"]
+    }
+
+    if old?
+      @config[:fail_level] = :autocorrect
+    end
   end
 
   def files
@@ -99,6 +142,12 @@ module Rfix
   end
 
   private
+
+  def old?
+    # For version 0.80.x .. 0.83.x:
+    # Otherwise it will exit with status code = 1
+    (0.80..0.83).include?(RuboCop::Version::STRING.to_f)
+  end
 
   def get_file(path, &block)
     if file = @files[path]
