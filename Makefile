@@ -1,3 +1,5 @@
+FAME=vendor/oleander/git-fame-rb
+CLI=vendor/shopify/cli-ui
 dir:
 	mkdir -p vendor
 	rm -rf vendor/shopify
@@ -5,7 +7,7 @@ dir:
 	mkdir -p vendor/shopify
 	mkdir -p vendor/oleander
 fetch:
-	git clone https://github.com/shopify/cli-ui vendor/shopify/cli-ui
-	git  --git-dir vendor/shopify/cli-ui/.git checkout ef976df676f4
-	git clone https://github.com/oleander/git-fame-rb vendor/oleander/git-fame-rb
-	git --git-dir vendor/oleander/git-fame-rb/.git checkout a9b9c25bbab1
+	git clone https://github.com/shopify/cli-ui $(CLI)
+	git --git-dir $(CLI)/.git --work-tree $(CLI) reset --hard ef976df676f4
+	git clone https://github.com/oleander/git-fame-rb $(FAME)
+	git --git-dir $(FAME)/.git --work-tree $(FAME) reset --hard a9b9c25bbab1
