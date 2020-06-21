@@ -15,8 +15,11 @@ end
 
 Dir[File.join(__dir__, "../spec/support/*.rb")].each(&method(:require))
 
-dst_repo = File.join(__dir__, "..", "tmp", "test-repo")
-src_repo = File.join(__dir__, "..", "vendor", "oleander/git-fame-rb")
+dst_repo = File.join(__dir__, "..", "tmp", "dst-repo")
+src_repo = File.join(__dir__, "..", "tmp", "src-repo")
+org_repo = File.join(__dir__, "..", "vendor", "oleander/git-fame-rb")
+src_repo_git = File.join(src_repo, ".git/")
+dst_repo_git = File.join(dst_repo, ".git")
 
 RSpec.configure do |config|
   config.example_status_persistence_file_path = ".rspec_status"
@@ -44,19 +47,40 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     FileUtils.mkdir_p(dst_repo)
+    FileUtils.mkdir_p(src_repo)
+
+    FileUtils.copy_entry(org_repo, src_repo, true, true, true)
+
+    Rfix::Git.git("checkout", "master", root: src_repo)
+    Rfix::Git.git("reset", "--hard", "27fec8", root: src_repo)
+    Rfix::Git.git("branch", "-D", "test", root: src_repo, quiet: true)
+    Rfix::Git.git("checkout", "-b", "test", root: src_repo)
+    Rfix::Git.git("reset", "--hard", "a9b9c25", root: src_repo)
+    Rfix::Git.git("checkout", "master", root: src_repo)
+
+    if Rfix::Git.dirty?(src_repo)
+      say_abort "[Src:1] Dirty repo on init {{italic:#{src_repo}}}"
+    end
+
     FileUtils.copy_entry(src_repo, dst_repo, true, true, true)
-    Rfix::Git.git("branch", "-d", "test", root: dst_repo, quiet: true)
+
+    if Rfix::Git.dirty?(dst_repo)
+      say_abort "[Dst:1] Dirty repo on init {{italic:#{dst_repo}}}"
+    end
   end
 
   config.around do |example|
-    data_repo_git = File.join(src_repo, ".git/")
-    test_repo_git = File.join(dst_repo, ".git")
+    # if Rfix::Git.dirty?(dst_repo)
+    #   say Rfix::Git.git("status", root: dst_repo).join("\n")
+    #   say_abort "[Dst:2] Dirty repo on init {{italic:#{dst_repo}}}"
+    # end
+
+    cd(dst_repo) { example.run }
+
+    # cmd("rsync", "-a", "-W", src_repo_git, dst_repo_git)
+    FileUtils.copy_entry(src_repo_git, dst_repo_git, true, true, true)
 
     Rfix::Git.git("clean", "-f", "-d", root: dst_repo)
     Rfix::Git.git("checkout", ".", root: dst_repo)
-
-    cmd("rsync", "-a", "--stats", "--delete", data_repo_git, test_repo_git, quiet: true)
-
-    cd(dst_repo) { example.run }
   end
 end

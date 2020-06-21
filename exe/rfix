@@ -55,6 +55,8 @@ when "info"
   say "Using OS {{yellow:#{Rfix.current_os}}}"
   say "Using Git {{yellow:#{Rfix.git_version}}}"
   say "Using Ruby {{yellow:#{Rfix.ruby_version}}}"
+  say "Current Git branch {{yellow:#{Rfix.current_branch}}}"
+  say "Number of commits {{yellow:#{Rfix.number_of_commits_since}}}"
   exit 0
 when "lint"
   Rfix.lint_mode!

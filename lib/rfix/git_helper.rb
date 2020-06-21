@@ -19,6 +19,12 @@ module Rfix::GitHelper
     cmd_succeeded?("git", "cat-file", "-t", branch)
   end
 
+  def dirty?(path)
+    Dir.chdir(path) do
+      !cmd_succeeded?("git diff --quiet")
+    end
+  end
+
   def params
     [
       "--word-diff-regex=[^[:space:]]",

@@ -48,6 +48,14 @@ module Rfix
     CLI::UI.fmt(cmds.join("\n"), enable_color: true)
   end
 
+  def current_branch
+    git("rev-parse", "--abbrev-ref", "HEAD").first
+  end
+
+  def number_of_commits_since
+    cmd("git rev-list master..HEAD | wc -l").first
+  end
+
   def config
     @config
   end

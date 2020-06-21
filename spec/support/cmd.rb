@@ -4,13 +4,18 @@ require "shellwords"
 
 module Rfix::Support
   def setup_test_branch(upstream: false)
-    cmd "git checkout master"
-    cmd "git reset --hard 27fec8"
-    cmd "git checkout -b test"
-    cmd "git reset --hard a9b9c25"
+    checkout("test")
     if branch = upstream
       cmd "git branch --set-upstream-to origin/#{branch}"
     end
+  end
+
+  def checkout(branch)
+    git("checkout", branch)
+  end
+
+  def git(*args)
+    Rfix::Git.git(*args)
   end
 
   def add_file_and_commit(file: "file.rb")

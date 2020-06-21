@@ -10,6 +10,7 @@ module Rfix::Cmd
   def cmd(*args, quiet: false)
     out, err, status = Open3.capture3(*args)
 
+    # say "[Cmd] {{italic:#{args.join(' ')}}}"
     unless status.success?
       return yield if block_given?
       return if quiet
