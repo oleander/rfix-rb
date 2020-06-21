@@ -29,7 +29,7 @@ RSpec.describe "lint", type: :aruba do
       describe "no files" do
         it { is_expected.to have_exit_status(0) }
 
-        fit "includes untracked files" do
+        it "includes untracked files" do
           filename = "my_file.rb"
           add_file(file: filename, content: "")
           lint_cmd
