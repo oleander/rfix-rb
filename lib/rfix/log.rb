@@ -17,7 +17,9 @@ module Rfix::Log
   end
 
   def say_debug(message)
-    CLI::UI.puts("{{*}} [{{info:Debug}}] #{message}")
+    unless Rfix.debug?
+      CLI::UI.puts("{{*}} [{{info:Debug}}] #{message}")
+    end
   end
 
   def say_abort(message)

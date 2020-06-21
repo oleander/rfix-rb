@@ -4,7 +4,6 @@ require "rfix"
 require "aruba/rspec"
 
 Aruba.configure do |config|
-  # config.command_launcher = :spawn
   config.allow_absolute_paths = true
   config.fixtures_directories = ["vendor", "spec/fixtures"]
   config.activate_announcer_on_command_failure = [:stdout, :stderr]
@@ -21,19 +20,20 @@ bundle_path = File.join(__dir__, "..", "tmp", "snapshot.bundle")
 org_repo = File.join(__dir__, "..", "vendor", "oleander/git-fame-rb")
 
 RSpec.configure do |config|
-  config.example_status_persistence_file_path = ".rspec_status"
   config.include Rfix::Cmd
   config.include Rfix::Log
   config.include Rfix::Git
-  config.include Rfix::Support
   config.include Aruba::Api
+  config.include Rfix::Support
 
   config.order = :random
+  config.example_status_persistence_file_path = ".rspec_status"
+  config.disable_monkey_patching!
+
   unless ENV["CI"]
     config.filter_run focus: true
     config.run_all_when_everything_filtered = true
   end
-  config.disable_monkey_patching!
 
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
@@ -55,6 +55,7 @@ RSpec.configure do |config|
     Rfix::Git.git("checkout", "-b", "test", root: src_repo)
     Rfix::Git.git("reset", "--hard", "a9b9c25", root: src_repo)
     Rfix::Git.git("checkout", "master", root: src_repo)
+
     Rfix::Git.git("bundle", "create", bundle_path, "--all", root: src_repo)
 
     if Rfix::Git.dirty?(src_repo)
@@ -62,17 +63,10 @@ RSpec.configure do |config|
     end
   end
 
+  # This is cleaned up by aruba
   config.around(:each) do |example|
-    Dir.mktmpdir do |repo|
-      cmd("git", "clone", bundle_path, repo, "--branch", "master")
-
-      if Rfix::Git.dirty?(repo)
-        say_abort "[Src:1] Dirty repo on init {{italic:#{repo}}}"
-      end
-
-      cd(repo) do
-        example.run
-      end
-    end
+    repo = Dir.mktmpdir("rspec", expand_path("."))
+    cmd("git", "clone", bundle_path, repo, "--branch", "master")
+    cd(repo) { example.run }
   end
 end

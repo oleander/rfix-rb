@@ -20,6 +20,10 @@ extend Rfix::Log
 Rfix.init!
 CLI::UI::StdoutRouter.enable
 
+if ARGV.include?("--debug")
+  Rfix.debug!
+end
+
 say "Using RuboCop {{yellow:#{RuboCop::Version.version}}}"
 say_debug "Current directory {{italic:#{Dir.pwd}}}"
 say_debug "[Ruby] {{italic:#{RbConfig.ruby}}}"

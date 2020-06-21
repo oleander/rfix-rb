@@ -52,6 +52,14 @@ module Rfix
     git("rev-parse", "--abbrev-ref", "HEAD").first
   end
 
+  def debug?
+    @debug
+  end
+
+  def debug!
+    @debug = true
+  end
+
   def number_of_commits_since
     cmd("git rev-list master..HEAD | wc -l").first
   end
@@ -120,6 +128,7 @@ module Rfix
     }
 
     @store = RuboCop::ConfigStore.new
+    @debug = false
     auto_correct!
   end
 
