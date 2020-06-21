@@ -34,12 +34,25 @@ $ rfix                 # Displays this list of supported commands
 
 ## Development
 
-- `git clone https://github.com/oleander/rfix-rb`
-- `cd rfix-rb`
-- `bundle install`
-- `bundle exec rake setup`
-- `bundle exec rake local`
-- `bundle exec rake spec`
+### Setup
+
+1. Download repository
+  1. `$ git clone https://github.com/oleander/rfix-rb`
+  2. `$ cd rfix-rb`
+2. Downloads fixtures and run time dependencies
+  - `$ bundle exec rake setup`
+
+### Install from repository
+
+``` shell
+$ bundle exec rake local
+```
+
+### Run tests
+
+``` shell
+$ bundle exec rake spec
+```
 
 ## Overcommit
 
