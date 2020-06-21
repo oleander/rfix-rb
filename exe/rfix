@@ -88,7 +88,7 @@ when "branch"
 else
   unless display_help
     say_error "Valid rfix commands are:"
-    say_error Rfix.help
+    say_error_sub Rfix.help
     exit 1
   end
 
