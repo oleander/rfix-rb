@@ -25,6 +25,7 @@ before_install:
   - yes | gem update --system --force
   - gem uninstall bundler
   - gem install bundler -v "$(grep -A 1 "BUNDLED WITH" Gemfile.lock | tail -n 1)"
+  - bundle install
   - bundle config git.allow_insecure true
   - bundle config --local local.cli-ui vendor/shopify/cli-ui
   - make dir fetch
