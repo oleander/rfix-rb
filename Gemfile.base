@@ -1,10 +1,7 @@
 source "https://rubygems.org"
 
-group :development do
-  gem "pry", require: false
-  gem "guard", require: false
-  gem "guard-rspec", require: false
-  gem "gem-release", require: false
-end
+gem "cli-ui", path: "vendor/shopify/cli-ui"
 
-gemspec
+gem "guard", require: false
+gem "guard-rspec", require: false
+gem "gem-release", require: false

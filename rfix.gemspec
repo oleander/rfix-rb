@@ -2,10 +2,10 @@
 
 require "pathname"
 require_relative "lib/rfix/version"
-require_relative "lib/rfix/gem_helper"
+# require_relative "lib/rfix/gem_helper"
 
 Gem::Specification.new do |spec|
-  extend GemHelper
+  # extend GemHelper
 
   spec.name          = "rfix"
 
@@ -53,8 +53,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "rainbow", "~> 3.0"
   spec.add_runtime_dependency "rouge", "~> 3.20"
-  spec.add_runtime_dependency "rubocop", "~> 0.80"
-  spec.add_runtime_dependency "cli-ui", "~> 1.3"
+  spec.add_runtime_dependency "rubocop", ">= 0.80"
 
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "aruba", "~> 1.0"

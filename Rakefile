@@ -1,10 +1,10 @@
   # frozen_string_literal: true
 
-require 'bundler/gem_tasks'
+# require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
 require 'fileutils'
 require "rfix"
-require "rfix/rake_helper"
+require_relative "lib/rfix/rake_helper"
 
 RSpec::Core::RakeTask.new(:spec)
 extend RakeHelper
