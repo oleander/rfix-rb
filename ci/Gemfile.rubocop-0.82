@@ -1,4 +1,2 @@
-source "https://rubygems.org"
 eval_gemfile("../Gemfile.base")
-gem "rubocop", "=0.82.0"
-gemspec path: ".."
+gem "rubocop", "0.82.0"
