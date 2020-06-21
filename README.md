@@ -15,7 +15,7 @@ $ gem install rfix --pre
 ## Help
 
 ``` shell
-$ rfix branch <branch> # Fix changes made between HEAD and <branch>
+$ rfix branch "branch" # Fix changes made between HEAD and <branch>
 $ rfix origin          # Fix changes made between HEAD and origin branch
 $ rfix local           # Fix changes not yet pushed to upstream branch
 $ rfix info            # Display runtime dependencies and their versions
