@@ -103,6 +103,10 @@ task :rehash do
   cmd("rbenv", "rehash")
 end
 
+task :bump do
+  cmd("gem", "bump", "-c", "-m", "Bump version to %{version}")
+end
+
 task local: [:setup, :install]
 
 # gem bump --pretend | cat
