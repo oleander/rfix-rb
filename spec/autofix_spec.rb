@@ -6,7 +6,7 @@ RSpec.describe Rfix, type: :aruba do
         copy "%/rubocop.yml", ".rubocop-default.yml"
         copy "%/rubocop-line-length-5.yml", ".rubocop.yml"
         git "add", ".rubocop.yml", ".rubocop-default.yml"
-        git "commit", "-m", "A commit"
+        commit
       end.to change { total_commits }.by(1)
 
       expect do
