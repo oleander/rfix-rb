@@ -1,6 +1,8 @@
 # Rfix [![Build Status](https://travis-ci.org/oleander/rfix-rb.svg?branch=master)](https://travis-ci.org/oleander/rfix-rb) [![Gem](https://img.shields.io/gem/dt/rfix)](https://rubygems.org/gems/rfix)
 
-RuboCop CLI that only complains about your latest changes
+RuboCop CLI that only complains about your latest changes. Includes a RuboCop formatter with syntax highlighting and build in hyperlinks for offense documentation. Supports both linting (`rfix lint`) and the RuboCops autofix feature (`rfix local|origin|branch`) for the changes you made.
+
+![Printscreen](resources/ps.png)
 
 ## Installation
 
