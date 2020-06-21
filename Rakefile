@@ -95,6 +95,8 @@ end
 
 task :bump do
   cmd("gem", "bump", "-c", "-m", "Bump version to %{version}")
+  cmd("bundle", "install")
+  cmd("git commit --amend")
 end
 
 task clear: ["vendor:clear", "gemfile:locks:clear"]
