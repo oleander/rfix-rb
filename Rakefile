@@ -5,6 +5,7 @@ require 'rspec/core/rake_task'
 require 'fileutils'
 
 $:.unshift File.join("lib")
+$:.unshift File.join("vendor/shopify/cli-ui/lib")
 require_relative 'lib/rfix'
 require_relative 'lib/rfix/rake_helper'
 
