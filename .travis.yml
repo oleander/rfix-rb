@@ -14,7 +14,6 @@ os:
   - osx
   - linux
 gemfile:
-  - Gemfile
   - ci/Gemfile.rubocop-0.80
   - ci/Gemfile.rubocop-0.81
   - ci/Gemfile.rubocop-0.82
