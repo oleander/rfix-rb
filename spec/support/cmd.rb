@@ -28,7 +28,7 @@ module Rfix::Support
     expect do
       copy "%/rubocop.yml", file_name
       git "add", ".rubocop.yml"
-      git "commit", "-m", "A rubocop config"
+      commit(msg: "Add RuboCop Config")
     end.to change { total_commits }.by(1)
     file_name
   end
@@ -38,7 +38,7 @@ module Rfix::Support
     expect do
       copy "%/valid.rb", file_name
       git "add", file_name
-      git "commit", "-m", "Add #{file_name}"
+      commit(msg: "Add Valid Ruby File")
     end.to change { total_commits }.by(1)
     file_name
   end
@@ -71,9 +71,13 @@ module Rfix::Support
     checkout(branch) if branch
     add_file(file: file, **args)
     cmd "git add #{file}"
+    commit
+  end
+
+  def commit(msg: "A Commit Message")
     cmd 'git config user.email "you@example.com"'
     cmd 'git config user.name "Your Name"'
-    cmd 'git commit --author="John Doe <john@doe.org>" -m "my commit"'
+    cmd "git", "commit", "--author", "John Doe <john@doe.org>", "-m", msg
   end
 
   def ref_for_branch(branch: "test")
@@ -115,13 +119,6 @@ module Rfix::Support
   def dirty?
     !cmd_succeeded?("git diff --quiet")
   end
-
-  # def add_config
-  #   copy "%/rubocop.yml", ".rubocop.yml"
-  #   copy "%/rubocop-line-length-5.yml", ".rubocop-line-length-5.yml"
-  #   git("add .rubocop*.yml")
-  #   git("commit", "--amend", "-m", "Add RuboCop configuration files")
-  # end
 
   def default_cmd(cmd, dry: true, untracked: false, help: false, debug: false)
     cmd = cmd.dup
