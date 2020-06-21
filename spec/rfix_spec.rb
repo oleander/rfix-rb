@@ -100,21 +100,6 @@ RSpec.describe Rfix, type: :aruba do
     end
   end
 
-  describe "lint" do
-    before { add_file_and_commit }
-
-    it "makes no change when used" do
-      expect { lint_cmd }.to_not change { no_changed_files }
-    end
-
-    it "includes untracked files" do
-      filename = "my-file.rb"
-      add_file(file: filename)
-      lint_cmd
-      expect(all_output).to match(/#{filename}/)
-    end
-  end
-
   describe "--dry" do
     before do
       setup_test_branch(upstream: :master)

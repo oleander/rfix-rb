@@ -25,8 +25,8 @@ module Rfix::Support
     cmd("git", "rev-parse", branch).first
   end
 
-  def add_file(file: "file.rb")
-    cmd %(echo '"hello"' > #{file})
+  def add_file(file: "file.rb", content: '"hello"')
+    File.write(file, content)
   end
 
   def no_changed_files
