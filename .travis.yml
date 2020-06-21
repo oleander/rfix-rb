@@ -26,9 +26,10 @@ before_install:
   - gem install bundler
   - bundle config set deployment 'true'
   - bundle config git.allow_insecure true
+  - gem install rake
 install:
-  - bundle exec rake setup
-  - bundle exec rake git:config
+  - rake setup
+  - rake git:config
 script:
   - bundle exec rake spec
   - bundle exec rake install

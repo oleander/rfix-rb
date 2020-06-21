@@ -46,37 +46,6 @@ module RakeHelper
     File.join(__dir__, 'vendor', name)
   end
 
-  def setup(gem:)
-    say "Gem {{info:#{gem}}}"
-    Bundler.setup(gem)
-
-    source = source_for(name: gem)
-    say "Source {{info:#{source}}}"
-
-    dest = dest_for(name: gem)
-    say "Dest {{info:#{dest}}}"
-
-    FileUtils.mkdir_p(dest)
-    say "Symlink {{info:#{gem}}}"
-    FileUtils.symlink(source, dest, force: true)
-  end
-
-  def no_gemspec
-    say "Disable gemspec group"
-    cmd("bundle config set without 'gemspec'")
-    yield
-    say "Enable gemspec group"
-    cmd("bundle config unset without")
-  end
-
-  def deployment
-    say "Enable deployment"
-    cmd("bundle config set deployment 'true'")
-    yield
-    say "Disable deployment"
-    cmd("bundle config set deployment 'false'")
-  end
-
   def osx?
     ENV.fetch("TRAVIS_OS_NAME") == "osx"
   end

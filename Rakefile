@@ -100,6 +100,6 @@ task :bump do
 end
 
 task clear: ["vendor:clear", "gemfile:locks:clear"]
-task setup: ["vendor:download", "gemfile:install"]
+task setup: ["vendor:download", "gemfile:install", "gemfile:update"]
 task local: [:setup, :install]
 task reset: [:clear, :setup]
