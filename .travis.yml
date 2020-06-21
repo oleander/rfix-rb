@@ -27,10 +27,8 @@ before_install:
   - bundle config set deployment 'true'
   - bundle config git.allow_insecure true
   - bundle config --local local.cli-ui vendor/shopify/cli-ui
+  - make dir fetch
   - bundle install
-install:
-  - bundle exec rake vendor:download
-  - bundle exec rake git:config
 script:
   - bundle exec rake spec
   - bundle exec rake install

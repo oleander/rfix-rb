@@ -3,11 +3,6 @@
 require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
 require 'fileutils'
-# require 'rfix'
-
-# $:.unshift File.join("lib")
-# $:.unshift File.join("vendor/shopify/cli-ui/lib")
-# require_relative 'lib/rfix'
 require "rfix"
 require "rfix/rake_helper"
 

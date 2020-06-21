@@ -7,7 +7,7 @@ RSpec.describe "lint", type: :aruba do
   let(:rubocop_help_arg) { ["--parallel"] }
 
   around do |example|
-    copy "%/git-fame-rb", repo
+    copy "%/oleander/git-fame-rb", repo
 
     cd(repo) do
       example.run
