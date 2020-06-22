@@ -59,6 +59,8 @@ GEM
     ffi (1.13.1)
     formatador (0.2.5)
     gem-release (2.1.1)
+    git (1.7.0)
+      rchardet (~> 1.8)
     guard (2.16.2)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
@@ -103,6 +105,7 @@ GEM
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    rchardet (1.8.0)
     regexp_parser (1.7.1)
     rexml (3.2.4)
     rouge (3.20.0)
@@ -147,6 +150,7 @@ PLATFORMS
 DEPENDENCIES
   aruba (~> 1.0)
   gem-release
+  git
   guard
   guard-rspec
   rake (~> 12.3)

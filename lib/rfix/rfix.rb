@@ -15,6 +15,10 @@ module Rfix
   include GitHelper
   include Log
 
+  def no_debug!
+    @debug = false
+  end
+  
   def indent
     " " * 2
   end

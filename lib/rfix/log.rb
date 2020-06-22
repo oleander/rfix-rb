@@ -70,7 +70,11 @@ module Rfix::Log
 
   def box(title, color: :reset)
     margin do
-      CLI::UI::Frame.open(title, color: color) { yield }
+      CLI::UI::Frame.open(title, color: color) do
+        margin do
+          yield
+        end
+      end
     end
   end
 

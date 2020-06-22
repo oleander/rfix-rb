@@ -3,5 +3,6 @@ source "https://rubygems.org"
 gem "guard", require: false
 gem "guard-rspec", require: false
 gem "gem-release", require: false
+gem "git"
 
 gemspec path: __dir__

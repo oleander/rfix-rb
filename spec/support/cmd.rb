@@ -51,19 +51,11 @@ module Rfix::Support
     cmd("git rev-list --all --count").first.to_i
   end
 
-  def dump!
-    # box("STDOUT", color: :green) do
-    #   say all_stdout
-    # end
-    #
-    # box("STDERR", color: :red) do
-    #   say all_stderr
-    # end
-
-    log_items(git("ls-files"), title: "Changed files")
-    git("-c", "color.status=always", "status").dump!
-    cmd("git diff --color | diff-so-fancy").dump!
-  end
+  # def dump!
+  #   log_items(git("ls-files"), title: "Changed files")
+  #   git("-c", "color.status=always", "status").dump!
+  #   cmd("git diff --color | diff-so-fancy").dump!
+  # end
 
   def upstream(branch)
     cmd "git branch --set-upstream-to origin/#{branch}"
