@@ -18,7 +18,7 @@ module Rfix
   def no_debug!
     @debug = false
   end
-  
+
   def indent
     " " * 2
   end

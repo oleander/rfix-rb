@@ -4,7 +4,6 @@ require "rfix"
 require "aruba/rspec"
 
 Aruba.configure do |config|
-  # config.command_launcher = :in_process
   config.allow_absolute_paths = true
   config.activate_announcer_on_command_failure = [:stdout, :stderr]
   config.command_runtime_environment = {
@@ -12,13 +11,58 @@ Aruba.configure do |config|
     "GIT_TEMPLATE_DIR" => ""
   }
 end
-pp Dir[File.join(__dir__, "support/**/*.rb")]
 
 Dir[File.join(__dir__, "support/**/*.rb")].each(&method(:require))
 
-src_repo = File.join(__dir__, "..", "tmp", "src-repo")
-bundle_path = File.join(__dir__, "..", "tmp", "snapshot.bundle")
-org_repo = File.join(__dir__, "..", "vendor", "oleander/git-fame-rb")
+# src_repo = File.join(__dir__, "..", "tmp", "src-repo")
+# bundle_path = File.join(__dir__, "..", "tmp", "snapshot.bundle")
+# org_repo = File.join(__dir__, "..", "vendor", "oleander/git-fame-rb")
+
+class SetupGit < Struct.new(:bundle_file)
+  def self.setup
+    tmp_path = File.expand_path(File.join(__dir__, "../tmp"))
+    dst_path = Dir.mktmpdir("dst", tmp_path)
+    src_path = Dir.mktmpdir("src", tmp_path)
+    bundle_path = Dir.mktmpdir("bundle", tmp_path)
+    bundle_file = File.join(bundle_path, "git.bundle")
+
+    # Rfix::Log.say "Create folder: #{git_path}"
+    # FileUtils.mkdir_p(git_path)
+
+    ignore_path = File.join(src_path, ".gitignore")
+
+    git = Git.init(src_path)
+
+    git.chdir do
+      Rfix::Log.say("Write ignore file")
+      File.write(".gitignore", "")
+    end
+
+    git.add(".gitignore")
+    git.commit("A Commit Message")
+
+    Rfix::Log.say "Write to bundle path #{git.repo}"
+    Rfix::Git.git("bundle", "create", bundle_file, "--all", root: src_path)
+
+    new(bundle_file)
+  end
+
+  def teardown
+    FileUtils.remove_file(bundle_file, force: true)
+  end
+end
+
+setup = SetupGit.setup
+
+RSpec.shared_context "setup", shared_context: :metadata  do
+  let(:git_path) { Dir.mktmpdir("repos", expand_path(".")) }
+  subject(:git) { Git.clone(setup.bundle_file, "base", path: git_path) }
+  let(:status) { git.status }
+
+  around do |example|
+    cd(git.dir.to_s) { example.run }
+  end
+end
 
 RSpec.configure do |config|
   config.include Rfix::Cmd
@@ -35,6 +79,10 @@ RSpec.configure do |config|
   unless ENV["CI"]
     config.filter_run focus: true
     config.run_all_when_everything_filtered = true
+  end
+
+  config.append_after(:suite) do
+    setup.teardown
   end
 
   config.expect_with :rspec do |expectations|

@@ -4,6 +4,8 @@ require "rfix"
 require "cli/ui"
 
 module Rfix::Log
+  extend self
+  
   def say(message)
     prt("{{v}} #{message}")
   end
@@ -91,10 +93,10 @@ module Rfix::Log
     margin { yield }
   end
 
-  def margin
-    new_line
+  def margin(n = 1)
+    new_line(n)
     yield
-    new_line
+    new_line(n)
   end
 
   def new_line(n = 1)
