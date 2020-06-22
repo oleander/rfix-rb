@@ -75,7 +75,11 @@ module Rfix::Log
   end
 
   def strip(msg)
-    msg.gsub(File.join(Dir.pwd, "/"), "").gsub(Dir.pwd, ".")
+    msg.gsub(current_path, "").gsub(Dir.pwd, ".").chomp
+  end
+
+  def current_path
+    File.join(Dir.pwd, "/")
   end
 
   def div(title)

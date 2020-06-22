@@ -44,7 +44,13 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
+  config.before do
+    Rfix.debug!
+  end
+
   config.before(:suite) do
+    Rfix.debug!
+    
     FileUtils.mkdir_p(src_repo)
 
     FileUtils.copy_entry(org_repo, src_repo, true, true, true)

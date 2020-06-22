@@ -66,6 +66,7 @@ module Rfix
   end
 
   def debug!
+    @config ||= {}
     @debug = true
     @config[:debug] = true
   end

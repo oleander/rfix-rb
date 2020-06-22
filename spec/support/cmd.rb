@@ -52,40 +52,17 @@ module Rfix::Support
   end
 
   def dump!
-    CLI::UI::StdoutRouter.enable
+    # box("STDOUT", color: :green) do
+    #   say all_stdout
+    # end
+    #
+    # box("STDERR", color: :red) do
+    #   say all_stderr
+    # end
 
-    CLI::UI::Frame.open("STDOUT", color: :green) do
-      say all_stdout
-    end
-
-    CLI::UI::Frame.open("STDERR", color: :red) do
-      say all_stderr
-    end
-
-    files = git("ls-files")
-    CLI::UI::Frame.open("Files (#{files.count})", color: :blue) do
-      files.each do |file|
-        say "\t{{italic:#{file}}}"
-      end
-    end
-
-    CLI::UI::Frame.open("Git Status") do
-      git("-c", "color.status=always", "status").each do |line|
-        say_plain line
-      end
-    end
-
-    CLI::UI::Frame.open("Git Diff") do
-      cmd("git diff --color | diff-so-fancy").each do |line|
-        say_plain line
-      end
-    end
-
-    CLI::UI::Frame.open("Generic") do
-      cmd("pwd").each do |line|
-        say "Current Dir: #{line}"
-      end
-    end
+    log_items(git("ls-files"), title: "Changed files")
+    git("-c", "color.status=always", "status").dump!
+    cmd("git diff --color | diff-so-fancy").dump!
   end
 
   def upstream(branch)

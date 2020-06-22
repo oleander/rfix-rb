@@ -10,18 +10,13 @@ module Rfix::Cmd
   def cmd(*args, quiet: false)
     out, err, status = Open3.capture3(*args)
     box = Rfix::Box.new(out, err, status, args, quiet)
-
-    box.render(debug: true)
-
     return box.stdout if box.success?
-
     return yield if block_given?
-
     return if quiet
-
     box.render(color: :red)
-
     exit box.exit_status
+  ensure
+    box.render(debug: true)
   end
 
   def cmd_succeeded?(*cmd)

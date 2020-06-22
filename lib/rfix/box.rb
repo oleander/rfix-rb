@@ -1,10 +1,12 @@
+require "pry"
+
 class Rfix::Box < Struct.new(:out, :err, :status, :args, :quiet)
   include Rfix::Log
 
   def render(color: :reset, debug: false)
     return if Rfix.debug? && !debug
 
-    box(title, color: color) do
+    @render ||= box(title, color: color) do
       margin do
         prt cmd_lines
       end
@@ -38,11 +40,22 @@ class Rfix::Box < Struct.new(:out, :err, :status, :args, :quiet)
   end
 
   def stdout
-    @stdout ||= out.lines.map(&:chomp)
+    @stdout ||= dumpable(out.lines.map(&:chomp))
   end
 
   def stderr
-    @stderr ||= err.lines.map(&:chomp)
+    @stderr ||= dumpable(err.lines.map(&:chomp))
+  end
+
+  def dumpable(lines)
+    box = self
+    lines.tap do
+      lines.define_singleton_method(:dump!) do
+        tap do
+          box.render
+        end
+      end
+    end
   end
 
   def icon
@@ -66,7 +79,11 @@ class Rfix::Box < Struct.new(:out, :err, :status, :args, :quiet)
   end
 
   def pwd
-    Dir.pwd.sub(Dir.home, "~")
+    if Dir.getwd == Dir.pwd
+      return "{{italic:#{Dir.getwd}}}"
+    end
+
+    Dir.getwd.sub(Dir.pwd, "")
   end
 
   private
