@@ -16,7 +16,7 @@ module Rfix::Cmd
     box.render(color: :red)
     exit box.exit_status
   ensure
-    box.render(debug: true)
+    box.render(debug: false)
   end
 
   def cmd_succeeded?(*cmd)
