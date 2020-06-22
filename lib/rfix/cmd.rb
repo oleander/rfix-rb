@@ -9,20 +9,19 @@ module Rfix::Cmd
 
   def cmd(*args, quiet: false)
     out, err, status = Open3.capture3(*args)
-    say_debug "[Cmd] {{command:#{args.join(' ')}}}"
-    
-    unless status.success?
-      return yield if block_given?
-      return if quiet
+    box = Rfix::Box.new(out, err, status, args, quiet)
 
-      say_error "[Cmd] {{italic:#{args.join(' ')}}}"
-      say_error "[Pwd] {{italic:#{Dir.pwd}}}"
-      say_error "[Err] {{error:#{err.strip}}}"
+    box.render(debug: true)
 
-      exit status.exitstatus
-    end
+    return box.stdout if box.success?
 
-    out.lines.map(&:chomp)
+    return yield if block_given?
+
+    return if quiet
+
+    box.render(color: :red)
+
+    exit box.exit_status
   end
 
   def cmd_succeeded?(*cmd)

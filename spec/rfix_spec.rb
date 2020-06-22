@@ -112,7 +112,7 @@ RSpec.describe Rfix, type: :aruba do
       end
 
       it "makes change when left out" do
-        expect { branch_cmd(dry: false) }.to change { no_changed_files }.by(5)
+        expect { branch_cmd(dry: false); dump! }.to change { no_changed_files }.by(5)
       end
     end
 

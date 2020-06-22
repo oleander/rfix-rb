@@ -1,31 +1,3 @@
-AllCops:
-  Exclude:
-    - 'Rakefile'
-    - 'Gemfile'
-    - 'bin/*'
-    - 'vendor/bundle/**/*'
-    - 'db/**/*'
-    - 'node_modules/**/*'
-    - 'spec/rails_helper.rb'
-    - 'lib/tasks/*'
-
-Layout/LineLength:
-  Max: 120
-  Exclude:
-    - 'config/**/*'
-
-Metrics/BlockLength:
-  Exclude:
-    - 'config/**/*'
-    - 'spec/**/*'
-    - 'lib/tasks/*'
-    - 'lib/capistrano/**/*'
-
-Metrics/ClassLength:
-  Max: 150
-  Exclude:
-    - 'config/**/*'
-
 Metrics/MethodLength:
   Enabled: false
 
@@ -69,4 +41,8 @@ Style/ConditionalAssignment:
 Lint/AmbiguousBlockAssociation:
   Enabled: false
 Style/Semicolon:
+  Enabled: false
+Style/StructInheritance:
+  Enabled: false
+Style/IfUnlessModifier:
   Enabled: false

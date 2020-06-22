@@ -59,6 +59,12 @@ module Rfix
     @debug
   end
 
+  def possible_parents
+    git("branch", "-r", "--format", "%(refname:strip=2)", "--sort", "-committerdate", "--no-merged", "HEAD").reject do |branch|
+      branch.include?("HEAD")
+    end.take(10)
+  end
+
   def debug!
     @debug = true
     @config[:debug] = true
@@ -175,7 +181,10 @@ module Rfix
   end
 
   def load_tracked!(reference)
-    cached(git("log", "--name-only", "--pretty=format:", *params, "#{reference}...HEAD").map do |path|
+    p = params.dup
+    p.delete("--no-merges")
+    p.delete("--first-parent")
+    cached(git("diff", "--name-only", *p, reference).map do |path|
       TrackedFile.new(path, reference, root_dir)
     end.select(&:file?).to_set)
   end
@@ -187,7 +196,14 @@ module Rfix
   # Ref since last push
   def ref_since_push
     git("rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}") do
-      [ref_since_origin]
+      CLI::UI::Prompt.ask("{{warning:No upstream branch has been set, please pick one}}") do |handler|
+        possible_parents.each do |parent|
+          handler.option(parent.split("/", 2).last) do |selection|
+            git("branch", "--set-upstream-to", parent)
+            return ref_since_push
+          end
+        end
+      end
     end.first
   end
 
@@ -197,12 +213,6 @@ module Rfix
   end
 
   private
-
-  def old?
-    # For version 0.80.x .. 0.83.x:
-    # Otherwise it will exit with status code = 1
-    (0.80..0.83).include?(RuboCop::Version::STRING.to_f)
-  end
 
   def get_file(path, &block)
     if file = @files[path]
@@ -215,6 +225,9 @@ module Rfix
   end
 
   def cached(files)
+    log_items(files, title: "Cached files") do |file|
+      file.relative_path
+    end
     @files ||= {}
     files.each do |file|
       @files[file.path] = file

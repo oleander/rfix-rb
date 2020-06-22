@@ -104,12 +104,10 @@ end
 
 if path = config_path
   Rfix.load_config do |config|
-    say_debug "[Config:Option] Load from #{path}"
     config.options_config = path
   end
 else
   Rfix.load_config do |config|
-    say_debug "[Config:PWD] Load from #{Dir.pwd}"
     config.for(Dir.pwd)
   end
 end
@@ -140,8 +138,6 @@ if should_list_files
     say "\t" + Rfix.to_relative(path: path)
   end
 end
-
-say_debug "[Config:Dump] #{Rfix.store}"
 
 env = RuboCop::CLI::Environment.new(
   Rfix.config.merge(options),

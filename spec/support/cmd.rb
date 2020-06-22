@@ -52,10 +52,39 @@ module Rfix::Support
   end
 
   def dump!
+    CLI::UI::StdoutRouter.enable
+
+    CLI::UI::Frame.open("STDOUT", color: :green) do
+      say all_stdout
+    end
+
+    CLI::UI::Frame.open("STDERR", color: :red) do
+      say all_stderr
+    end
+
     files = git("ls-files")
-    say "Found {{italic:#{files.count}}}"
-    files.each do |file|
-      say "\t{{italic:#{file}}}"
+    CLI::UI::Frame.open("Files (#{files.count})", color: :blue) do
+      files.each do |file|
+        say "\t{{italic:#{file}}}"
+      end
+    end
+
+    CLI::UI::Frame.open("Git Status") do
+      git("-c", "color.status=always", "status").each do |line|
+        say_plain line
+      end
+    end
+
+    CLI::UI::Frame.open("Git Diff") do
+      cmd("git diff --color | diff-so-fancy").each do |line|
+        say_plain line
+      end
+    end
+
+    CLI::UI::Frame.open("Generic") do
+      cmd("pwd").each do |line|
+        say "Current Dir: #{line}"
+      end
     end
   end
 
