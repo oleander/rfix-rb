@@ -1,18 +1,25 @@
-RSpec.describe Rfix, type: :aruba do
+RSpec.describe Rfix do
   include_context "git_new"
-  let!(:head) { current_commit }
 
   describe "lint" do
-    fdescribe "empty directory" do
+    fdescribe "Rfix.load_tracked" do
       it "handles untracked file" do
-        file = untracked("valid.rb")
-        Rfix.load_tracked!(head)
-        is_expected.to have_files(file)
+        file = untracked("valid.rb", :rand)
+        # Rfix.load_tracked!(rp)
+        dump!
+        is_expected.to_not have_files(file)
       end
 
       it "checks for tracked file" do
         file = tracked("valid.rb")
-        Rfix.load_tracked!(head)
+        Rfix.load_tracked!(rp)
+        is_expected.to have_files(file)
+      end
+
+      it "checks changed tracked files" do
+        file = tracked("valid.rb")
+        File.open(file, "a") { |h| h.write("# line") }
+        Rfix.load_tracked!(rp)
         is_expected.to have_files(file)
       end
     end

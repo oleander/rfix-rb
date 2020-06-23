@@ -230,9 +230,9 @@ module Rfix
   end
 
   def cached(files)
-    log_items(files, title: "Cached files") do |file|
-      file.relative_path
-    end
+    # log_items(files, title: "Cached files") do |file|
+    #   file.relative_path
+    # end
     @files ||= {}
     files.each do |file|
       @files[file.path] = file

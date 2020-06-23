@@ -2,6 +2,7 @@
 
 require "rfix"
 require "aruba/rspec"
+require "fileutils"
 
 Aruba.configure do |config|
   config.allow_absolute_paths = true
@@ -14,18 +15,13 @@ end
 
 Dir[File.join(__dir__, "support/**/*.rb")].each(&method(:require))
 
-setup = SetupGit.setup
+setup = SetupGit.setup!
 
 RSpec.shared_context "setup", shared_context: :metadata  do
-  subject(:git) { Git.clone(setup.bundle_file, "base", path: git_path) }
-  let(:git_path) { Dir.mktmpdir("repos", expand_path(".")) }
+  subject(:git) { setup.git }
+  let(:git_path) { setup.git_path }
+  let(:rp) { SetupGit::RP }
   let(:status) { git.status }
-
-  around do |example|
-    cd(git.dir.to_s) do
-      example.run
-    end
-  end
 end
 
 RSpec.configure do |config|
@@ -40,13 +36,25 @@ RSpec.configure do |config|
   config.shared_context_metadata_behavior = :apply_to_host_groups
   config.disable_monkey_patching!
 
-  unless ENV["CI"]
-    config.filter_run focus: true
-    config.run_all_when_everything_filtered = true
+  config.around(:each) do |example|
+    setup.reset!
+
+    cd(git.dir.to_s) do
+      example.run
+    end
+  end
+
+  config.prepend_before(:suite) do
+    setup.clone!
   end
 
   config.append_after(:suite) do
-    setup.teardown
+    setup.teardown!
+  end
+
+  unless ENV["CI"]
+    config.filter_run focus: true
+    config.run_all_when_everything_filtered = true
   end
 
   config.expect_with :rspec do |expectations|
