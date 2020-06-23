@@ -24,6 +24,10 @@ class Rfix::Repository
   def possible_parents
     @git.branches.local.reject { |branch| branch == @git.branch }
   end
+
+  def git_path
+    @git.dir.to_s
+  end
 end
 
 module Rfix
@@ -97,10 +101,7 @@ module Rfix
   end
 
   def possible_parents
-    return @repo.possible_parents
-    git("branch", "-r", "--format", "%(refname:strip=2)", "--sort", "-committerdate", "--no-merged", "HEAD").reject do |branch|
-      branch.include?("HEAD")
-    end.take(10)
+    @repo.possible_parents
   end
 
   def debug!
@@ -181,7 +182,7 @@ module Rfix
   end
 
   def root_dir
-    @root_dir ||= git("rev-parse", "--show-toplevel").first
+    @repo.git_path
   end
 
   def refresh!(source)
