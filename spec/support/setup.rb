@@ -1,11 +1,13 @@
 require "pathname"
 
-class SetupGit < Struct.new(:bundle_file, :root_path)
+class SetupGit < Struct.new(:bundle_file, :root_path, :id)
   include Rfix::Log
 
   RALLY_POINT = RP = "rally-point"
 
-  def self.setup!(root_path: Dir.mktmpdir)
+  def self.setup!
+    id          = Faker::Code.asin
+    root_path   = Dir.mktmpdir(id)
     src_path    = File.join(root_path, "src")
     bundle_file = File.join(root_path, "git.bundle")
     git         = Git.init(src_path)
@@ -16,11 +18,12 @@ class SetupGit < Struct.new(:bundle_file, :root_path)
 
       git.add(".gitignore")
       git.commit("Add empty .gitignore")
+      git.add_tag(RALLY_POINT)
 
       cmd "git", "bundle", "create", bundle_file, "--all"
     end
 
-    new(bundle_file, root_path)
+    new(bundle_file, root_path, id)
   end
 
   def self.cmd(*args)
@@ -34,10 +37,7 @@ class SetupGit < Struct.new(:bundle_file, :root_path)
   end
 
   def clone!
-    git_path = File.join("git", root_path)
-    @git = Git.clone(bundle_file, "base", path: git_path, log: Logger.new($stderr))
-    @git.add_tag(RALLY_POINT)
-    @git
+    @git = Git.clone(bundle_file, "repo", path: root_path)
   end
 
   def git
@@ -48,10 +48,14 @@ class SetupGit < Struct.new(:bundle_file, :root_path)
     git.dir.to_s
   end
 
+  def msg
+    Faker::Hacker.say_something_smart
+  end
+
   def reset!
     check_clone_status!
-    git.clean(force: true, d: true)
-    git.reset_hard(RALLY_POINT)
+    git.clean(force: true, f: true, d: true)
+    git.checkout(RALLY_POINT)
     check_cleanliness!
   end
 
@@ -70,6 +74,10 @@ class SetupGit < Struct.new(:bundle_file, :root_path)
   def rm(path)
     unless Pathname.new(path).absolute?
       say_abort "Path is not an absolute path #{path}"
+    end
+
+    unless path.include?(id)
+      say_abort "Path #{path} does not include id #{id}"
     end
 
     FileUtils.remove_dir(path, force: true)

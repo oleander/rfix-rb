@@ -12,21 +12,28 @@ RSpec.shared_context "git_new", shared_context: :metadata do
     git.object("HEAD").sha
   end
 
-  def tracked(file)
-    copy "%/#{file}", file
-    git.add(file)
-    git.commit("Adding #{file} to repo")
-    file
+  def tracked(file, *args)
+    dst_path = to_random(path: file)
+    copy "%/#{file}", dst_path
+    git.add(dst_path)
+    git.commit("Adding #{dst_path} to repo")
+    dst_path
   end
 
   def untracked(file, *args)
-    dst_path = file
-    if args.include?(:rand)
-      ext = File.extname(file)
-      dst_path = Faker::File.file_name(ext: ext.delete_prefix("."))
-    end
-
+    dst_path = to_random(path: file)
     copy "%/#{file}", dst_path
     dst_path
+  end
+
+  before(:each) do
+    is_expected.to be_clean
+    expect(Rfix.paths).to be_empty
+  end
+
+  private
+
+  def to_random(path:)
+    Faker::File.file_name(ext: File.extname(path).delete_prefix("."))
   end
 end

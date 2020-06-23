@@ -37,6 +37,7 @@ RSpec.configure do |config|
   config.disable_monkey_patching!
 
   config.around(:each) do |example|
+    Rfix.init!
     setup.reset!
 
     cd(git.dir.to_s) do

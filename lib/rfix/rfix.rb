@@ -135,7 +135,7 @@ module Rfix
   end
 
   def init!
-    @files ||= {}
+    @files = {}
     @global_enable = false
     @debug = false
     @config = {
