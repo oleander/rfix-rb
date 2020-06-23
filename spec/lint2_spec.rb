@@ -3,6 +3,11 @@ RSpec.describe Rfix do
 
   describe "lint" do
     fdescribe "Rfix.load_tracked" do
+      it "returns no files on empty directory" do
+        Rfix.load_tracked!(rp)
+        is_expected.to_not have_no_files
+      end
+
       it "handles untracked file" do
         file = untracked("valid.rb", :rand)
         Rfix.load_tracked!(rp)
