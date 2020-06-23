@@ -18,7 +18,7 @@ RSpec.shared_context "git_new", shared_context: :metadata do
     yield(branch)
   end
 
-  def tracked(file, *args)
+  def tracked(file = "valid.rb", *args)
     dst_path = to_random(path: file)
     copy "%/#{file}", dst_path
     git.add(dst_path)

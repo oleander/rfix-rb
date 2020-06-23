@@ -38,6 +38,7 @@ class SetupGit < Struct.new(:bundle_file, :root_path, :id)
 
   def clone!
     @git = Git.clone(bundle_file, "repo", path: root_path)
+    @git.branch("master").checkout
   end
 
   def git
@@ -62,6 +63,8 @@ class SetupGit < Struct.new(:bundle_file, :root_path, :id)
 
     # Reset to init commit
     git.checkout(RALLY_POINT)
+    git.checkout("master")
+
     check_cleanliness!
   end
 

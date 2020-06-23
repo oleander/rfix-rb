@@ -10,10 +10,39 @@ require "rfix/git_helper"
 require "rfix/log"
 require "rfix/tracked_file"
 require "rfix/untracked_file"
+require "git"
+
+class Rfix::Repository
+  def initialize(root_path)
+    @git = ::Git.open(root_path)#, log: Logger.new($stdout))
+  end
+
+  def current_branch
+    @git.current_branch
+  end
+end
 
 module Rfix
   include GitHelper
   include Log
+
+  def init!
+    @files = {}
+    @global_enable = false
+    @debug = false
+    @config = {
+      force_exclusion: true,
+      formatters: ["Rfix::Formatter"]
+    }
+
+    @store = RuboCop::ConfigStore.new
+    @repo = Repository.new(@root || Dir.pwd)
+    auto_correct!
+  end
+
+  def set_root(root)
+    @root = root
+  end
 
   def no_debug!
     @debug = false
@@ -56,7 +85,7 @@ module Rfix
   end
 
   def current_branch
-    git("rev-parse", "--abbrev-ref", "HEAD").first
+    @repo.current_branch
   end
 
   def debug?
@@ -132,19 +161,6 @@ module Rfix
 
   def clear_cache!
     RuboCop::ResultCache.cleanup(@store, true)
-  end
-
-  def init!
-    @files = {}
-    @global_enable = false
-    @debug = false
-    @config = {
-      force_exclusion: true,
-      formatters: ["Rfix::Formatter"]
-    }
-
-    @store = RuboCop::ConfigStore.new
-    auto_correct!
   end
 
   def files

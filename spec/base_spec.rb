@@ -1,6 +1,7 @@
+# https://github.com/ruby-git/ruby-git/blob/e44c18ec6768c0c76603d20915118a201d0ec340/lib/git/base.rb
+require "pry"
 RSpec.describe Rfix do
   include_context "git_new"
-
 
   describe "root_dir" do
     it "has root dir" do
@@ -18,6 +19,9 @@ RSpec.describe Rfix do
 
   describe "current_branch" do
     it "switches between branches" do
+      # say git.branches.local
+      # binding.pry
+      # say git.current_branch
       switch("branch-1") do |branch|
         expect(Rfix.current_branch).to eq(branch)
       end
@@ -25,6 +29,13 @@ RSpec.describe Rfix do
       switch("branch-2") do |branch|
         expect(Rfix.current_branch).to eq(branch)
       end
+
+    end
+
+    it "handles nameless branch" do
+      2.times { tracked }
+      git.checkout("HEAD~1")
+      expect(Rfix.current_branch).to include("HEAD")
     end
   end
 end

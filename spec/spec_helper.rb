@@ -40,13 +40,16 @@ RSpec.configure do |config|
     Rfix.init!
     setup.reset!
 
-    cd(git.dir.to_s) do
-      example.run
+    Dir.chdir(setup.git_path) do
+      cd(setup.git_path) do
+        example.run
+      end
     end
   end
 
   config.prepend_before(:suite) do
     setup.clone!
+    Rfix.set_root(setup.git_path)
   end
 
   config.append_after(:suite) do
