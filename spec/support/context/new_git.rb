@@ -12,6 +12,12 @@ RSpec.shared_context "git_new", shared_context: :metadata do
     git.object("HEAD").sha
   end
 
+  def switch(branch)
+    git.branch(branch).create
+    git.checkout(branch)
+    yield(branch)
+  end
+
   def tracked(file, *args)
     dst_path = to_random(path: file)
     copy "%/#{file}", dst_path

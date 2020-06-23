@@ -6,8 +6,9 @@ class SetupGit < Struct.new(:bundle_file, :root_path, :id)
   RALLY_POINT = RP = "rally-point"
 
   def self.setup!
+    tmp_dir     = File.join(__dir__, "../../tmp")
     id          = Faker::Code.asin
-    root_path   = Dir.mktmpdir(id)
+    root_path   = Dir.mktmpdir(id, tmp_dir)
     src_path    = File.join(root_path, "src")
     bundle_file = File.join(root_path, "git.bundle")
     git         = Git.init(src_path)
