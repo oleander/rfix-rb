@@ -12,6 +12,10 @@ RSpec.shared_context "git_new", shared_context: :metadata do
     git.object("HEAD").sha
   end
 
+  def current_branch
+    git.branch.name
+  end
+
   def switch(branch)
     git.branch(branch).create
     git.checkout(branch)

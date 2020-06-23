@@ -1,5 +1,12 @@
 # https://github.com/ruby-git/ruby-git/blob/e44c18ec6768c0c76603d20915118a201d0ec340/lib/git/base.rb
 require "pry"
+
+class Array
+  def pluck(sym)
+    map(&sym)
+  end
+end
+
 RSpec.describe Rfix do
   include_context "git_new"
 
@@ -17,11 +24,25 @@ RSpec.describe Rfix do
     end
   end
 
+  describe "possible_parents" do
+    let!(:init_branch) { current_branch }
+
+    it "does not include current branch" do
+      expect(Rfix.possible_parents).to_not include(git.branch)
+    end
+
+    it "switches between branches" do
+      switch("b1") do |b1|
+        expect(Rfix.possible_parents.pluck(:name)).to include(init_branch)
+        switch("b2") do |b2|
+          expect(Rfix.possible_parents.pluck(:name)).to include(b1)
+        end
+      end
+    end
+  end
+
   describe "current_branch" do
     it "switches between branches" do
-      # say git.branches.local
-      # binding.pry
-      # say git.current_branch
       switch("branch-1") do |branch|
         expect(Rfix.current_branch).to eq(branch)
       end

@@ -20,6 +20,10 @@ class Rfix::Repository
   def current_branch
     @git.current_branch
   end
+
+  def possible_parents
+    @git.branches.local.reject { |branch| branch == @git.branch }
+  end
 end
 
 module Rfix
@@ -93,6 +97,7 @@ module Rfix
   end
 
   def possible_parents
+    return @repo.possible_parents
     git("branch", "-r", "--format", "%(refname:strip=2)", "--sort", "-committerdate", "--no-merged", "HEAD").reject do |branch|
       branch.include?("HEAD")
     end.take(10)
