@@ -5,8 +5,7 @@ RSpec.describe Rfix do
     fdescribe "Rfix.load_tracked" do
       it "handles untracked file" do
         file = untracked("valid.rb", :rand)
-        # Rfix.load_tracked!(rp)
-        dump!
+        Rfix.load_tracked!(rp)
         is_expected.to_not have_files(file)
       end
 
