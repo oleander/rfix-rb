@@ -5,7 +5,7 @@ RSpec.describe Rfix do
     describe "Rfix.load_tracked" do
       it "returns no files on empty directory" do
         Rfix.load_tracked!(rp)
-        is_expected.to_not have_no_files
+        is_expected.to have_no_files
       end
 
       it "handles untracked file" do
@@ -28,7 +28,7 @@ RSpec.describe Rfix do
       end
     end
 
-    fdescribe "Rfix.load_untracked" do
+    describe "Rfix.load_untracked" do
       it "loads borth untracked and tracked" do
         file1 = tracked("valid.rb")
         file2 = untracked("valid.rb")
@@ -42,7 +42,7 @@ RSpec.describe Rfix do
         is_expected.to have_no_files
       end
 
-      fit "finds untracked file" do
+      it "finds untracked file" do
         file = untracked("valid.rb", :rand)
         Rfix.load_untracked!
         is_expected.to have_file(file)

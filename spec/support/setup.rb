@@ -31,7 +31,6 @@ class SetupGit < Struct.new(:bundle_file, :root_path, :id)
     abort out unless status.success?
   end
 
-
   def teardown!
     rm(root_path)
   end
@@ -54,7 +53,13 @@ class SetupGit < Struct.new(:bundle_file, :root_path, :id)
 
   def reset!
     check_clone_status!
+    # Remove untracked files and dirs
     git.clean(force: true, f: true, d: true)
+
+    # Undo all stages
+    git.reset_hard
+
+    # Reset to init commit
     git.checkout(RALLY_POINT)
     check_cleanliness!
   end
