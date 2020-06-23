@@ -43,7 +43,7 @@ RSpec.describe Rfix do
       end
 
       it "finds untracked file" do
-        file = untracked("valid.rb", :rand)
+        file = untracked("valid.rb")
         Rfix.load_untracked!
         is_expected.to have_file(file)
       end

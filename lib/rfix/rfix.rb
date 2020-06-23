@@ -13,20 +13,56 @@ require "rfix/untracked_file"
 require "git"
 
 class Rfix::Repository
+  include Rfix::Log
+  attr_reader :files
+
   def initialize(root_path)
     @git = ::Git.open(root_path)#, log: Logger.new($stdout))
+    @files = {}
+  end
+
+  def paths
+    files.keys
   end
 
   def current_branch
-    @git.current_branch
+    git.current_branch
   end
 
   def possible_parents
-    @git.branches.local.reject { |branch| branch == @git.branch }
+    git.branches.local.reject { |branch| branch == @git.branch }
   end
 
   def git_path
-    @git.dir.to_s
+    git.dir.to_s
+  end
+
+  def load_tracked!(reference)
+    cache do
+      git.diff(reference).map do |file|
+        Rfix::TrackedFile.new(file.path, reference, git_path)
+      end
+    end
+  end
+
+  def load_untracked!
+    cache do
+      git.status.untracked.keys.map do |file|
+        Rfix::UntrackedFile.new(file, nil, git_path)
+      end
+    end
+  end
+
+  private
+
+  def cache
+    yield.each do |file|
+      @files[file.path] = file
+    end
+  end
+
+  def git
+    @git
   end
 end
 
@@ -35,7 +71,6 @@ module Rfix
   include Log
 
   def init!
-    @files = {}
     @global_enable = false
     @debug = false
     @config = {
@@ -92,16 +127,36 @@ module Rfix
     CLI::UI.fmt(cmds.join("\n"), enable_color: true)
   end
 
+  def repo
+    @repo
+  end
+
+  def files
+    @repo.files
+  end
+
   def current_branch
     @repo.current_branch
   end
 
-  def debug?
-    @debug
+  def load_untracked!
+    @repo.load_untracked!
+  end
+
+  def paths
+    @repo.paths
   end
 
   def possible_parents
     @repo.possible_parents
+  end
+
+  def load_tracked!(reference)
+    @repo.load_tracked!(reference)
+  end
+
+  def debug?
+    @debug
   end
 
   def debug!
@@ -169,51 +224,23 @@ module Rfix
     RuboCop::ResultCache.cleanup(@store, true)
   end
 
-  def files
-    @files.values
-  end
-
-  def spin
-    @spin ||= CLI::UI::SpinGroup.new
-  end
-
-  def paths
-    @files.keys
-  end
-
   def root_dir
     @repo.git_path
   end
 
   def refresh!(source)
-    @files[source.file_path]&.refresh!
+    files[source.file_path]&.refresh!
   end
 
   def enabled?(path, line)
     return true if global_enable?
-
-    @files[path]&.include?(line)
+    files[path]&.include?(line)
   end
 
   def to_relative(path:)
     Pathname.new(path).relative_path_from(Pathname.new(root_dir)).to_s
   rescue ArgumentError
     path
-  end
-
-  def load_untracked!
-    cached(list_untrack_files.map do |path|
-      UntrackedFile.new(path, nil, root_dir)
-    end.select(&:file?).to_set)
-  end
-
-  def load_tracked!(reference)
-    p = params.dup
-    p.delete("--no-merges")
-    p.delete("--first-parent")
-    cached(git("diff", "--name-only", *p, reference).map do |path|
-      TrackedFile.new(path, reference, root_dir)
-    end.select(&:file?).to_set)
   end
 
   def has_branch?(name)
@@ -237,28 +264,6 @@ module Rfix
   # Original branch, usually master
   def ref_since_origin
     git("show-branch", "--merge-base").first
-  end
-
-  private
-
-  def get_file(path, &block)
-    if file = @files[path]
-      block.call(file)
-    end
-  end
-
-  def list_untrack_files
-    git("ls-files", "--exclude-standard", "--others")
-  end
-
-  def cached(files)
-    # log_items(files, title: "Cached files") do |file|
-    #   file.relative_path
-    # end
-    @files ||= {}
-    files.each do |file|
-      @files[file.path] = file
-    end
   end
 end
 

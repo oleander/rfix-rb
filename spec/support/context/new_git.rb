@@ -30,7 +30,7 @@ RSpec.shared_context "git_new", shared_context: :metadata do
     dst_path
   end
 
-  def untracked(file, *args)
+  def untracked(file = "valid.rb", *args)
     dst_path = to_random(path: file)
     copy "%/#{file}", dst_path
     dst_path

@@ -59,11 +59,8 @@ class SetupGit < Struct.new(:bundle_file, :root_path, :id)
     git.clean(force: true, f: true, d: true)
 
     # Undo all stages
-    git.reset_hard
-
-    # Reset to init commit
-    git.checkout(RALLY_POINT)
     git.checkout("master")
+    git.reset_hard(RALLY_POINT)
 
     check_cleanliness!
   end
