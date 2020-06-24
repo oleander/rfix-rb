@@ -154,8 +154,8 @@ env = RuboCop::CLI::Environment.new(
   paths
 )
 
-# begin
+begin
   exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
-# rescue RuboCop::Error => e
-#   say_abort e.message
-# end
+rescue RuboCop::Error => e
+  say_abort e.message
+end

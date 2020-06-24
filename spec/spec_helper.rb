@@ -25,6 +25,8 @@ def init!(root)
   Rfix.set_root(root)
   Rfix.init!
   Rfix.set_main_branch("master")
+  system 'git config user.email "me@example.com"'
+  system 'git config user.name "John Doe"'
 end
 
 RSpec.shared_context "setup", shared_context: :metadata  do
