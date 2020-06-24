@@ -78,7 +78,6 @@ class Rfix::Tracked < Rfix::File
   def refresh!
     @changes = diff.each_hunk.to_a.map(&:lines).flatten.map(&:new_lineno).to_set
   rescue Rugged::TreeError
-    say_error $!
     @changed = NoFile.new(path)
   end
 
