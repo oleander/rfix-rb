@@ -85,7 +85,7 @@ GEM
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     lumberjack (1.2.6)
-    method_source (0.9.2)
+    method_source (1.0.0)
     middleware (0.1.0)
     minitest (5.14.1)
     multi_test (0.1.2)
@@ -101,10 +101,9 @@ GEM
       middleware
       thor
       thread_safe
-    pry (0.9.12.6)
-      coderay (~> 1.0)
-      method_source (~> 0.8)
-      slop (~> 3.4)
+    pry (0.13.1)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
     rainbow (3.0.0)
     rake (12.3.3)
     rb-fsevent (0.10.4)
@@ -141,7 +140,6 @@ GEM
     ruby-progressbar (1.10.1)
     rugged (1.0.0)
     shellany (0.0.1)
-    slop (3.6.0)
     sys-uname (1.2.1)
       ffi (>= 1.0.0)
     thor (1.0.1)
@@ -160,7 +158,7 @@ DEPENDENCIES
   gem-release
   guard
   guard-rspec
-  pry (~> 0.9.12)
+  pry (~> 0.13.1)
   rake (~> 12.3)
   rfix!
   rspec (~> 3.0)
