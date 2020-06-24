@@ -62,13 +62,11 @@ module Rfix::Log
         prt "{{warning:No items found}}"
       end if items.empty?
 
-      margin do
-        items.each do |item|
-          if block_given?
-            say strip(yield item)
-          else
-            say strip(item.to_s)
-          end
+      items.each do |item|
+        if block_given?
+          say strip(yield item)
+        else
+          say strip(item.to_s)
         end
       end
     end
