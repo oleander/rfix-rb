@@ -181,15 +181,13 @@ module Rfix
   end
 
   def refresh!(source)
-    files.get(source.file_path) do |file|
-      file.refresh!
-    end
+    files.get(source.file_path, &:refresh!)
   end
 
   def enabled?(path, line)
     return true if global_enable?
-    !! files.get(source.file_path) do |file|
-      return file.include?(line)
+    files.get(path) do |file|
+      file.include?(line)
     end
   end
 

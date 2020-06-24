@@ -9,6 +9,8 @@ module Rfix::Ext
     # if its suppose to run against it or not
     def cop_enabled_at_line?(_cop, line)
       Rfix.enabled?(processed_source.file_path, line) && super
+    rescue StandardError
+      say_error "[Rfix::Enabled] #{$!}"
     end
   end
 
@@ -18,6 +20,8 @@ module Rfix::Ext
       # rubocop:disable Style/Semicolon
       Rfix.refresh!(source); super
       # rubocop:enable Style/Semicolon
+    rescue StandardError
+      say_error "[Rfix::Refresh] #{$!}"
     end
   end
 
