@@ -14,7 +14,6 @@ class Rfix::File < Struct.new(:path, :repo, :ref)
       say_abort "Path must be relative #{path}"
     end
 
-    @path_cache = {}
     super(path, repo, ref)
   end
 
@@ -34,45 +33,12 @@ class Rfix::File < Struct.new(:path, :repo, :ref)
     @git_path ||= Pathname.new(repo.workdir)
   end
 
-  def hash
-    normalized_path.hash
-  end
-
-  def eql?(other)
-    case other
-    when Rfix::File
-      return normalized_path == other.normalized_path
-    when String
-      return normalized_path == normalize_path(other)
-    else
-      raise Rfix::Error.new("Cannot compare #{self} with #{other}")
-    end
-  end
-
-  def normalized_path
-    @normalize_path ||= normalize_path(absolute_path)
-  end
-
   def absolute_path
     @absolute_path ||= to_abs(path)
   end
 
   def to_abs(path)
     File.join(repo.workdir, path)
-  end
-
-  private
-
-  def normalize_path(path)
-    if cached = @path_cache[path]
-      return cached
-    end
-
-    if Pathname.new(path).absolute?
-      @path_cache[path] = File.realdirpath(path)
-    else
-      @path_cache[path] = File.realdirpath(to_abs(path))
-    end
   end
 end
 
