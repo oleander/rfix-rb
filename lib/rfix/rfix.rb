@@ -196,7 +196,7 @@ module Rfix
   end
 
   def has_branch?(name)
-    cmd_succeeded?("git", "cat-file", "-t", name)
+    repo.has_reference?(name)
   end
 
   # Ref since last push

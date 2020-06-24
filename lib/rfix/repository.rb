@@ -28,8 +28,14 @@ class Rfix::Repository
     git.current_branch
   end
 
+  def has_reference?(reference)
+    repo.rev_parse(reference)
+  rescue Rugged::ReferenceError
+    return false
+  end
+
   def local_branches
-    @rugged.branches.each_name(:local).to_a
+    repo.branches.each_name(:local).to_a
   end
 
   def git_path
@@ -37,7 +43,8 @@ class Rfix::Repository
   end
 
   def load_tracked!(reference)
-    repo.diff(reference, "HEAD").each_delta.to_a.each do |delta|
+    repo.diff(reference, "HEAD").each_delta do |delta|
+      next if delta.deleted?
       store(Rfix::Tracked.new(delta.new_file.fetch(:path), repo, reference))
     end
   rescue Rugged::ReferenceError
