@@ -5,7 +5,6 @@ require "cli/ui"
 
 module Rfix::Log
   extend self
-  
   def say(message)
     prt("{{v}} #{message}")
   end
@@ -20,6 +19,11 @@ module Rfix::Log
 
   def error_box(title)
     box(title, color: :red) { yield }
+  end
+
+  def abort_box(title)
+    error_box(title) { yield }
+    exit 1
   end
 
   def say_debug(message)
@@ -73,7 +77,7 @@ module Rfix::Log
   def box(title, color: :reset)
     margin do
       CLI::UI::Frame.open(title, color: color) do
-        margin do
+        margin(2) do
           yield
         end
       end

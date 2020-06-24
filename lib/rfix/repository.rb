@@ -1,5 +1,5 @@
 require "rugged"
-require "rfix/a_file"
+require "rfix/file"
 
 class Rfix::Repository
   include Rfix::Log
@@ -39,18 +39,21 @@ class Rfix::Repository
   def load_tracked!(reference)
     cache do
       @rugged.diff(reference, "HEAD").each_delta.to_a.map do |delta|
-        Rfix::AFile.new(delta.new_file.fetch(:path), @rugged, reference)
+        Rfix::Tracked.new(delta.new_file.fetch(:path), @rugged, reference)
       end
     end
   rescue Rugged::ReferenceError
-    # TODO: Add better error messages
-    say_abort $!
+    say_abort "Reference {{error:#{reference}}} cannot be found in repository"
+  rescue Rugged::ConfigError
+    abort_box($!.to_s) do
+      prt "No upstream branch set for {{error:#{current_branch}}}"
+    end
   end
 
   def load_untracked!
     cache do
       git.status.untracked.keys.map do |file|
-        Rfix::AFile.new(file, @repo, nil)
+        Rfix::Untracked.new(file, @repo, nil)
       end
     end
   end
