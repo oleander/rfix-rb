@@ -63,7 +63,7 @@ class SetupGit < Struct.new(:bundle_file, :root_path, :id)
     git.checkout("master")
     git.reset_hard(RALLY_POINT)
     git.clean(force: true, d: true)
-    git.lib.stash_save("okay")
+    # git.lib.stash_save("okay")
 
     check_cleanliness!
   end
