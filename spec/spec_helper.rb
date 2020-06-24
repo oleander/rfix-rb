@@ -27,6 +27,15 @@ def init!(root)
   Rfix.set_main_branch("master")
 end
 
+def git_init!
+  if ENV["CI"]
+    system 'git config --global user.email "me@example.com"'
+    system 'git config --global user.name "John Doe"'
+    system 'git config user.email "me@example.com"'
+    system 'git config user.name "John Doe"'
+  end
+end
+
 RSpec.shared_context "setup", shared_context: :metadata  do
   subject(:git) { setup.git }
   let(:git_path) { setup.git_path }
@@ -46,18 +55,12 @@ RSpec.configure do |config|
   config.shared_context_metadata_behavior = :apply_to_host_groups
   config.disable_monkey_patching!
 
-  config.before(:suite) do
-    if ENV["CI"]
-      system 'git config --global user.email "me@example.com"'
-      system 'git config --global user.name "John Doe"'
-    end
-  end
-
   config.around(:each, type: :git) do |example|
     setup.reset!
     init!(setup.git_path)
     Dir.chdir(setup.git_path) do
       cd(setup.git_path) do
+        git_init!
         example.run
       end
     end
@@ -109,6 +112,6 @@ RSpec.configure do |config|
     repo = Dir.mktmpdir("rspec", expand_path("."))
     cmd("git", "clone", bundle_path, repo, "--branch", "master")
     init!(repo)
-    cd(repo) { example.run }
+    cd(repo) { git_init!; example.run }
   end
 end
