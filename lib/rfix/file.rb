@@ -7,8 +7,15 @@ end
 class Rfix::File < Struct.new(:path, :repo, :ref)
   include Rfix::Log
 
+  alias == eql?
+
   def initialize(path, repo, ref)
-    super(File.join(repo.workdir, path), repo, ref)
+    if Pathname.new(path).absolute?
+      say_abort "Path must be relative #{path}"
+    end
+
+    @path_cache = {}
+    super(path, repo, ref)
   end
 
   def include?(_)
@@ -27,8 +34,45 @@ class Rfix::File < Struct.new(:path, :repo, :ref)
     @git_path ||= Pathname.new(repo.workdir)
   end
 
-  def relative_path
-    @relative_path ||= git_path.relative_path_from(Pathname.new(path)).to_s
+  def hash
+    normalized_path.hash
+  end
+
+  def eql?(other)
+    case other
+    when Rfix::File
+      return normalized_path == other.normalized_path
+    when String
+      return normalized_path == normalize_path(other)
+    else
+      raise Rfix::Error.new("Cannot compare #{self} with #{other}")
+    end
+  end
+
+  def normalized_path
+    @normalize_path ||= normalize_path(absolute_path)
+  end
+
+  def absolute_path
+    @absolute_path ||= to_abs(path)
+  end
+
+  def to_abs(path)
+    File.join(repo.workdir, path)
+  end
+
+  private
+
+  def normalize_path(path)
+    if cached = @path_cache[path]
+      return cached
+    end
+
+    if Pathname.new(path).absolute?
+      @path_cache[path] = File.realdirpath(path)
+    else
+      @path_cache[path] = File.realdirpath(to_abs(path))
+    end
   end
 end
 
@@ -68,6 +112,7 @@ class Rfix::Tracked < Rfix::File
   def refresh!
     @changes = diff.each_hunk.to_a.map(&:lines).flatten.map(&:new_lineno).to_set
   rescue Rugged::TreeError
+    say_error $!
     @changed = NoFile.new(path)
   end
 
