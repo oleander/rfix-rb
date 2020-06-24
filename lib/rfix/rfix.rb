@@ -202,7 +202,7 @@ module Rfix
 
   # Original branch, usually master
   def ref_since_origin
-    git("show-branch", "--fork-point").first
+    git("show-branch", "--merge-base").first
   end
 end
 
