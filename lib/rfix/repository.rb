@@ -91,7 +91,7 @@ class Rfix::Repository
   end
 
   def load_tracked!(reference)
-    repo.diff(reference, "HEAD", include_untracked: @include_untracked).each_delta do |delta|
+    repo.diff(reference, "HEAD", context_lines: 0, include_ignored: false, include_untracked: false, ignore_whitespace: true, ignore_whitespace_change: true, ignore_whitespace_eol: true, ignore_submodules: true).each_delta do |delta|
       next if delta.deleted?
       store(Rfix::Tracked.new(delta.new_file.fetch(:path), repo, reference))
     end
@@ -104,11 +104,10 @@ class Rfix::Repository
   end
 
   def load_untracked!
-    @include_untracked = true
-    # repo.status do |path, status|
-    #   next if status.include?(:ignored)
-    #   store(Rfix::Untracked.new(path, repo, nil))
-    # end
+    repo.status do |path, status|
+      next if status.include?(:ignored)
+      store(Rfix::Untracked.new(path, repo, nil))
+    end
   end
 
   private
