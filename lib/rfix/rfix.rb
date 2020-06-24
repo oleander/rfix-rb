@@ -187,7 +187,7 @@ module Rfix
   def enabled?(path, line)
     return true if global_enable?
     files.get(path) do |file|
-      file.include?(line)
+      return file.include?(line)
     end
   end
 

@@ -2,9 +2,11 @@
 
 require "rubocop"
 require "rainbow"
+require "rfix/log"
 
 module Rfix::Ext
   module CommentConfig
+    include Rfix::Log
     # Called by RuboCop on every line to see
     # if its suppose to run against it or not
     def cop_enabled_at_line?(_cop, line)
@@ -15,6 +17,7 @@ module Rfix::Ext
   end
 
   module Runner
+    include Rfix::Log
     # Called _after_ @source has been 'auto fixed' by Rubocop
     def check_for_infinite_loop(source, offences)
       # rubocop:disable Style/Semicolon

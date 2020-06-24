@@ -52,11 +52,12 @@ class Rfix::Untracked < Rfix::File
   end
 
   def inspect
-    "<Untracked({{info:#{relative_path}}})>"
+    "<Untracked({{info:#{path}}})>"
   end
 end
 
 class Rfix::Tracked < Rfix::File
+  include Rfix::Log
   class NoFile < Struct.new(:path)
     def include?(_)
       return true
@@ -77,6 +78,7 @@ class Rfix::Tracked < Rfix::File
 
   def refresh!
     @changes = diff.each_hunk.to_a.map(&:lines).flatten.map(&:new_lineno).to_set
+    # pp diff.each_hunk.to_a.map(&:lines).flatten
   rescue Rugged::TreeError
     @changed = NoFile.new(path)
   end
@@ -100,7 +102,7 @@ class Rfix::Tracked < Rfix::File
   end
 
   def diff
-    upstream.diff(head)
+    upstream.diff(head, exclude_context: true, exclude_deletions: true, exclude_eofnl: true)
   end
 
   def changes
@@ -120,10 +122,10 @@ class Rfix::Tracked < Rfix::File
 
   def inspect
     if changes.is_a?(NoFile)
-      return wrapper(relative_path)
+      return wrapper(path)
     end
 
-    wrapper("#{relative_path}[#{line_numbers}]")
+    wrapper("#{path}[#{line_numbers}]")
   end
 
   def wrapper(msg)
