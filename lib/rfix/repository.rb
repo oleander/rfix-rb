@@ -105,7 +105,7 @@ class Rfix::Repository
 
   def load_untracked!
     repo.status do |path, status|
-      next if status.include?(:ignored)
+      next unless status.include?(:worktree_new)
       store(Rfix::Untracked.new(path, repo, nil))
     end
   end

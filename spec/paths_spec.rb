@@ -54,10 +54,12 @@ RSpec.describe Rfix do
     end
 
     it "checks changed tracked files" do
-      file = tracked("valid.rb")
-      File.open(file, "a") { |h| h.write("# line") }
+      file1 = tracked
+      file2 = untracked
+      File.open(file1, "a") { |h| h.write("# line") }
       Rfix.load_untracked!
-      is_expected.to_not have_file(file)
+      is_expected.to_not have_file(file1)
+      is_expected.to have_file(file2)
     end
   end
 end
