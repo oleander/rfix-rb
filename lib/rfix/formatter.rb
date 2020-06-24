@@ -21,7 +21,7 @@ module Rfix
       @total = files.count
       @current = 0
       @files = {}
-      log_items(files, title: "Files to lint")
+      # log_items(files, title: "Files to lint")
     end
 
     def finished(files)

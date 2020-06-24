@@ -146,7 +146,7 @@ if should_list_files
   end
 end
 
-log_items(paths, title: "Paths to load")
+# log_items(paths, title: "Paths to load")
 
 env = RuboCop::CLI::Environment.new(
   Rfix.config.merge(options),
