@@ -1,4 +1,5 @@
 require "rugged"
+require "rfix/a_file"
 
 class Rfix::Repository
   include Rfix::Log
@@ -28,8 +29,8 @@ class Rfix::Repository
 
   def load_tracked!(reference)
     cache do
-      git.diff(reference).map do |file|
-        Rfix::AFile.new(file, @repo, reference)
+      @rugged.diff(reference, "HEAD").each_delta.to_a.map do |delta|
+        Rfix::AFile.new(delta.new_file.fetch(:path), @rugged, reference)
       end
     end
   end

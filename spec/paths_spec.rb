@@ -21,7 +21,7 @@ RSpec.describe Rfix do
       it "returns no files on empty directory" do
         Rfix.load_tracked!(rp)
         is_expected.to have_no_files
-      end
+      end 
 
       it "handles untracked file" do
         file = untracked("valid.rb", :rand)

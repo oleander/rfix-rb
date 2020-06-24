@@ -190,10 +190,17 @@ class AFile
 end
 
 repo = Rugged::Repository.new(".")
-files = `git ls-tree -r master --name-only`.lines.map(&:chomp)
 
-result = files.each_with_object({}) do |path, acc|
-  acc[path] = AFile.new(path, repo)
+repo.diff("83800375874a5ebd55b48283cef9245c32103aef", "HEAD").each_delta do |delta|
+  pp delta.new_file.fetch(:path)
 end
+# files = `git ls-tree -r master --name-only`.lines.map(&:chomp)
+#
+# result = files.each_with_object({}) do |path, acc|
+#   acc[path] = AFile.new(path, repo)
+# end
+#
+# pp reslt
 
-pp result
+# binding.pry
+# repo.branches

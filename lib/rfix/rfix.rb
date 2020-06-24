@@ -12,6 +12,7 @@ require "rfix/tracked_file"
 require "rfix/untracked_file"
 require "git"
 require "rugged"
+require "rfix/repository"
 
 module Rfix
   include GitHelper
@@ -196,16 +197,7 @@ module Rfix
 
   # Ref since last push
   def ref_since_push
-    git("rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}") do
-      CLI::UI::Prompt.ask("{{warning:No upstream branch has been set, please pick one}}") do |handler|
-        possible_parents.each do |parent|
-          handler.option(parent.split("/", 2).last) do |selection|
-            git("branch", "--set-upstream-to", parent)
-            return ref_since_push
-          end
-        end
-      end
-    end.first
+    "@{upstream}"
   end
 
   # Original branch, usually master

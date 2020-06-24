@@ -1,7 +1,7 @@
 require "rugged"
 require "shellwords"
 
-class AFile
+class Rfix::AFile
   include Rfix::Log
   attr_reader :repo, :path
 
