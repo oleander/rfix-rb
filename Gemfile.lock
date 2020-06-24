@@ -2,9 +2,11 @@ PATH
   remote: .
   specs:
     rfix (1.0.15)
+      git (~> 1.7.0)
       rainbow (~> 3.0)
       rouge (~> 3.20)
       rubocop (>= 0.80)
+      rugged (~> 1.0.0)
 
 GEM
   remote: https://rubygems.org/
@@ -63,7 +65,6 @@ GEM
     gem-release (2.1.1)
     git (1.7.0)
       rchardet (~> 1.8)
-    git_diff (0.4.2)
     guard (2.16.2)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
@@ -155,15 +156,12 @@ DEPENDENCIES
   aruba (~> 1.0)
   faker
   gem-release
-  git
-  git_diff
   guard
   guard-rspec
   rake (~> 12.3)
   rfix!
   rspec (~> 3.0)
   rubocop (~> 0.85)
-  rugged
 
 BUNDLED WITH
    2.1.4

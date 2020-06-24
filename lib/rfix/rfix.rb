@@ -200,6 +200,7 @@ module Rfix
   end
 
   # Ref since last push
+  # TODO: Should be a constant
   def ref_since_push
     "@{upstream}"
   end

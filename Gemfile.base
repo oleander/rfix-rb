@@ -1,11 +1,11 @@
 source "https://rubygems.org"
 
-gem "guard", require: false
-gem "guard-rspec", require: false
-gem "gem-release", require: false
-gem "git"
-gem "faker"
-gem "git_diff"
-gem "rugged"
+
+group :development do
+  gem "faker"
+  gem "gem-release", require: false
+  gem "guard", require: false
+  gem "guard-rspec", require: false
+end
 
 gemspec path: __dir__

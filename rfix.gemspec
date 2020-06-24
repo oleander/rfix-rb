@@ -54,6 +54,8 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "rainbow", "~> 3.0"
   spec.add_runtime_dependency "rouge", "~> 3.20"
   spec.add_runtime_dependency "rubocop", ">= 0.80"
+  spec.add_runtime_dependency "rugged", "~> 1.0.0"
+  spec.add_runtime_dependency "git", "~> 1.7.0"
 
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "aruba", "~> 1.0"
