@@ -25,8 +25,6 @@ def init!(root)
   Rfix.set_root(root)
   Rfix.init!
   Rfix.set_main_branch("master")
-  system 'git config user.email "me@example.com"'
-  system 'git config user.name "John Doe"'
 end
 
 RSpec.shared_context "setup", shared_context: :metadata  do
@@ -47,6 +45,13 @@ RSpec.configure do |config|
   config.example_status_persistence_file_path = ".rspec_status"
   config.shared_context_metadata_behavior = :apply_to_host_groups
   config.disable_monkey_patching!
+
+  config.before(:suite) do
+    if ENV["CI"]
+      system 'git config --global user.email "me@example.com"'
+      system 'git config --global user.name "John Doe"'
+    end
+  end
 
   config.around(:each, type: :git) do |example|
     setup.reset!
