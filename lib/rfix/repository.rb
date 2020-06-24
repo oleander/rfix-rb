@@ -13,11 +13,11 @@ class Rfix::Repository
   end
 
   def set_main_branch(name)
-    @rugged.config[MAIN_BRANCH] = name
+    repo.config[MAIN_BRANCH] = name
   end
 
   def main_branch
-    @rugged.config[MAIN_BRANCH]
+    repo.config[MAIN_BRANCH]
   end
 
   def paths
