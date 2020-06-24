@@ -1,4 +1,5 @@
 require "pathname"
+require "fileutils"
 
 class SetupGit < Struct.new(:bundle_file, :root_path, :id)
   include Rfix::Log
@@ -7,6 +8,7 @@ class SetupGit < Struct.new(:bundle_file, :root_path, :id)
 
   def self.setup!
     tmp_dir     = File.join(__dir__, "../../tmp")
+    FileUtils.mkdir_p(tmp_dir)
     id          = Faker::Code.asin
     root_path   = Dir.mktmpdir(id, tmp_dir)
     src_path    = File.join(root_path, "src")
