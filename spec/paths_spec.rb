@@ -1,5 +1,20 @@
+require "git_diff"
 RSpec.describe Rfix do
   include_context "git_new"
+
+  describe "diff" do
+    fit "owkr" do
+      3.times { tracked }
+      file = tracked
+      File.open(file, "a") { |h| h.write("# line") }
+      git.add(file)
+      git.commit("message")
+
+      git.diff("HEAD~2").map do |file|
+        GitDiff.from_string(file.patch).files.map(&:hunks)
+     end.flatten
+    end
+  end
 
   describe "lint" do
     describe "Rfix.load_tracked" do

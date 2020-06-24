@@ -63,6 +63,7 @@ GEM
     gem-release (2.1.1)
     git (1.7.0)
       rchardet (~> 1.8)
+    git_diff (0.4.2)
     guard (2.16.2)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
@@ -136,6 +137,7 @@ GEM
     rubocop-ast (0.0.3)
       parser (>= 2.7.0.1)
     ruby-progressbar (1.10.1)
+    rugged (1.0.0)
     shellany (0.0.1)
     sys-uname (1.2.1)
       ffi (>= 1.0.0)
@@ -154,12 +156,14 @@ DEPENDENCIES
   faker
   gem-release
   git
+  git_diff
   guard
   guard-rspec
   rake (~> 12.3)
   rfix!
   rspec (~> 3.0)
   rubocop (~> 0.85)
+  rugged
 
 BUNDLED WITH
    2.1.4

@@ -5,5 +5,7 @@ gem "guard-rspec", require: false
 gem "gem-release", require: false
 gem "git"
 gem "faker"
+gem "git_diff"
+gem "rugged"
 
 gemspec path: __dir__

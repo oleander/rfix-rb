@@ -11,6 +11,7 @@ require "rfix/log"
 require "rfix/tracked_file"
 require "rfix/untracked_file"
 require "git"
+require "rugged"
 
 class Rfix::Repository
   include Rfix::Log
@@ -19,6 +20,7 @@ class Rfix::Repository
   def initialize(root_path)
     @git = ::Git.open(root_path)#, log: Logger.new($stdout))
     @files = {}
+    @rugged = Rugged::Repository.new(root_path)
   end
 
   def paths
@@ -40,7 +42,7 @@ class Rfix::Repository
   def load_tracked!(reference)
     cache do
       git.diff(reference).map do |file|
-        Rfix::TrackedFile.new(file.path, reference, git_path)
+        Rfix::AFile.new(file, @repo, reference)
       end
     end
   end
@@ -48,7 +50,7 @@ class Rfix::Repository
   def load_untracked!
     cache do
       git.status.untracked.keys.map do |file|
-        Rfix::UntrackedFile.new(file, nil, git_path)
+        Rfix::AFile.new(file, @repo, nil)
       end
     end
   end
