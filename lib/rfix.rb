@@ -9,7 +9,12 @@ require "rfix/extensions/extensions"
 require "rfix/extensions/offense"
 require "rfix/rfix"
 require "rfix/box"
-require "pry"
+
+begin
+  require "pry"
+rescue LoadError
+  # NOP
+end
 
 module Rfix
   module Ext; end
