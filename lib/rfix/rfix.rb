@@ -36,6 +36,7 @@ module Rfix
   end
 
   def set_root(root)
+    abort "no root" unless root
     @root = root
   end
 

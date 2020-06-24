@@ -56,11 +56,12 @@ class SetupGit < Struct.new(:bundle_file, :root_path, :id)
   def reset!
     check_clone_status!
     # Remove untracked files and dirs
-    git.clean(force: true, f: true, d: true)
 
     # Undo all stages
     git.checkout("master")
     git.reset_hard(RALLY_POINT)
+    git.clean(force: true, d: true)
+    git.lib.stash_save("okay")
 
     check_cleanliness!
   end
@@ -69,7 +70,7 @@ class SetupGit < Struct.new(:bundle_file, :root_path, :id)
 
   def check_cleanliness!
     if git.status.dirty?
-      say_abort "Could not reset #{git_path}, still dirty"
+      say_abort "Could not reset #{git_path}, still dirty: #{git.status.number_of_dirty_files}"
     end
   end
 

@@ -1,4 +1,4 @@
-RSpec.describe Rfix do
+RSpec.describe Rfix, type: :git do
   include_context "git_new"
 
   describe "Rfix.load_tracked" do

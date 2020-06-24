@@ -6,7 +6,7 @@ class Array
   end
 end
 
-RSpec.describe Rfix do
+RSpec.describe Rfix, type: :git do
   include_context "git_new"
 
   describe "root_dir" do

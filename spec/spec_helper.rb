@@ -21,6 +21,12 @@ org_repo = File.join(__dir__, "..", "vendor", "oleander/git-fame-rb")
 
 setup = SetupGit.setup!
 
+def init!(root)
+  Rfix.set_root(root)
+  Rfix.init!
+  Rfix.set_main_branch("master")
+end
+
 RSpec.shared_context "setup", shared_context: :metadata  do
   subject(:git) { setup.git }
   let(:git_path) { setup.git_path }
@@ -40,10 +46,9 @@ RSpec.configure do |config|
   config.shared_context_metadata_behavior = :apply_to_host_groups
   config.disable_monkey_patching!
 
-  config.around(:each) do |example|
-    Rfix.init!
+  config.around(:each, type: :git) do |example|
     setup.reset!
-
+    init!(setup.git_path)
     Dir.chdir(setup.git_path) do
       cd(setup.git_path) do
         example.run
@@ -51,16 +56,11 @@ RSpec.configure do |config|
     end
   end
 
-  config.before do
-    Rfix.set_main_branch("master")
-  end
-
-  config.prepend_before(:suite) do
+  config.prepend_before(:suite, type: :git) do
     setup.clone!
-    Rfix.set_root(setup.git_path)
   end
 
-  config.append_after(:suite) do
+  config.append_after(:suite, type: :git) do
     setup.teardown!
   end
 
@@ -101,6 +101,7 @@ RSpec.configure do |config|
   config.around(:each, type: :aruba) do |example|
     repo = Dir.mktmpdir("rspec", expand_path("."))
     cmd("git", "clone", bundle_path, repo, "--branch", "master")
+    init!(repo)
     cd(repo) { example.run }
   end
 end
