@@ -78,7 +78,6 @@ class Rfix::Tracked < Rfix::File
 
   def refresh!
     @changes = diff.each_hunk.to_a.map(&:lines).flatten.map(&:new_lineno).to_set
-    pp diff.each_hunk.to_a.map(&:lines).flatten
   rescue Rugged::TreeError
     @changed = NoFile.new(path)
   end
@@ -101,8 +100,9 @@ class Rfix::Tracked < Rfix::File
     repo.rev_parse("HEAD:#{escaped_path}")
   end
 
+  # https://github.com/libgit2/rugged/blob/f8172c2a177a6795553f38f01248daff923f4264/lib/rugged/tree.rb
   def diff
-    upstream.diff(head, { exclude_context: true, exclude_deletions: true, exclude_eofnl: true, context_lines: 0, include_ignored: false, include_untracked: false})
+    upstream.diff(head, { context_lines: 0, include_ignored: false, include_untracked: true, ignore_whitespace: true, ignore_whitespace_change: true, ignore_whitespace_eol: true, ignore_submodules: true })
   end
 
   def changes
