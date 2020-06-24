@@ -73,6 +73,13 @@ when "welcome"
 when "all"
   reference = false
   Rfix.global_enable!
+when "set-main-branch"
+  unless branch = ARGV.shift
+    say_abort "No branch passed"
+  end
+
+  Rfix.set_main_branch(branch)
+  say_exit "Okay, set main branch to {{info:#{branch}}}"
 when "branch"
   abort_message = "No branch passed as second argument"
   unless reference = ARGV.shift

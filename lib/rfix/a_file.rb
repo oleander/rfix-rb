@@ -18,6 +18,8 @@ class Rfix::AFile
   end
 
   def refresh!
+    # TODO: Refactor
+    return unless @ref
     @changes = changed_lines
   rescue Rugged::TreeError
     @changed = nil

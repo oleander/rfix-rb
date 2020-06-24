@@ -4,11 +4,20 @@ require "rfix/a_file"
 class Rfix::Repository
   include Rfix::Log
   attr_reader :files
+  MAIN_BRANCH = "rfix.main"
 
   def initialize(root_path)
-    @git = ::Git.open(root_path)#, log: Logger.new($stdout))
-    @files = {}
+    @files  = {}
+    @git    = ::Git.open(root_path)
     @rugged = Rugged::Repository.new(root_path)
+  end
+
+  def set_main_branch(name)
+    @rugged.config[MAIN_BRANCH] = name
+  end
+
+  def main_branch
+    @rugged.config[MAIN_BRANCH]
   end
 
   def paths
@@ -19,8 +28,8 @@ class Rfix::Repository
     git.current_branch
   end
 
-  def possible_parents
-    git.branches.local.reject { |branch| branch == @git.branch }
+  def local_branches
+    @rugged.branches.each_name(:local).to_a
   end
 
   def git_path
@@ -33,6 +42,9 @@ class Rfix::Repository
         Rfix::AFile.new(delta.new_file.fetch(:path), @rugged, reference)
       end
     end
+  rescue Rugged::ReferenceError
+    # TODO: Add better error messages
+    say_abort $!
   end
 
   def load_untracked!

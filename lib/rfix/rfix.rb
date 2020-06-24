@@ -31,6 +31,10 @@ module Rfix
     auto_correct!
   end
 
+  def set_main_branch(branch)
+    @repo.set_main_branch(branch)
+  end
+
   def set_root(root)
     @root = root
   end
@@ -96,7 +100,7 @@ module Rfix
   end
 
   def possible_parents
-    @repo.possible_parents
+    @repo.local_branches
   end
 
   def load_tracked!(reference)
@@ -202,7 +206,22 @@ module Rfix
 
   # Original branch, usually master
   def ref_since_origin
-    git("show-branch", "--merge-base").first
+    if main_branch = @repo.main_branch
+      return main_branch
+    end
+
+    setup_origin_branch
+    ref_since_origin
+  end
+
+  def setup_origin_branch
+    CLI::UI::Prompt.ask("Which one is your main branch?") do |handler|
+      @repo.local_branches.each do |branch|
+        handler.option(branch) do
+          set_main_branch(branch)
+        end
+      end
+    end
   end
 end
 

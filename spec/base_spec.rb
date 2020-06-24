@@ -33,9 +33,9 @@ RSpec.describe Rfix do
 
     it "switches between branches" do
       switch("b1") do |b1|
-        expect(Rfix.possible_parents.pluck(:name)).to include(init_branch)
+        expect(Rfix.possible_parents).to include(init_branch)
         switch("b2") do |b2|
-          expect(Rfix.possible_parents.pluck(:name)).to include(b1)
+          expect(Rfix.possible_parents).to include(b1)
         end
       end
     end

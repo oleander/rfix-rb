@@ -47,6 +47,10 @@ RSpec.configure do |config|
     end
   end
 
+  config.before do
+    Rfix.set_main_branch("master")
+  end
+
   config.prepend_before(:suite) do
     setup.clone!
     Rfix.set_root(setup.git_path)
