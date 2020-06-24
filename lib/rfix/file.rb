@@ -78,7 +78,7 @@ class Rfix::Tracked < Rfix::File
 
   def refresh!
     @changes = diff.each_hunk.to_a.map(&:lines).flatten.map(&:new_lineno).to_set
-    # pp diff.each_hunk.to_a.map(&:lines).flatten
+    pp diff.each_hunk.to_a.map(&:lines).flatten
   rescue Rugged::TreeError
     @changed = NoFile.new(path)
   end
@@ -102,7 +102,7 @@ class Rfix::Tracked < Rfix::File
   end
 
   def diff
-    upstream.diff(head, exclude_context: true, exclude_deletions: true, exclude_eofnl: true)
+    upstream.diff(head, { exclude_context: true, exclude_deletions: true, exclude_eofnl: true, context_lines: 0, include_ignored: false, include_untracked: false})
   end
 
   def changes
