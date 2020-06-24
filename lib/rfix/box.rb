@@ -1,5 +1,3 @@
-require "pry"
-
 class Rfix::Box < Struct.new(:out, :err, :status, :args, :quiet)
   include Rfix::Log
 

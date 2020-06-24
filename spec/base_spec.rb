@@ -1,5 +1,4 @@
 # https://github.com/ruby-git/ruby-git/blob/e44c18ec6768c0c76603d20915118a201d0ec340/lib/git/base.rb
-require "pry"
 
 class Array
   def pluck(sym)
