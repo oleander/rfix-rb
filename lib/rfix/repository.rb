@@ -3,13 +3,13 @@ require "rfix/file"
 
 class Rfix::Repository
   include Rfix::Log
-  attr_reader :files
+  attr_reader :files, :repo
   MAIN_BRANCH = "rfix.main"
 
   def initialize(root_path)
-    @files  = {}
+    @files  = Hash.new
     @git    = ::Git.open(root_path)
-    @rugged = Rugged::Repository.new(root_path)
+    @repo   = Rugged::Repository.new(root_path)
   end
 
   def set_main_branch(name)
@@ -37,10 +37,8 @@ class Rfix::Repository
   end
 
   def load_tracked!(reference)
-    cache do
-      @rugged.diff(reference, "HEAD").each_delta.to_a.map do |delta|
-        Rfix::Tracked.new(delta.new_file.fetch(:path), @rugged, reference)
-      end
+    repo.diff(reference, "HEAD").each_delta.to_a.each do |delta|
+      store(Rfix::Tracked.new(delta.new_file.fetch(:path), repo, reference))
     end
   rescue Rugged::ReferenceError
     say_abort "Reference {{error:#{reference}}} cannot be found in repository"
@@ -51,19 +49,16 @@ class Rfix::Repository
   end
 
   def load_untracked!
-    cache do
-      git.status.untracked.keys.map do |file|
-        Rfix::Untracked.new(file, @repo, nil)
-      end
+    repo.status do |path, status|
+      next if status == :ignored
+      store(Rfix::Untracked.new(path, repo, nil))
     end
   end
 
   private
 
-  def cache
-    yield.each do |file|
-      @files[file.path] = file
-    end
+  def store(file)
+    @files[file.path] = file
   end
 
   def git
