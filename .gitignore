@@ -36,3 +36,4 @@ bin/ruby-parse
 bin/ruby-rewrite
 bin/thor
 ci/vendor/
+git

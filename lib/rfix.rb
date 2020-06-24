@@ -3,11 +3,18 @@
 
 # https://gist.github.com/skanev/9d4bec97d5a6825eaaf6
 
-require "rfix/version"
 require "cli/ui"
+require "rfix/version"
 require "rfix/extensions/extensions"
 require "rfix/extensions/offense"
 require "rfix/rfix"
+require "rfix/box"
+
+# begin
+#   require "pry"
+# rescue LoadError
+#   # NOP
+# end
 
 module Rfix
   module Ext; end
@@ -18,6 +25,8 @@ RuboCop::Options.prepend(Rfix::Ext::Options)
 RuboCop::Runner.prepend(Rfix::Ext::Runner)
 RuboCop::CommentConfig.prepend(Rfix::Ext::CommentConfig)
 RuboCop::Cop::Offense.prepend(Rfix::Ext::Offense)
+
+CLI::UI::StdoutRouter.enable
 
 # TODO: Handle cases where color can't be resolved by CLI::UI
 RuboCop::Formatter::SimpleTextFormatter::COLOR_FOR_SEVERITY.each do |severity, color|

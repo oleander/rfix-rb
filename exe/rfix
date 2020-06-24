@@ -73,6 +73,13 @@ when "welcome"
 when "all"
   reference = false
   Rfix.global_enable!
+when "set-main-branch"
+  unless branch = ARGV.shift
+    say_abort "No branch passed"
+  end
+
+  Rfix.set_main_branch(branch)
+  say_exit "Okay, set main branch to {{info:#{branch}}}"
 when "branch"
   abort_message = "No branch passed as second argument"
   unless reference = ARGV.shift
@@ -104,12 +111,10 @@ end
 
 if path = config_path
   Rfix.load_config do |config|
-    say_debug "[Config:Option] Load from #{path}"
     config.options_config = path
   end
 else
   Rfix.load_config do |config|
-    say_debug "[Config:PWD] Load from #{Dir.pwd}"
     config.for(Dir.pwd)
   end
 end
@@ -141,7 +146,7 @@ if should_list_files
   end
 end
 
-say_debug "[Config:Dump] #{Rfix.store}"
+log_items(paths, title: "Paths to load")
 
 env = RuboCop::CLI::Environment.new(
   Rfix.config.merge(options),
@@ -149,8 +154,8 @@ env = RuboCop::CLI::Environment.new(
   paths
 )
 
-begin
+# begin
   exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
-rescue RuboCop::Error => e
-  say_abort e.message
-end
+# rescue RuboCop::Error => e
+#   say_abort e.message
+# end

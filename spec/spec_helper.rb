@@ -2,9 +2,9 @@
 
 require "rfix"
 require "aruba/rspec"
+require "fileutils"
 
 Aruba.configure do |config|
-  # config.command_launcher = :in_process
   config.allow_absolute_paths = true
   config.activate_announcer_on_command_failure = [:stdout, :stderr]
   config.command_runtime_environment = {
@@ -13,11 +13,26 @@ Aruba.configure do |config|
   }
 end
 
-Dir[File.join(__dir__, "../spec/support/*.rb")].each(&method(:require))
+Dir[File.join(__dir__, "support/**/*.rb")].each(&method(:require))
 
 src_repo = File.join(__dir__, "..", "tmp", "src-repo")
 bundle_path = File.join(__dir__, "..", "tmp", "snapshot.bundle")
 org_repo = File.join(__dir__, "..", "vendor", "oleander/git-fame-rb")
+
+setup = SetupGit.setup!
+
+def init!(root)
+  Rfix.set_root(root)
+  Rfix.init!
+  Rfix.set_main_branch("master")
+end
+
+RSpec.shared_context "setup", shared_context: :metadata  do
+  subject(:git) { setup.git }
+  let(:git_path) { setup.git_path }
+  let(:rp) { SetupGit::RP }
+  let(:status) { git.status }
+end
 
 RSpec.configure do |config|
   config.include Rfix::Cmd
@@ -28,7 +43,26 @@ RSpec.configure do |config|
 
   config.order = :random
   config.example_status_persistence_file_path = ".rspec_status"
+  config.shared_context_metadata_behavior = :apply_to_host_groups
   config.disable_monkey_patching!
+
+  config.around(:each, type: :git) do |example|
+    setup.reset!
+    init!(setup.git_path)
+    Dir.chdir(setup.git_path) do
+      cd(setup.git_path) do
+        example.run
+      end
+    end
+  end
+
+  config.prepend_before(:suite, type: :git) do
+    setup.clone!
+  end
+
+  config.append_after(:suite, type: :git) do
+    setup.teardown!
+  end
 
   unless ENV["CI"]
     config.filter_run focus: true
@@ -44,7 +78,7 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-  config.before(:suite) do
+  config.before(:suite, type: :aruba) do
     FileUtils.mkdir_p(src_repo)
 
     FileUtils.copy_entry(org_repo, src_repo, true, true, true)
@@ -64,9 +98,10 @@ RSpec.configure do |config|
   end
 
   # This is cleaned up by aruba
-  config.around(:each) do |example|
+  config.around(:each, type: :aruba) do |example|
     repo = Dir.mktmpdir("rspec", expand_path("."))
     cmd("git", "clone", bundle_path, repo, "--branch", "master")
+    init!(repo)
     cd(repo) { example.run }
   end
 end

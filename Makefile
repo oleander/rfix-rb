@@ -11,3 +11,5 @@ fetch:
 	git --git-dir $(CLI)/.git --work-tree $(CLI) reset --hard ef976df676f4
 	git clone https://github.com/oleander/git-fame-rb $(FAME)
 	git --git-dir $(FAME)/.git --work-tree $(FAME) reset --hard a9b9c25bbab1
+pre:
+	brew install cmake pkg-config libgit2

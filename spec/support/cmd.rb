@@ -51,13 +51,11 @@ module Rfix::Support
     cmd("git rev-list --all --count").first.to_i
   end
 
-  def dump!
-    files = git("ls-files")
-    say "Found {{italic:#{files.count}}}"
-    files.each do |file|
-      say "\t{{italic:#{file}}}"
-    end
-  end
+  # def dump!
+  #   log_items(git("ls-files"), title: "Changed files")
+  #   git("-c", "color.status=always", "status").dump!
+  #   cmd("git diff --color | diff-so-fancy").dump!
+  # end
 
   def upstream(branch)
     cmd "git branch --set-upstream-to origin/#{branch}"

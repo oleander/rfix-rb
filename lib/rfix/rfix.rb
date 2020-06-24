@@ -10,10 +10,39 @@ require "rfix/git_helper"
 require "rfix/log"
 require "rfix/tracked_file"
 require "rfix/untracked_file"
+require "git"
+require "rugged"
+require "rfix/repository"
 
 module Rfix
   include GitHelper
   include Log
+
+  def init!
+    @global_enable = false
+    @debug = false
+    @config = {
+      force_exclusion: true,
+      formatters: ["Rfix::Formatter"]
+    }
+
+    @store = RuboCop::ConfigStore.new
+    @repo = Repository.new(@root || Dir.pwd)
+    auto_correct!
+  end
+
+  def set_main_branch(branch)
+    @repo.set_main_branch(branch)
+  end
+
+  def set_root(root)
+    abort "no root" unless root
+    @root = root
+  end
+
+  def no_debug!
+    @debug = false
+  end
 
   def indent
     " " * 2
@@ -51,8 +80,32 @@ module Rfix
     CLI::UI.fmt(cmds.join("\n"), enable_color: true)
   end
 
+  def repo
+    @repo
+  end
+
+  def files
+    @repo.files
+  end
+
   def current_branch
-    git("rev-parse", "--abbrev-ref", "HEAD").first
+    @repo.current_branch
+  end
+
+  def load_untracked!
+    @repo.load_untracked!
+  end
+
+  def paths
+    @repo.paths
+  end
+
+  def possible_parents
+    @repo.local_branches
+  end
+
+  def load_tracked!(reference)
+    @repo.load_tracked!(reference)
   end
 
   def debug?
@@ -60,6 +113,7 @@ module Rfix
   end
 
   def debug!
+    @config ||= {}
     @debug = true
     @config[:debug] = true
   end
@@ -123,43 +177,19 @@ module Rfix
     RuboCop::ResultCache.cleanup(@store, true)
   end
 
-  def init!
-    @files ||= {}
-    @global_enable = false
-    @debug = false
-    @config = {
-      force_exclusion: true,
-      formatters: ["Rfix::Formatter"]
-    }
-
-    @store = RuboCop::ConfigStore.new
-    auto_correct!
-  end
-
-  def files
-    @files.values
-  end
-
-  def spin
-    @spin ||= CLI::UI::SpinGroup.new
-  end
-
-  def paths
-    @files.keys
-  end
-
   def root_dir
-    @root_dir ||= git("rev-parse", "--show-toplevel").first
+    @repo.git_path
   end
 
   def refresh!(source)
-    @files[source.file_path]&.refresh!
+    files.get(source.file_path, &:refresh!)
   end
 
   def enabled?(path, line)
     return true if global_enable?
-
-    @files[path]&.include?(line)
+    files.get(path) do |file|
+      return file.include?(line)
+    end
   end
 
   def to_relative(path:)
@@ -168,56 +198,33 @@ module Rfix
     path
   end
 
-  def load_untracked!
-    cached(list_untrack_files.map do |path|
-      UntrackedFile.new(path, nil, root_dir)
-    end.select(&:file?).to_set)
-  end
-
-  def load_tracked!(reference)
-    cached(git("log", "--name-only", "--pretty=format:", *params, "#{reference}...HEAD").map do |path|
-      TrackedFile.new(path, reference, root_dir)
-    end.select(&:file?).to_set)
-  end
-
   def has_branch?(name)
-    cmd_succeeded?("git", "cat-file", "-t", name)
+    repo.has_reference?(name)
   end
 
   # Ref since last push
+  # TODO: Should be a constant
   def ref_since_push
-    git("rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}") do
-      [ref_since_origin]
-    end.first
+    "@{upstream}"
   end
 
   # Original branch, usually master
   def ref_since_origin
-    git("show-branch", "--merge-base").first
-  end
-
-  private
-
-  def old?
-    # For version 0.80.x .. 0.83.x:
-    # Otherwise it will exit with status code = 1
-    (0.80..0.83).include?(RuboCop::Version::STRING.to_f)
-  end
-
-  def get_file(path, &block)
-    if file = @files[path]
-      block.call(file)
+    if main_branch = @repo.main_branch
+      return main_branch
     end
+
+    setup_origin_branch
+    ref_since_origin
   end
 
-  def list_untrack_files
-    git("ls-files", "--exclude-standard", "--others")
-  end
-
-  def cached(files)
-    @files ||= {}
-    files.each do |file|
-      @files[file.path] = file
+  def setup_origin_branch
+    CLI::UI::Prompt.ask("Which one is your main branch?") do |handler|
+      @repo.local_branches.each do |branch|
+        handler.option(branch) do
+          set_main_branch(branch)
+        end
+      end
     end
   end
 end

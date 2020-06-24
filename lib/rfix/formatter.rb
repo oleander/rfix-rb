@@ -7,16 +7,21 @@ require "shellwords"
 
 module Rfix
   class Formatter < RuboCop::Formatter::SimpleTextFormatter
+    include Rfix::Log
+
     def started(files)
       theme = Rouge::Themes::Gruvbox.new
       @formatter = Rouge::Formatters::TerminalTruecolor.new(theme)
       @lexer = Rouge::Lexers::Ruby.new
       out "{{v}} Loading {{yellow:#{files.count}}} files"
       out("\n")
-      @pg = CLI::UI::Progress.new
+      unless_debug do
+        @pg = CLI::UI::Progress.new
+      end
       @total = files.count
       @current = 0
       @files = {}
+      log_items(files, title: "Files to lint")
     end
 
     def finished(files)
@@ -47,7 +52,9 @@ module Rfix
 
     def file_finished(file, offenses)
       @current += 1.0
-      @pg.tick(set_percent: (@current / @total))
+      unless_debug do
+        @pg.tick(set_percent: (@current / @total))
+      end
       @files[file] = offenses
     end
 

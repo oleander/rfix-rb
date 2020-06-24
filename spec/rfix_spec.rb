@@ -30,7 +30,7 @@ RSpec.describe Rfix, type: :aruba do
     end
 
     it { is_expected.to_not include("no upstream") }
-    it { is_expected.to include(ref_for_branch) }
+    xit { is_expected.to include(ref_for_branch) }
   end
 
   describe "info" do
@@ -112,7 +112,7 @@ RSpec.describe Rfix, type: :aruba do
       end
 
       it "makes change when left out" do
-        expect { branch_cmd(dry: false) }.to change { no_changed_files }.by(5)
+        expect { branch_cmd(dry: false); }.to change { no_changed_files }.by(6)
       end
     end
 
@@ -134,7 +134,7 @@ RSpec.describe Rfix, type: :aruba do
       end
 
       it "makes change when left out" do
-        expect { origin_cmd(dry: false) }.to change { no_changed_files }.by(5)
+        expect { origin_cmd(dry: false) }.to change { no_changed_files }.by(6)
       end
     end
   end
@@ -158,7 +158,7 @@ RSpec.describe Rfix, type: :aruba do
 
     describe "origin" do
       before { origin_cmd }
-      it { is_expected.to include("5 files") }
+      it { is_expected.to include("8 files") }
     end
 
     describe "local" do
@@ -168,7 +168,7 @@ RSpec.describe Rfix, type: :aruba do
 
     describe "branch" do
       before { branch_cmd }
-      it { is_expected.to include("5 files") }
+      it { is_expected.to include("8 files") }
     end
   end
 
@@ -270,9 +270,9 @@ RSpec.describe Rfix, type: :aruba do
     describe "run" do
       describe "with" do
         it "origin" do
-          expect { origin_cmd(dry: false) }.to change { no_changed_files }.by(5)
-          expect(all_output).to include("27 offenses corrected")
-          expect(all_output).to include("27 offenses detected")
+          expect { origin_cmd(dry: false) }.to change { no_changed_files }.by(6)
+          expect(all_output).to include("30 offenses corrected")
+          expect(all_output).to include("30 offenses detected")
           expect(last_command_started).to have_exit_status(0)
         end
 
@@ -282,15 +282,15 @@ RSpec.describe Rfix, type: :aruba do
           expect { local_cmd(dry: false) }.to change { no_changed_files }.by(0)
           add_file_and_commit # Add a file
           expect { local_cmd(dry: false) }.to change { no_changed_files }.by(1)
-          expect(all_output).to include("3 offenses detected")
-          expect(all_output).to include("3 offenses corrected")
+          expect(all_output).to include("4 offenses detected")
+          expect(all_output).to include("4 offenses corrected")
           expect(last_command_started).to have_exit_status(0)
         end
 
         it "branch" do
-          expect { branch_cmd(dry: false) }.to change { no_changed_files }.by(5)
-          expect(all_output).to include("27 offenses detected")
-          expect(all_output).to include("27 offenses corrected")
+          expect { branch_cmd(dry: false) }.to change { no_changed_files }.by(6)
+          expect(all_output).to include("30 offenses detected")
+          expect(all_output).to include("30 offenses corrected")
           expect(last_command_started).to have_exit_status(0)
         end
       end
