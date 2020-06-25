@@ -8,6 +8,7 @@ class Rfix::Repository
 
   class FileCache
     attr_reader :root_path
+    include Rfix::Log
     def initialize(path)
       @files = Hash.new
       @paths = Hash.new
@@ -91,7 +92,7 @@ class Rfix::Repository
   end
 
   def load_tracked!(reference)
-    repo.diff(reference, "HEAD", context_lines: 0, include_ignored: false, include_untracked: false, ignore_whitespace: true, ignore_whitespace_change: true, ignore_whitespace_eol: true, ignore_submodules: true).each_delta do |delta|
+    repo.diff_workdir(reference, include_untracked_content: true, context_lines: 0, include_ignored: false, include_untracked: true, ignore_whitespace: true, ignore_whitespace_change: true, ignore_whitespace_eol: true, ignore_submodules: true).each_delta do |delta|
       next if delta.deleted?
       store(Rfix::Tracked.new(delta.new_file.fetch(:path), repo, reference))
     end
