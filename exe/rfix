@@ -17,8 +17,13 @@ config_path       = false
 clear_cache       = false
 
 extend Rfix::Log
-Rfix.init!
 CLI::UI::StdoutRouter.enable
+
+if root_index = ARGV.index("--root")
+  Rfix.set_root(ARGV[root_index + 1])
+end
+
+Rfix.init!
 
 if ARGV.include?("--debug")
   Rfix.debug!
@@ -26,6 +31,10 @@ end
 
 options.on("--untracked", "Include untracked files") do
   Rfix.load_untracked!
+end
+
+options.on("--main-branch BRANCH", "Set main branch") do |branch|
+  Rfix.set_main_branch(branch)
 end
 
 options.on("--dry", "No auto correct") do
@@ -49,7 +58,19 @@ options.on("--config PATH", "A configuration file") do |path|
   config_path = path
 end
 
-case cmd = ARGV.shift
+options.on("--root PATH", "Project root") do |path|
+  # Rfix.set_root(path)
+end
+
+cmd = ARGV.shift
+
+begin
+  options, paths = options.parse(ARGV)
+rescue OptionParser::MissingArgument => e
+  say_abort "[Parser] #{e}"
+end
+
+case cmd
 when "info"
   say "Using RuboCop {{yellow:#{RuboCop::Version.version}}}"
   say_debug "Current directory {{italic:#{Dir.pwd}}}"
@@ -69,7 +90,8 @@ when "local"
 when "origin"
   reference = Rfix.ref_since_origin
 when "welcome"
-  abort Rfix.thanks
+  Rfix.thanks
+  exit 0
 when "all"
   reference = false
   Rfix.global_enable!
@@ -101,12 +123,6 @@ else
   end
 
   ARGV.unshift(cmd)
-end
-
-begin
-  options, paths = options.parse(ARGV)
-rescue OptionParser::MissingArgument => e
-  say_abort "[Parser] #{e}"
 end
 
 if path = config_path
@@ -146,7 +162,7 @@ if should_list_files
   end
 end
 
-log_items(paths, title: "Paths to load")
+# log_items(paths, title: "Paths to load")
 
 env = RuboCop::CLI::Environment.new(
   Rfix.config.merge(options),
@@ -154,8 +170,8 @@ env = RuboCop::CLI::Environment.new(
   paths
 )
 
-# begin
+begin
   exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
-# rescue RuboCop::Error => e
-#   say_abort e.message
-# end
+rescue RuboCop::Error => e
+  say_abort e.message
+end

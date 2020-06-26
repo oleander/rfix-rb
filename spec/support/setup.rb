@@ -1,44 +1,28 @@
 require "pathname"
+require "faker"
+require "fileutils"
+require "rfix/rake/paths"
 
-class SetupGit < Struct.new(:bundle_file, :root_path, :id)
+class SetupGit < Struct.new(:root_path, :id)
   include Rfix::Log
-
-  RALLY_POINT = RP = "rally-point"
 
   def self.setup!
     tmp_dir     = File.join(__dir__, "../../tmp")
     id          = Faker::Code.asin
     root_path   = Dir.mktmpdir(id, tmp_dir)
-    src_path    = File.join(root_path, "src")
-    bundle_file = File.join(root_path, "git.bundle")
-    git         = Git.init(src_path)
-
-    git.chdir do
-      Rfix::Log.say("Write ignore file")
-      File.write(".gitignore", "# Empty")
-
-      git.add(".gitignore")
-      git.commit("Add empty .gitignore")
-      git.add_tag(RALLY_POINT)
-
-      cmd "git", "bundle", "create", bundle_file, "--all"
-    end
-
-    new(bundle_file, root_path, id)
-  end
-
-  def self.cmd(*args)
-    out, status = Open3.capture2(*args)
-    abort out unless status.success?
+    new(root_path, id)
   end
 
   def teardown!
-    rm(root_path)
+    rm root_path
   end
 
   def clone!
-    @git = Git.clone(bundle_file, "repo", path: root_path)
-    @git.branch("master").checkout
+    return reset! if @git
+    Dir.chdir root_path do
+      @git = Git.clone(Bundle::Simple::FILE, "repo", path: root_path)
+    end
+    @git.checkout(Bundle::TAG)
   end
 
   def git
@@ -55,14 +39,9 @@ class SetupGit < Struct.new(:bundle_file, :root_path, :id)
 
   def reset!
     check_clone_status!
-    # Remove untracked files and dirs
-
-    # Undo all stages
-    git.checkout("master")
-    git.reset_hard(RALLY_POINT)
     git.clean(force: true, d: true)
-    git.lib.stash_save("okay")
-
+    git.reset_hard(Bundle::TAG)
+    git.checkout("master")
     check_cleanliness!
   end
 

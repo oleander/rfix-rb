@@ -15,29 +15,24 @@ end
 
 Dir[File.join(__dir__, "support/**/*.rb")].each(&method(:require))
 
-src_repo = File.join(__dir__, "..", "tmp", "src-repo")
-bundle_path = File.join(__dir__, "..", "tmp", "snapshot.bundle")
-org_repo = File.join(__dir__, "..", "vendor", "oleander/git-fame-rb")
-
 setup = SetupGit.setup!
 
-def init!(root)
-  Rfix.set_root(root)
-  Rfix.init!
-  Rfix.set_main_branch("master")
-end
 
-RSpec.shared_context "setup", shared_context: :metadata  do
-  subject(:git) { setup.git }
-  let(:git_path) { setup.git_path }
-  let(:rp) { SetupGit::RP }
-  let(:status) { git.status }
-end
+# RSpec.shared_context "setup:aruba", shared_context: :metadata  do
+#   let(:repo) { Dir.mktmpdir("git-aruba", expand_path(".")) }
+#   subject(:git) { Git.open(repo) }
+#
+#   around(:each, type: :aruba) do |example|
+#     cmd("git", "clone", bundle_path, repo, "--branch", "master")
+#     init!(repo)
+#     cd(repo) { git_init!; example.run }
+#   end
+# end
 
 RSpec.configure do |config|
   config.include Rfix::Cmd
   config.include Rfix::Log
-  config.include Rfix::Git
+  config.include SharedData
   config.include Aruba::Api
   config.include Rfix::Support
 
@@ -45,24 +40,6 @@ RSpec.configure do |config|
   config.example_status_persistence_file_path = ".rspec_status"
   config.shared_context_metadata_behavior = :apply_to_host_groups
   config.disable_monkey_patching!
-
-  config.around(:each, type: :git) do |example|
-    setup.reset!
-    init!(setup.git_path)
-    Dir.chdir(setup.git_path) do
-      cd(setup.git_path) do
-        example.run
-      end
-    end
-  end
-
-  config.prepend_before(:suite, type: :git) do
-    setup.clone!
-  end
-
-  config.append_after(:suite, type: :git) do
-    setup.teardown!
-  end
 
   unless ENV["CI"]
     config.filter_run focus: true
@@ -78,30 +55,116 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-  config.before(:suite, type: :aruba) do
-    FileUtils.mkdir_p(src_repo)
+  # This is cleaned up by aruba
+end
 
-    FileUtils.copy_entry(org_repo, src_repo, true, true, true)
+RSpec.shared_context "setup:cmd", shared_context: :metadata, type: :aruba  do
+  subject { last_command_started }
 
-    Rfix::Git.git("checkout", "master", root: src_repo)
-    Rfix::Git.git("reset", "--hard", "27fec8", root: src_repo)
-    Rfix::Git.git("branch", "-D", "test", root: src_repo, quiet: true)
-    Rfix::Git.git("checkout", "-b", "test", root: src_repo)
-    Rfix::Git.git("reset", "--hard", "a9b9c25", root: src_repo)
-    Rfix::Git.git("checkout", "master", root: src_repo)
+  let(:main) { Dir.mktmpdir("aruba", expand_path(".")) }
+  let(:repo) { git.dir.path }
+  let!(:git) { Git.clone(Bundle::Simple::FILE, "repo", path: main) }
 
-    Rfix::Git.git("bundle", "create", bundle_path, "--all", root: src_repo)
-
-    if Rfix::Git.dirty?(src_repo)
-      say_abort "[Src:1] Dirty repo on init {{italic:#{src_repo}}}"
+  around(:each) do |example|
+    # init_rfix!(repo)
+    Dir.chdir(repo) do
+      cd(repo) do
+        example.run
+      end
     end
   end
 
-  # This is cleaned up by aruba
-  config.around(:each, type: :aruba) do |example|
-    repo = Dir.mktmpdir("rspec", expand_path("."))
-    cmd("git", "clone", bundle_path, repo, "--branch", "master")
-    init!(repo)
-    cd(repo) { example.run }
+  def setup_all_files
+    setup_files(1)
+    init_file(:file)
   end
+
+
+  before(:each, :branch) do |example|
+    checkout("master", "stable")
+    setup_all_files
+    branch_cmd(branch: "master", dry: false, main_branch: "master", **load_args(example))
+  end
+
+  before(:each, :local) do |example|
+    checkout("master", "stable")
+    upstream("master")
+    setup_all_files
+    local_cmd(root: repo, dry: false, main_branch: "master", **load_args(example))
+  end
+
+  before(:each, :lint) do |example|
+    checkout("master", "stable")
+    upstream("master")
+    setup_all_files
+    lint_cmd(root: repo, main_branch: "master", **load_args(example))
+  end
+
+  before(:each, :origin) do |example|
+    checkout("master", "stable")
+    upstream("master")
+    setup_all_files
+    origin_cmd(root: repo, dry: false, main_branch: "master", **load_args(example))
+  end
+
+  def meta_to_args(keys)
+    keys.each_with_object({}) do |key, acc|
+      acc[key] = true
+    end
+  end
+
+  def load_args(example)
+    meta_to_args(example.metadata.fetch(:args, []))
+  end
+
+  def init_file(file)
+    name = file.to_s.to_sym
+    public_send(file.to_sym)
+    return true
+  rescue NoMethodError
+    return false
+  end
+
+  def setup_files(order)
+    if init_file("file#{order}")
+      setup_files(order + 1)
+    end
+  end
+end
+
+RSpec.shared_context "setup:git", shared_context: :metadata  do
+  subject(:git) { setup.git }
+  let(:git_path) { setup.git_path }
+  let(:rp) { Bundle::TAG }
+  let(:status) { git.status }
+
+  around(:each, type: :git) do |example|
+    setup.clone!
+
+    if [example.metadata[:type]].flatten.include?(:local)
+      Rfix.set_root(setup.git_path)
+      Rfix.set_main_branch("master")
+      Rfix.reset!
+    end
+
+    Dir.chdir(setup.git_path) do
+      cd(setup.git_path) do
+        example.run
+      end
+    end
+  end
+
+  prepend_before(:suite, type: :git) do
+    setup.clone!
+  end
+
+  append_after(:suite, type: :git) do
+    setup.teardown!
+  end
+end
+
+
+RSpec.configure do |config|
+  config.include_context "setup:git", type: :git
+  config.include_context "setup:cmd", type: :aruba
 end

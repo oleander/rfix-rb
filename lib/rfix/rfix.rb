@@ -21,22 +21,32 @@ module Rfix
   def init!
     @global_enable = false
     @debug = false
-    @config = {
+    @config ||= {}
+    @config.merge!({
       force_exclusion: true,
       formatters: ["Rfix::Formatter"]
-    }
+    })
 
     @store = RuboCop::ConfigStore.new
-    @repo = Repository.new(@root || Dir.pwd)
+    @repo ||= Repository.new(@root || Dir.pwd, @main_branch)
+
     auto_correct!
+
+    if @load_untracked
+      load_untracked!
+    end
+
+    if ref = @load_tracked
+      load_tracked!(ref)
+    end
   end
 
   def set_main_branch(branch)
-    @repo.set_main_branch(branch)
+    @main_branch = branch
+    @repo&.set_main_branch(branch)
   end
 
   def set_root(root)
-    abort "no root" unless root
     @root = root
   end
 
@@ -93,7 +103,13 @@ module Rfix
   end
 
   def load_untracked!
-    @repo.load_untracked!
+    @load_untracked = true
+    @repo&.load_untracked!
+  end
+
+  def reset!
+    @repo = nil
+    init!
   end
 
   def paths
@@ -105,7 +121,8 @@ module Rfix
   end
 
   def load_tracked!(reference)
-    @repo.load_tracked!(reference)
+    @load_tracked = reference
+    @repo&.load_tracked!(reference)
   end
 
   def debug?
@@ -127,6 +144,7 @@ module Rfix
   end
 
   def no_auto_correct!
+    @config ||= {}
     @config[:auto_correct] = false
   end
 

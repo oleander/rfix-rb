@@ -2,6 +2,8 @@ source "https://rubygems.org"
 
 
 group :development do
+  gem "pry"
+  gem "colorize"
   gem "faker"
   gem "gem-release", require: false
   gem "guard", require: false

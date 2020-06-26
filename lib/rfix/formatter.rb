@@ -16,12 +16,12 @@ module Rfix
       out "{{v}} Loading {{yellow:#{files.count}}} files"
       out("\n")
       unless_debug do
+        log_items(files, title: "Files to lint")
         @pg = CLI::UI::Progress.new
       end
       @total = files.count
       @current = 0
       @files = {}
-      log_items(files, title: "Files to lint")
     end
 
     def finished(files)

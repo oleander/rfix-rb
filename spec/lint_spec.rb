@@ -9,21 +9,13 @@ RSpec.describe "lint", type: :aruba do
   end
 
   describe "automated" do
-    subject { last_command_started }
-
-    describe "exit code 0" do
-      before { lint_cmd }
+    describe "exit code 0", :lint do
       describe "no files" do
-        it { is_expected.to have_exit_status(0) }
-
-        it "includes untracked files" do
-          filename = "my_file.rb"
-          add_file(file: filename, content: "")
-          lint_cmd
-          expect(all_output).to match(/#{filename}/)
-          say all_output
-          expect(last_command_started).to have_exit_status(0)
-        end
+        let(:file1) { tracked :invalid }
+        let(:file2) { untracked :invalid }
+        it { is_expected.to have_exit_status(1) }
+        it { is_expected.to list_file(file1) }
+        it { is_expected.to_not list_file(file2) }
       end
     end
 

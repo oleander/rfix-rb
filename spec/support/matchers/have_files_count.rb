@@ -1,8 +1,8 @@
-RSpec::Matchers.define :have_paths_count do |expected|
+RSpec::Matchers.define :have_files_count do |expected|
   include Rfix::Log
 
   match do |actual|
-    [actual.stderr, actual.stdout].any? { |std| std.include?("#{expected} paths") }
+    [actual.stderr, actual.stdout].any? { |std| std.include?("#{expected} files") }
   end
 
   def got(actual)

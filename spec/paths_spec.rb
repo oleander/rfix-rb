@@ -1,29 +1,23 @@
-RSpec.describe Rfix, type: :git do
-  include_context "git_new"
-
+RSpec.describe Rfix, type: [:git, :local] do
   describe "Rfix.load_tracked" do
-    # it "returns no files on empty directory" do
-    #   Rfix.load_tracked!(rp)
-    #   is_expected.to have_no_files
-    # end 
-
     it "handles untracked file" do
-      file = untracked("valid.rb", :rand)
+      file = untracked :valid
       Rfix.load_tracked!(rp)
       is_expected.to_not have_files(file)
     end
 
     it "checks for tracked file" do
+      git.branch("stable").checkout
       file = tracked("valid.rb")
       Rfix.load_tracked!(rp)
-      is_expected.to have_files(file)
+      is_expected.to have_file(file)
     end
 
     it "checks changed tracked files" do
       file = tracked("valid.rb")
       File.open(file, "a") { |h| h.write("# line") }
       Rfix.load_tracked!(rp)
-      is_expected.to have_files(file)
+      is_expected.to have_file(file)
     end
   end
 

@@ -26,11 +26,12 @@ before_install:
   - make dir fetch
 install:
   - bundle install
+  - gem install colorize
+  - gem install rake
+  - rake travis:setup
 script:
-  - bundle exec rake git:config
-  - bundle exec rake spec
-  - bundle exec rake install
-  - rfix info
+  - bundle exec rake travis:spec
+  - bundle exec rake travis:verify
 jobs:
   include:
     deploy:

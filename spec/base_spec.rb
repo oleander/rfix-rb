@@ -1,14 +1,6 @@
 # https://github.com/ruby-git/ruby-git/blob/e44c18ec6768c0c76603d20915118a201d0ec340/lib/git/base.rb
 
-class Array
-  def pluck(sym)
-    map(&sym)
-  end
-end
-
-RSpec.describe Rfix, type: :git do
-  include_context "git_new"
-
+RSpec.describe Rfix, type: [:git, :local] do
   describe "root_dir" do
     it "has root dir" do
       expect(Rfix.root_dir).to eq(git_path)

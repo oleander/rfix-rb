@@ -56,19 +56,21 @@ module Rfix::Log
     CLI::UI.puts(*args)
   end
 
+  def ftm(*args)
+    CLI::UI.fmt(*args)
+  end
+
   def log_items(items, title:)
     box("#{title} (#{items.count})") do
       return margin(2) do
         prt "{{warning:No items found}}"
       end if items.empty?
 
-      margin do
-        items.each do |item|
-          if block_given?
-            say strip(yield item)
-          else
-            say strip(item.to_s)
-          end
+      items.each do |item|
+        if block_given?
+          say strip(yield item)
+        else
+          say strip(item.to_s)
         end
       end
     end
