@@ -23,7 +23,6 @@ gemfile:
   - ci/Gemfile.rubocop-0.85.1
 before_install:
   - yes | gem update --system --force
-  - make dir fetch
 install:
   - bundle install
   - gem install colorize
