@@ -48,7 +48,7 @@ namespace :bundle do
         sh "git config branch.autosetupmerge always"
         sh "git config branch.autosetuprebase always"
 
-        sh "git config user.email not-my@real-email.com"
+        sh "git config user.email 'not-my@real-email.com'"
         sh "git config user.name 'John Doe'"
 
         sh "git tag", Bundle::Simple::TAG

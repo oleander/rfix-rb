@@ -2,6 +2,7 @@ module Travis
   SETUP = "travis:setup"
   INSTALL = "travis:install"
   TASKS = "travis:tasks:all"
+  GIT = "travis:git:config"
 end
 
 module Bundle

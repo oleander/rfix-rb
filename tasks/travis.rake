@@ -2,7 +2,7 @@ RSpec::Core::RakeTask.new(:rspec)
 
 namespace :travis do
   desc "Set up dependencies"
-  multitask setup: [Vendor::BUILD, Bundle::BUILD]
+  multitask setup: [Vendor::BUILD, Bundle::BUILD, Travis::GIT]
 
   desc "Install gem"
   task Travis::INSTALL => Travis::SETUP do
@@ -16,6 +16,13 @@ namespace :travis do
 
   desc "Verify bin on CI"
   task verify: [Travis::INSTALL, Travis::TASKS]
+
+  namespace :git do
+    task :config do
+      sh "git config --global user.email 'not-my@real-email.com'"
+      sh "git config --global user.name 'John Doe'"
+    end
+  end
 
   namespace :tasks do
     desc "Run this"
