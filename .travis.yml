@@ -4,8 +4,8 @@ language: ruby
 #   directories:
 #     - $HOME/.rvm
 #     - $HOME/Library/Caches/Homebrew
-before_cache:
-  - brew cleanup
+# before_cache:
+#   - brew cleanup
 rvm:
   - 2.5.0
   - 2.6.2
