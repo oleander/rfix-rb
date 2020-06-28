@@ -2,7 +2,7 @@ namespace :bundle do
   task :install do
     gemfiles.each do |gemfile|
       next if gemfile.end_with?(".lock")
-      sh "bundle install", "--gemfile", gemfile
+      sh "bundle install", "--gemfile", gemfile, "--jobs 3"
     end
   end
 
