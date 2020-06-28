@@ -29,7 +29,8 @@ class Change < Struct.new(:binding, :git, :type)
     staged: "{{blue:staged}}",
     append: "{{red:append}}",
     insert: "{{cyan:insert}}",
-    delete: "{{red:delete}}"
+    delete: "{{red:delete}}",
+    destroy: "{{red:delete}}"
   }.freeze
 
   attr_reader :changed_lines, :lint_errors_at_lines
@@ -51,6 +52,10 @@ class Change < Struct.new(:binding, :git, :type)
 
   def tracked
     tap { @actions.append([:tracked]) }
+  end
+
+  def destroy
+    tap { @actions.append([:destroy]) }
   end
 
   def staged
@@ -182,6 +187,15 @@ class Change < Struct.new(:binding, :git, :type)
     end
 
     return random_delete_number(type, rows)
+  end
+
+  def perform_destroy
+    if File.exist?(to_path)
+      FileUtils.remove_file(to_path)
+    end
+
+    @changed_lines = []
+    @lint_errors_at_lines = []
   end
 
   def perform_delete(type)
