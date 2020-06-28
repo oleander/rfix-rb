@@ -13,6 +13,7 @@ module Rfix::Cmd
     return box.stdout if box.success?
     return yield if block_given?
     return if quiet
+
     box.render(color: :red)
     exit box.exit_status
   ensure

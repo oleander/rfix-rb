@@ -135,7 +135,7 @@ class Rfix::Repository
   end
 
   def store(file)
-    if File.exists?(file.path)
+    if File.exist?(file.path)
       @files.add(file)
     end
   end
