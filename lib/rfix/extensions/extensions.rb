@@ -15,14 +15,4 @@ module Rfix::Ext
       say_abort "[Rfix::Enabled] #{$ERROR_INFO}"
     end
   end
-
-  module Runner
-    # include Rfix::Log # TODO: Remove
-    # Called _after_ @source has been 'auto fixed' by Rubocop
-    # def check_for_infinite_loop(source, offences)
-    #   Rfix.refresh!(source); super
-    # rescue StandardError
-    #   say_abort "[Rfix::Refresh] #{$!}"
-    # end
-  end
 end

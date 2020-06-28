@@ -18,7 +18,7 @@ end
 
 helper("help", binding)
 
-summary "Displays useful debug information"
+summary "Display runtime dependencies and their version"
 
 run do |_opts, _args|
   say "Using RuboCop {{info:#{RuboCop::Version.version}}}"

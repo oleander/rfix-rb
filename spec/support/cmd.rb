@@ -3,6 +3,8 @@
 require "shellwords"
 
 module Rfix::Support
+  include Rfix::Cmd
+
   def setup_test_branch(upstream: false)
     checkout("test")
 

@@ -2,7 +2,7 @@ r_args = []
 
 helper("help", binding)
 
-summary "Welcome"
+summary "This is how you get started with {{command:rfix}}"
 
 run do |_opts, _args, _cmd|
   indent = " " * 2

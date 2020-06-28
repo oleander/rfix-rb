@@ -2,7 +2,7 @@ r_args = []
 
 helper("help", binding)
 
-summary "Setup"
+summary "Sets the default branch for {{command:rfix local}}"
 
 run do |_opts, _args, _cmd|
   CLI::UI::Prompt.ask("Which one is your main branch?") do |handler|

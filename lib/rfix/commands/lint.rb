@@ -4,7 +4,7 @@ helper("help", binding)
 helper("rubocop", binding)
 helper("args", binding)
 
-summary "Shortcut for {{command:local --dry --untracked}}".fmt
+summary "Lints commits and untracked files not yet pushed to upstream"
 description "Lint (read-only) files"
 
 run do |opts, args, _cmd|

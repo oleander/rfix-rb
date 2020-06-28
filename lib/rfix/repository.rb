@@ -3,15 +3,12 @@ require "rfix/file"
 require "rfix/file_cache"
 require "rfix/untracked"
 require "rfix/tracked"
-require "pry"
+require "git"
 
 class Rfix::Repository
   include Rfix::Log
   attr_reader :files, :repo
   MAIN_BRANCH = "rfix.main"
-  # root_path: opts[:root],
-  # load_untracked: opts[:untracked],
-  # load_tracked_since: reference
 
   def initialize(root_path:, load_untracked:, load_tracked_since:)
     unless File.exist?(root_path)

@@ -2,6 +2,7 @@
 
 require "rfix"
 require "aruba/rspec"
+require "rugged"
 require "fileutils"
 
 Aruba.configure do |config|
@@ -18,7 +19,6 @@ Dir[File.join(__dir__, "support/**/*.rb")].each(&method(:require))
 setup = SetupGit.setup!
 
 RSpec.configure do |config|
-  config.include Rfix::Cmd
   config.include Rfix::Log
   config.include SharedData
   config.include Aruba::Api
