@@ -1,18 +1,16 @@
-# namespace :bundle do
-#   gemfiles = Rake::FileList.new("Gemfile*", "ci/Gemfile*") do |rule|
-#     rule.exclude("*.lock")
-#   end
-#
-#
-#   task install: gemfiles
-#
-#   # task :default => :install
-#   # rule ".html" => ->(f){ FileList[f.ext(".*")].first } do |t|
-#   #   sh "pygmentize -o #{t.name} #{t.source}"
-#   # end
-#
-#   rule ".lock" => gemfiles do |t|
-#     say "OKay"
-#     sh "bundle", "install", "--gemfile", t.source
-#   end
-# end
+namespace :bundle do
+  task :install do
+    gemfiles.each do |gemfile|
+      next if gemfile.end_with?(".lock")
+      sh "bundle install", "--gemfile", gemfile
+    end
+  end
+
+  namespace :git do
+    task :add do
+      gemfiles.each do |gemfile|
+        sh "git add", gemfile
+      end
+    end
+  end
+end

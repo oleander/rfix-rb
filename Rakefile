@@ -7,6 +7,8 @@ require_relative "lib/rfix/rake/support"
 
 Dir[File.join(__dir__, "tasks/*")].each(&method(:load))
 
+extend Rfix::Support
+
 desc "Remove and create tmp file"
 task :clear do
   rm_rf Bundle::TMP
@@ -20,3 +22,6 @@ task Bundle::BUILD => [Bundle::Complex::BUILD, Bundle::Simple::BUILD]
 
 desc "Rebuild bundles for testing"
 task Bundle::REBUILD => [Bundle::Complex::REBUILD, Bundle::Simple::REBUILD]
+
+# desc "Bump to a new version of rfix"
+# task bump: "build:"

@@ -6,6 +6,8 @@ module Travis
 end
 
 module Bundle
+  INSTALL = "bundle:install"
+  ADD = "bundle:git:add"
   CONFIG = File.join(__dir__, "../../../.rubocop.yml")
   TAG = "rally-point".freeze
   REBUILD = "bundle:rebuild".freeze

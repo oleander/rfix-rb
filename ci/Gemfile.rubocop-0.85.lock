@@ -2,7 +2,8 @@ PATH
   remote: .
   specs:
     rfix (1.0.17)
-      git (~> 1.7.0)
+      cri (~> 2.15.10)
+      listen (~> 3.0)
       rainbow (~> 3.0)
       rouge (~> 3.20)
       rubocop (>= 0.80)
@@ -31,6 +32,7 @@ GEM
     colorize (0.8.1)
     concurrent-ruby (1.1.6)
     contracts (0.16.0)
+    cri (2.15.10)
     cucumber (4.0.0)
       builder (~> 3.2, >= 3.2.3)
       cucumber-core (~> 7.0, >= 7.0.0)
@@ -158,6 +160,7 @@ DEPENDENCIES
   colorize
   faker
   gem-release
+  git (~> 1.7.0)
   guard
   guard-rspec
   pry

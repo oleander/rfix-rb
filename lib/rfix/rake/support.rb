@@ -2,14 +2,19 @@ require "colorize"
 require "fileutils"
 require "shellwords"
 
-module Support
+module Rfix::Support
   include FileUtils
+
   alias _sh sh
   alias _cd cd
   alias _rm_rf rm_rf
   alias _rm_f rm_f
   alias _mkdir_p mkdir_p
   alias _chdir chdir
+
+  def gemfiles
+    Dir["Gemfile*", "ci/Gemfile*"]
+  end
 
   def say(msg)
     warn "#{'==>'.blue} #{to_relative(msg).italic}"
@@ -68,5 +73,3 @@ module Support
     say [head.yellow, tail.join(" ").italic].join(" ")
   end
 end
-
-extend Support

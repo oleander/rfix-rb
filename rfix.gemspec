@@ -61,4 +61,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 12.3"
   spec.add_development_dependency "pry", "~> 0.13.1"
   spec.add_development_dependency "git", "~> 1.7.0"
+  spec.add_development_dependency "colorize", "~> 0.8.1"
 end
