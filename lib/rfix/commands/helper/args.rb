@@ -52,7 +52,11 @@ def setup(r_args = [], opts, _args, reference:)
     yield(repo, [])
   end
 
-  params2, paths = options.parse(r_args)
+  begin
+    params2, paths = options.parse(r_args)
+  rescue OptionParser::MissingArgument => e
+    say_abort e.to_s
+  end
 
   params2.merge!(params)
 
@@ -81,5 +85,10 @@ def setup(r_args = [], opts, _args, reference:)
   end
 
   env = RuboCop::CLI::Environment.new(params2, store, paths)
-  exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
+
+  begin
+    exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
+  rescue RuboCop::Error => e
+    say_abort e.to_s
+  end
 end
