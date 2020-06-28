@@ -37,7 +37,7 @@ class Rfix::Repository
       return file.include?(line)
     end
 
-    true
+    return false
   end
 
   def set_root(_path_path)
