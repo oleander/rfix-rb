@@ -24,7 +24,9 @@ module Rfix
       path.sub(::File.join(Dir.getwd, "/"), "")
     end
 
-    def finished(files)
+    def render_files(files)
+      return unless Rfix.test?
+
       files.each do |file|
         offenses = @files.fetch(file)
         corrected = offenses.select(&:corrected?)
@@ -37,6 +39,10 @@ module Rfix
           say_error truncate(file)
         end
       end
+    end
+
+    def finished(files)
+      render_files(files)
 
       files.each do |file|
         render_file(file, @files.fetch(file))
