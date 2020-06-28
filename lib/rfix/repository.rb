@@ -135,7 +135,9 @@ class Rfix::Repository
   end
 
   def store(file)
-    @files.add(file)
+    if File.exists?(file.path)
+      @files.add(file)
+    end
   end
 
   def git
