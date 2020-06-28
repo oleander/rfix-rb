@@ -2,7 +2,7 @@ RSpec::Core::RakeTask.new(:rspec)
 
 namespace :travis do
   desc "Set up dependencies"
-  multitask setup: [Vendor::BUILD, Bundle::BUILD, Travis::GIT]
+  task setup: [Vendor::BUILD, Bundle::BUILD, Travis::GIT]
 
   desc "Install gem"
   task Travis::INSTALL => Travis::SETUP do
