@@ -45,7 +45,7 @@ class Rfix::Repository
 
   def set_main_branch(name)
     unless has_reference?(name)
-      raise Rfix::Error.new("Branch {{error:#{name}}} does not exist")
+      raise Rfix::Error, "Branch {{error:#{name}}} does not exist"
     end
 
     repo.config[MAIN_BRANCH] = name
@@ -107,7 +107,6 @@ class Rfix::Repository
         store(Rfix::Tracked.new(path, repo, reference))
       end
     end
-
   rescue Rugged::ReferenceError
     abort_box($ERROR_INFO.to_s) do
       prt "Reference {{error:#{reference}}} cannot be found in repository"

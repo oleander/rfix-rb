@@ -12,7 +12,7 @@ rescue Rfix::Error => e
   say_abort e.to_s
 end
 
-run do |opts, args|
+run do |opts, _args|
   begin
     repo = Rfix::Repository.new(root_path: opts[:root])
   rescue Rfix::Error => e

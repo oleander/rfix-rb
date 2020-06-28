@@ -1,5 +1,5 @@
 RSpec.shared_examples "a destroyed file" do
-  Change::FIXTURES.keys.each do |type|
+  Change::FIXTURES.each_key do |type|
     describe "a destroy file of type #{type}" do
       describe "a destroyed file which has not been staged" do
         let(:file) { f(type).tracked.destroy }
