@@ -1,3 +1,11 @@
+AllCops:
+  Exclude:
+    - 'ci/*'
+    - 'bin/*'
+    - 'vendor/bundle/**/*'
+    - 'node_modules/**/*'
+    - 'spec/fixtures/'
+
 Metrics/MethodLength:
   Enabled: false
 
@@ -45,4 +53,10 @@ Style/Semicolon:
 Style/StructInheritance:
   Enabled: false
 Style/IfUnlessModifier:
+  Enabled: false
+Layout/LineLength:
+  Enabled: false
+Style/SymbolArray:
+  EnforcedStyle: brackets
+Metrics/BlockLength:
   Enabled: false
