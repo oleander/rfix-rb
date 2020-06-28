@@ -71,3 +71,17 @@ Metrics/ClassLength:
   Enabled: false
 Style/MixinUsage:
   Enabled: false
+Naming/AccessorMethodName:
+  Enabled: false
+Security/Eval:
+  Enabled: false
+Style/OptionalArguments:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
+Metrics/ParameterLists:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Style/FormatStringToken:
+  Enabled: false

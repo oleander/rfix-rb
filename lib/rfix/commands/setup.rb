@@ -12,10 +12,10 @@ run do |_opts, _args, _cmd|
       say "Current main branch set to {{info:#{branch}}}"
     end
 
-    repo.local_branches.each do |branch|
-      handler.option(branch) do
-        repo.set_main_branch(branch)
-        say "Main branch set to {{info:#{branch}}}"
+    repo.local_branches.each do |local_branch|
+      handler.option(local_branch) do
+        repo.set_main_branch(local_branch)
+        say "Main branch set to {{info:#{local_branch}}}"
       end
     end
   end

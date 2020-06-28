@@ -44,7 +44,7 @@ module Rfix
 
       offenses = @files.values.flatten
       corrected = offenses.select(&:corrected?)
-      out("\n") unless @total == 0
+      out("\n") unless @total.zero?
       report_summary(files.size, offenses.count, corrected.count)
     end
 

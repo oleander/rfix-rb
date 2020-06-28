@@ -130,14 +130,15 @@ RSpec.shared_context "setup:cmd", shared_context: :metadata, type: :aruba do
   end
 
   def init_file(file)
-    name = file.to_s.to_sym
     public_send(file.to_sym)
   rescue NoMethodError
     nil
   end
 
   def load_file(file)
-    init_file(file).tap { |file| file&.write! }
+    init_file(file).tap do |file_obj|
+      file_obj&.write!
+    end
   end
 
   def setup_files(order)

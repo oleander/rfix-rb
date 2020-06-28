@@ -140,7 +140,6 @@ class Change < Struct.new(:binding, :git, :type)
 
   def perform_insert(type)
     lines = file_lines.dup
-    count = lines.count
     row_number = random_line_number
     lines = lines.insert(row_number - 1, CHANGES.fetch(type))
 

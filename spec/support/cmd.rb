@@ -97,7 +97,7 @@ module Rfix::Support
     !cmd_succeeded?("git diff --quiet")
   end
 
-  def default_cmd(cmd, root: nil, dry: true, untracked: false, help: false, debug: false, main_branch: "master")
+  def default_cmd(cmd, root: nil, dry: true, untracked: false, help: false, main_branch: "master")
     cmd = cmd.dup
     cmd << " --dry" if dry
     cmd << " --untracked" if untracked
