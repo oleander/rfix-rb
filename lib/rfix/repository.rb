@@ -134,7 +134,9 @@ class Rfix::Repository
       elsif status.include?(:index_new)
         store(Rfix::Untracked.new(path, repo, nil))
       elsif status.include?(:index_modified)
-        store(Rfix::Tracked.new(path, repo, reference))
+        if reference
+          store(Rfix::Tracked.new(path, repo, reference))
+        end
       end
     end
   end
