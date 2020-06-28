@@ -124,7 +124,6 @@ class Rfix::Repository
   # https://github.com/libgit2/rugged/blob/35102c0ca10ab87c4c4ffe2e25221d26993c069c/test/status_test.rb
   def load_untracked!(untracked, reference:)
     repo.status do |path, status|
-      say_debug "#{status.join(", ")}:#{path}"
       if status.include?(:worktree_new) && untracked
         store(Rfix::Untracked.new(path, repo, nil))
       elsif status.include?(:index_new)

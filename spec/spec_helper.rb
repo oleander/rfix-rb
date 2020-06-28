@@ -13,22 +13,9 @@ Aruba.configure do |config|
   }
 end
 
-pp Dir[File.join(__dir__, "support/**/*.rb")]
 Dir[File.join(__dir__, "support/**/*.rb")].each(&method(:require))
 
 setup = SetupGit.setup!
-
-
-# RSpec.shared_context "setup:aruba", shared_context: :metadata  do
-#   let(:repo) { Dir.mktmpdir("git-aruba", expand_path(".")) }
-#   subject(:git) { Git.open(repo) }
-#
-#   around(:each, type: :aruba) do |example|
-#     cmd("git", "clone", bundle_path, repo, "--branch", "master")
-#     init!(repo)
-#     cd(repo) { git_init!; example.run }
-#   end
-# end
 
 RSpec.configure do |config|
   config.include Rfix::Cmd
