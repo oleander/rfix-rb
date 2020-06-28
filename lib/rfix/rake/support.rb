@@ -17,7 +17,7 @@ module Rfix::Support
   end
 
   def say(msg)
-    warn "#{'==>'.blue} #{to_relative(msg).italic}"
+    $stderr.puts "#{'==>'.blue} #{to_relative(msg).italic}"
   end
 
   def sh(*args)
