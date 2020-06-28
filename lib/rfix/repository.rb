@@ -9,7 +9,7 @@ class Rfix::Repository
   attr_reader :files, :repo
   MAIN_BRANCH = "rfix.main"
 
-  def initialize(root_path:, load_untracked:, load_tracked_since:)
+  def initialize(root_path:, load_untracked: false, load_tracked_since: nil)
     unless File.exist?(root_path)
       raise Rfix::Error, "#{root_path} does not exist"
     end
@@ -21,6 +21,10 @@ class Rfix::Repository
 
   def self.main_branch(for_path:)
     Rugged::Repository.new(for_path).config[MAIN_BRANCH]
+  end
+
+  def self.set_main_branch(for_path:, branch:)
+    Rugged::Repository.new(for_path).config[MAIN_BRANCH] = branch
   end
 
   def refresh!(path)
@@ -40,6 +44,10 @@ class Rfix::Repository
   end
 
   def set_main_branch(name)
+    unless has_reference?(name)
+      raise Rfix::Error.new("Branch {{error:#{name}}} does not exist")
+    end
+
     repo.config[MAIN_BRANCH] = name
   end
 
@@ -75,7 +83,7 @@ class Rfix::Repository
 
   private
 
-  def load!(from:, untracked:)
+  def load_tracked!(reference)
     repo.rev_parse(from).diff(
       repo.rev_parse("HEAD"),
       recurse_untracked_dirs: true,
@@ -100,7 +108,6 @@ class Rfix::Repository
       end
     end
 
-    load_untracked!(untracked, reference: from)
   rescue Rugged::ReferenceError
     abort_box($ERROR_INFO.to_s) do
       prt "Reference {{error:#{reference}}} cannot be found in repository"
@@ -113,6 +120,11 @@ class Rfix::Repository
     abort_box($ERROR_INFO.to_s) do
       prt "Reference {{error:#{reference}}} is not pointing to a tree or commit"
     end
+  end
+
+  def load!(from:, untracked:)
+    load_tracked!(from) if from
+    load_untracked!(untracked, reference: from)
   end
 
   # https://github.com/libgit2/rugged/blob/35102c0ca10ab87c4c4ffe2e25221d26993c069c/test/status_test.rb
