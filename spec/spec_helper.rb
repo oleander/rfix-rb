@@ -158,12 +158,6 @@ RSpec.shared_context "setup:git", shared_context: :metadata do
   around(:each, type: :git) do |example|
     setup.clone!
 
-    if [example.metadata[:type]].flatten.include?(:local)
-      Rfix.set_root(setup.git_path)
-      Rfix.set_main_branch("master")
-      Rfix.reset!
-    end
-
     Dir.chdir(setup.git_path) do
       cd(setup.git_path) do
         example.run

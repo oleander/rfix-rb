@@ -22,7 +22,7 @@ def validate!(files:)
 end
 
 def setup(r_args = [], opts, _args, files: [], reference:)
-  files    = validate!(files: files)
+  # files    = validate!(files: files)
   options  = RuboCop::Options.new
   store    = RuboCop::ConfigStore.new
 
@@ -41,7 +41,7 @@ def setup(r_args = [], opts, _args, files: [], reference:)
       root_path: opts[:root],
       load_untracked: opts[:untracked],
       load_tracked_since: reference,
-      paths: files
+      paths: files || []
     )
   rescue Rugged::RepositoryError => e
     say_abort e.to_s

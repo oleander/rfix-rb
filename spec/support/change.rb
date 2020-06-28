@@ -43,7 +43,9 @@ class Change < Struct.new(:binding, :git, :type)
   end
 
   def write!
-    git.chdir { manipulate! }
+    tap do
+      git.chdir { manipulate! }
+    end
   end
 
   def untracked
