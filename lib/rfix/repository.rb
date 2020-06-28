@@ -84,7 +84,7 @@ class Rfix::Repository
   private
 
   def load_tracked!(reference)
-    repo.rev_parse(from).diff(
+    repo.rev_parse(reference).diff(
       repo.rev_parse("HEAD"),
       recurse_untracked_dirs: true,
       include_untracked_content: true,
@@ -104,7 +104,7 @@ class Rfix::Repository
       if delta.untracked? && untracked
         store(Rfix::Untracked.new(path, repo, nil))
       else
-        store(Rfix::Tracked.new(path, repo, from))
+        store(Rfix::Tracked.new(path, repo, reference))
       end
     end
 
