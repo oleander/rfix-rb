@@ -5,6 +5,7 @@ helper("rubocop", binding)
 helper("args", binding)
 
 summary "Auto-fixes commits between HEAD and origin branch"
+usage "rfix origin [opts] [path ..]"
 
 run do |opts, args, _cmd|
   if opts.key?(:"main-branch")

@@ -5,6 +5,7 @@ helper("rubocop", binding)
 helper("args", binding)
 
 param :branch
+usage "rfix branch BRANCH [opts] [-p path ..]"
 option :p, :path, "Path to be passed to RuboCop", argument: :required, multiple: true
 summary "Fix changes made between HEAD and <branch>"
 
