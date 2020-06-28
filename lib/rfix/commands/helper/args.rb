@@ -101,6 +101,8 @@ def setup(r_args = [], opts, _args, files: [], reference:)
 
   begin
     exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
+  rescue RuboCop::Runner::InfiniteCorrectionLoop => e
+    say_abort e.to_s
   rescue RuboCop::Error => e
     say_abort e.to_s
   end
