@@ -19,5 +19,5 @@ run do |opts, args, _cmd|
     branch = say_abort "No main branch set, please run {{command:rfix setup}} first"
   end
 
-  setup(r_args, opts, args, reference: branch)
+  setup(r_args, opts, args, files: args.each.to_a, reference: branch)
 end

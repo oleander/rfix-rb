@@ -16,5 +16,5 @@ run do |opts, args, _cmd|
   end
 
   say "Using {{red:#{branch}}} as main branch"
-  setup(r_args, opts, args, reference: branch)
+  setup(r_args, opts, args, files: args.each.to_a, reference: branch)
 end

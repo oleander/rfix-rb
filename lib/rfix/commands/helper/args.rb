@@ -1,6 +1,6 @@
 option :r, :root, "{{*}} Project root path", default: Dir.pwd, argument: :required
 option :b, :"main-branch", "{{*}} Branch to use", default: "master", argument: :required
-option :l, :limit, "{{*}} Limit number of files", argument: :optional, transform: method(:Integer)
+option :l, :limit, "{{*}} Limit number of files", argument: :required, transform: method(:Integer)
 
 flag nil, :dry, "{{*}} Run in dry mode"
 flag nil, :untracked, "{{*}} Load untracked files"
@@ -10,19 +10,17 @@ flag nil, :test, "{{*}} Used in tests" do
 end
 
 def validate!(files:)
-  files = files.each.to_a
-
   files.each do |file|
     unless File.exist?(file)
-      say_abort "Passed file {{italic:#{file}}} does not exist"
+      say_abort "Passed file {{error:#{file}}} does not exist"
     end
   end
 
   files
 end
 
-def setup(r_args = [], opts, _args, reference:)
-  # files    = validate!(files: args)
+def setup(r_args = [], opts, _args, files: [], reference:)
+  files    = validate!(files: files)
   options  = RuboCop::Options.new
   store    = RuboCop::ConfigStore.new
 
@@ -80,7 +78,13 @@ def setup(r_args = [], opts, _args, reference:)
     say_abort e.to_s
   end
 
-  if paths.empty? && repo.paths.empty?
+  unless files.empty?
+    say "Loading files from {{italic:#{files.join(', ')}}}"
+  end
+
+  if !files.empty?
+    paths = files
+  elsif paths.empty? && repo.paths.empty?
     say_exit "Everything looks good, nothing to lint"
   elsif paths.empty?
     paths = repo.paths
