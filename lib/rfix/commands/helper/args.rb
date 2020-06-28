@@ -36,11 +36,17 @@ def setup(r_args = [], opts, _args, reference:)
     params[:cache] = "false"
   end
 
-  Rfix.repo = repo = Rfix::Repository.new(
-    root_path: opts[:root],
-    load_untracked: opts[:untracked],
-    load_tracked_since: reference
-  )
+  begin
+    Rfix.repo = repo = Rfix::Repository.new(
+      root_path: opts[:root],
+      load_untracked: opts[:untracked],
+      load_tracked_since: reference
+    )
+  rescue Rugged::RepositoryError => e
+    say_abort e.to_s
+  rescue Rfix::Error => e
+    say_abort e.to_s
+  end
 
   if opts[:"clear-cache"]
     RuboCop::ResultCache.cleanup(store, true)
