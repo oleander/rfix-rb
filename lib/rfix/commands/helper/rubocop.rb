@@ -1,4 +1,4 @@
-RuboCop::Options.new.opts.instance_eval("@stack", __FILE__, __LINE__ + 1).map(&:list).flatten.each do |opt|
+RuboCop::Options.new.opts.instance_eval("@stack", __FILE__, __LINE__).map(&:list).flatten.each do |opt|
   short = opt.short.map { |arg| arg.delete_prefix("-") }
   long = opt.long.map { |arg| arg.delete_prefix("--") }
 

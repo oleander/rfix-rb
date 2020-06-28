@@ -26,23 +26,23 @@ namespace :travis do
 
   namespace :tasks do
     desc "Run this"
-    multitask all: [:welcome, :info]
+    task all: [:welcome, :info]
 
     task :rfix do
-      clone_and_run do |path|
-        sh "rfix", *args(path)
+      clone_and_run do
+        sh "rfix"
       end
     end
 
     task :info do
-      clone_and_run do |path|
-        sh "rfix info", *args(path)
+      clone_and_run do
+        sh "rfix info"
       end
     end
 
     task :help do
-      clone_and_run do |path|
-        sh "rfix --help", *args(path)
+      clone_and_run do
+        sh "rfix --help"
       end
     end
 

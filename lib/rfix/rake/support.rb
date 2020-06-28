@@ -49,12 +49,8 @@ module Support
   def clone_and_run(&block)
     Dir.mktmpdir do |repo|
       sh "git clone", Bundle::Complex::FILE, repo, "--branch", "master"
-      block.call(repo)
+      Dir.chdir(repo) { block.call(repo) }
     end
-  end
-
-  def args(root)
-    ["--force-default-config", "--main-branch", "master", "--config", Bundle::CONFIG]
   end
 
   private
