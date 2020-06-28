@@ -5,25 +5,22 @@
 
 require "cli/ui"
 require "rfix/version"
+require "rfix/log"
+require "rfix/formatter"
 require "rfix/extensions/extensions"
 require "rfix/extensions/offense"
 require "rfix/rfix"
 require "rfix/box"
-
-# begin
-#   require "pry"
-# rescue LoadError
-#   # NOP
-# end
+require "rfix/error"
 
 module Rfix
   module Ext; end
   extend self
 end
 
-RuboCop::Options.prepend(Rfix::Ext::Options)
 RuboCop::Runner.prepend(Rfix::Ext::Runner)
 RuboCop::CommentConfig.prepend(Rfix::Ext::CommentConfig)
+# TODO: Remove
 RuboCop::Cop::Offense.prepend(Rfix::Ext::Offense)
 
 CLI::UI::StdoutRouter.enable

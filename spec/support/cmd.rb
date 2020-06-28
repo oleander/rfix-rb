@@ -3,13 +3,6 @@
 require "shellwords"
 
 module Rfix::Support
-  FIXTURES = {
-    invalid: "invalid.rb",
-    valid: "valid.rb",
-    unfixable: "unfixable.rb",
-    not_ruby: "not_ruby.txt"
-  }
-
   def setup_test_branch(upstream: false)
     checkout("test")
 
@@ -64,58 +57,12 @@ module Rfix::Support
     cmd("git rev-list --all --count").first.to_i
   end
 
-  # def dump!
-  #   log_items(git("ls-files"), title: "Changed files")
-  #   git("-c", "color.status=always", "status").dump!
-  #   cmd("git diff --color | diff-so-fancy").dump!
-  # end
-
   def upstream(branch)
-    cmd "git branch --set-upstream-to origin/#{branch}"
+    cmd "git branch --set-upstream-to #{branch}"
   end
 
-  def to_file(something)
-    case something
-    when Symbol
-      FIXTURES.fetch(something)
-    when String
-      return something
-    else
-      raise "Invalid file path type #{something}"
-    end
-  end
-
-  def to_fixture(file)
-    "%/#{file}"
-  end
-
-  def untracked(something = :valid, path: nil)
-    file = to_file(something)
-    path ||= to_random(path: file)
-    copy(to_fixture(file), path)
-    path
-  end
-
-  def tracked(file = :valid, **args)
-    untracked(file, **args).tap do |path|
-      git.add(path)
-      git.commit("Add #{path}")
-    end
-  end
-
-  def add_file_and_commit(file: "file.rb", branch: nil, **args)
-    checkout(branch) if branch
-    add_file(file: file, **args)
-    git.add(file)
-    git.commit("Add file #{file}")
-  end
-
-  def ref_for_branch(branch: "test")
-    "origin/#{branch}"
-  end
-
-  def add_file(file: "file.rb", content: '"hello"')
-    File.write(file, content)
+  def f(type)
+    Change.new(self, git, type)
   end
 
   def no_changed_files
@@ -157,9 +104,11 @@ module Rfix::Support
     cmd << " --help" if help
     cmd << " --root #{root}" if root
     cmd << " --main-branch #{main_branch}"
+    cmd << " --cache false"
+    cmd << " --test"
     # cmd << " --debug" if debug
-    cmd << " --no-color"
-    cmd << " --list-files"
+    # cmd << " --no-color"
+    # cmd << " --list-files"
     cmd << " --config #{config_path}"
 
     run_command_and_stop("rfix #{cmd}", fail_on_error: false)
@@ -167,13 +116,4 @@ module Rfix::Support
 
   private
 
-  def to_random(path:)
-    count = Faker::Number.between(from: 0, to: 3)
-    dir = Faker::File.dir(segment_count: count, root: nil)
-    dir = dir.delete_prefix("/")
-    if count == 0
-      dir = "."
-    end
-    Faker::File.file_name(dir: dir, ext: File.extname(path).delete_prefix(".")).delete_prefix("./")
-  end
 end

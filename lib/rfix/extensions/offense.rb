@@ -33,7 +33,8 @@ module Rfix::Ext
     end
 
     def relative_path
-      Rfix.to_relative(path: location.source_buffer.name)
+      # TODO: Fix this, do not use Dir.getwd, use git root
+      location.source_buffer.name.sub(File.join(Dir.getwd, "/"), "")
     end
 
     def clickable_path

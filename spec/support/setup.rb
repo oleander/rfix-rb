@@ -19,6 +19,7 @@ class SetupGit < Struct.new(:root_path, :id)
 
   def clone!
     return reset! if @git
+
     Dir.chdir root_path do
       @git = Git.clone(Bundle::Simple::FILE, "repo", path: root_path)
     end

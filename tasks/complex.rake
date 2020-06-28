@@ -2,7 +2,7 @@ require "tmpdir"
 
 namespace :bundle do
   namespace :complex do
-    directory Bundle::Complex::TMP
+    directory Bundle::TMP
 
     desc "Build complex bundle"
     task build: [Bundle::Complex::FILE, Bundle::Complex::TEST] do

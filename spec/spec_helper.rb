@@ -13,6 +13,7 @@ Aruba.configure do |config|
   }
 end
 
+pp Dir[File.join(__dir__, "support/**/*.rb")]
 Dir[File.join(__dir__, "support/**/*.rb")].each(&method(:require))
 
 setup = SetupGit.setup!
@@ -58,32 +59,34 @@ RSpec.configure do |config|
   # This is cleaned up by aruba
 end
 
-RSpec.shared_context "setup:cmd", shared_context: :metadata, type: :aruba  do
+RSpec.shared_context "setup:cmd", shared_context: :metadata, type: :aruba do
   subject { last_command_started }
 
   let(:main) { Dir.mktmpdir("aruba", expand_path(".")) }
   let(:repo) { git.dir.path }
-  let!(:git) { Git.clone(Bundle::Simple::FILE, "repo", path: main) }
+  let(:git) { Git.clone(Bundle::Simple::FILE, "repo", path: main) }
+  let(:rugged) { Rugged::Repository.new(repo) }
 
   around(:each) do |example|
-    # init_rfix!(repo)
-    Dir.chdir(repo) do
-      cd(repo) do
-        example.run
-      end
+    rugged.status do |path, status|
+      fail "expected clean directory, #{path} #{status.join(", ")}"
+    end
+
+    cd(repo) do
+      example.run
     end
   end
 
   def setup_all_files
     setup_files(1)
-    init_file(:file)
+    load_file(:file)
   end
-
 
   before(:each, :branch) do |example|
     checkout("master", "stable")
+    upstream("master")
     setup_all_files
-    branch_cmd(branch: "master", dry: false, main_branch: "master", **load_args(example))
+    branch_cmd(branch: "master", root: repo, dry: false, main_branch: "master", **load_args(example))
   end
 
   before(:each, :local) do |example|
@@ -107,6 +110,16 @@ RSpec.shared_context "setup:cmd", shared_context: :metadata, type: :aruba  do
     origin_cmd(root: repo, dry: false, main_branch: "master", **load_args(example))
   end
 
+  prepend_before(:each, :read_only) do
+    rugged.status do |path, status|
+      fail "expected a clean directory but got {{italic:#{path}}} with status {{red:#{status.join(", ")}}}"
+    end
+  end
+
+  after(:each, :read_only) do
+    expect(git).not_to be_dirty
+  end
+
   def meta_to_args(keys)
     keys.each_with_object({}) do |key, acc|
       acc[key] = true
@@ -120,19 +133,22 @@ RSpec.shared_context "setup:cmd", shared_context: :metadata, type: :aruba  do
   def init_file(file)
     name = file.to_s.to_sym
     public_send(file.to_sym)
-    return true
   rescue NoMethodError
-    return false
+    nil
+  end
+
+  def load_file(file)
+    init_file(file).tap { |file| file&.write! }
   end
 
   def setup_files(order)
-    if init_file("file#{order}")
+    if load_file("file#{order}")
       setup_files(order + 1)
     end
   end
 end
 
-RSpec.shared_context "setup:git", shared_context: :metadata  do
+RSpec.shared_context "setup:git", shared_context: :metadata do
   subject(:git) { setup.git }
   let(:git_path) { setup.git_path }
   let(:rp) { Bundle::TAG }
@@ -162,7 +178,6 @@ RSpec.shared_context "setup:git", shared_context: :metadata  do
     setup.teardown!
   end
 end
-
 
 RSpec.configure do |config|
   config.include_context "setup:git", type: :git

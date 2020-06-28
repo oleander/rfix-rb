@@ -10,12 +10,12 @@ module Bundle
   TAG = "rally-point"
   REBUILD = "bundle:rebuild"
   BUILD = "bundle:build"
+  ROOT = File.expand_path(File.join(__dir__, "../../.."))
+  DIR = File.join(ROOT, "spec/fixtures")
+  TMP = File.join(ROOT, "tmp")
 
   module Simple
-    ROOT = File.expand_path(File.join(__dir__, "../../.."))
-    DIR = File.join(ROOT, "spec/fixtures")
     FILE = File.join(DIR, "simple.bundle")
-    TMP = File.join(ROOT, "tmp")
     REPO = File.join(TMP, "simple")
     REBUILD = "bundle:simple:rebuild"
     BUILD = "bundle:simple:build"
@@ -25,10 +25,7 @@ module Bundle
   end
 
   module Complex
-    ROOT = File.expand_path(File.join(__dir__, "../../.."))
-    DIR = File.join(ROOT, "spec/fixtures")
     FILE = File.join(DIR, "complex.bundle")
-    TMP = File.join(ROOT, "tmp")
     REPO = File.join(TMP, "complex")
     GITHUB = "https://github.com/oleander/git-fame-rb"
     REBUILD = "bundle:complex:rebuild"

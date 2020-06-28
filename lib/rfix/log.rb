@@ -26,10 +26,14 @@ module Rfix::Log
     exit 1
   end
 
-  def say_debug(message)
-    unless_debug do
+  def say_test(message)
       prt("{{i}} #{strip(message)}")
-    end
+  end
+
+  def say_debug(message)
+    # unless_debug do
+      prt("{{i}} #{strip(message)}", to: $stderr)
+    # end
   end
 
   def say_abort(message)
@@ -56,9 +60,11 @@ module Rfix::Log
     CLI::UI.puts(*args)
   end
 
-  def ftm(*args)
+  def fmt(*args)
     CLI::UI.fmt(*args)
   end
+
+  alias ftm fmt
 
   def log_items(items, title:)
     box("#{title} (#{items.count})") do

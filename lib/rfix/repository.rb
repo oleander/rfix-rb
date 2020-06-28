@@ -1,66 +1,48 @@
 require "rugged"
 require "rfix/file"
+require "rfix/file_cache"
+require "rfix/untracked"
+require "rfix/tracked"
+require "pry"
 
 class Rfix::Repository
   include Rfix::Log
   attr_reader :files, :repo
   MAIN_BRANCH = "rfix.main"
+  # root_path: opts[:root],
+  # load_untracked: opts[:untracked],
+  # load_tracked_since: reference
 
-  class FileCache
-    attr_reader :root_path
-    include Rfix::Log
-    def initialize(path)
-      @files = Hash.new
-      @paths = Hash.new
-      @root_path = path
+  def initialize(root_path:, load_untracked:, load_tracked_since:)
+    unless File.exist?(root_path)
+      raise Rfix::Error, "#{root_path} does not exist"
     end
 
-    def add(file)
-      @files[normalized_file_path(file)] ||= file
-    end
+    @files = FileCache.new(root_path)
+    @git   = ::Git.open(root_path)
+    @repo  = Rugged::Repository.new(root_path)
 
-    def get(path, &block)
-      unless file = @files[normalize_path(path)]
-        say_error "No file found for #{path}"
-        return nil
-      end
-
-      block.call(file)
-    end
-
-    def pluck(&block)
-      @files.values.map(&block)
-    end
-
-    private
-
-    def normalized_file_path(file)
-      normalize_path(file.absolute_path)
-    end
-
-    def to_abs(path)
-      File.join(root_path, path)
-    end
-
-    def normalize_path(path)
-      if cached = @paths[path]
-        return cached
-      end
-
-      if Pathname.new(path).absolute?
-        @paths[path] = File.realdirpath(path)
-      else
-        @paths[path] = File.realdirpath(to_abs(path))
-      end
-    end
+    load!(from: load_tracked_since, untracked: load_untracked)
   end
 
-  def initialize(root_path, branch)
-    @files  = FileCache.new(root_path)
-    @git    = ::Git.open(root_path)
-    @repo   = Rugged::Repository.new(root_path)
-    @load_untracked = false
-    set_main_branch(branch) if branch
+  def self.main_branch(for_path:)
+    Rugged::Repository.new(for_path).config[MAIN_BRANCH]
+  end
+
+  def refresh!(path)
+    @files.get(path).refresh!
+  end
+
+  def include?(path, line)
+    if file = @files.get(path)
+      return file.include?(line)
+    end
+
+    true
+  end
+
+  def set_root(_path_path)
+    using_path(root_path)
   end
 
   def set_main_branch(name)
@@ -97,13 +79,36 @@ class Rfix::Repository
     repo.rev_parse("HEAD")
   end
 
-  def load_tracked!(reference)
-    repo.diff(repo.rev_parse(reference), head, recurse_untracked_dirs: @load_untracked, include_untracked_content: @load_untracked, context_lines: 0, include_ignored: false, include_untracked: @load_untracked, ignore_whitespace: true, ignore_whitespace_change: true, ignore_whitespace_eol: true, ignore_submodules: true).each_delta do |delta|
+  private
+
+  def load!(from:, untracked:)
+    repo.rev_parse(from).diff(
+      repo.rev_parse("HEAD"),
+      recurse_untracked_dirs: true,
+      include_untracked_content: true,
+      context_lines: 0,
+      include_ignored: false,
+      include_untracked: true,
+      ignore_whitespace: true,
+      ignore_whitespace_change: true,
+      ignore_whitespace_eol: true,
+      ignore_submodules: true,
+      include_unmodified: true
+    ).each_delta do |delta|
       next if delta.deleted?
-      store(Rfix::Tracked.new(delta.new_file.fetch(:path), repo, reference))
+
+      path = delta.new_file.fetch(:path)
+
+      if delta.untracked? and untracked
+        store(Rfix::Untracked.new(path, repo, nil))
+      else
+        store(Rfix::Tracked.new(path, repo, from))
+      end
     end
+
+    load_untracked!(untracked, reference: from)
   rescue Rugged::ReferenceError
-    abort_box($!.to_s) do
+    abort_box($ERROR_INFO.to_s) do
       prt "Reference {{error:#{reference}}} cannot be found in repository"
     end
   rescue Rugged::ConfigError
@@ -111,20 +116,24 @@ class Rfix::Repository
       prt "No upstream branch set for {{error:#{current_branch}}}"
     end
   rescue TypeError
-    abort_box($!.to_s) do
+    abort_box($ERROR_INFO.to_s) do
       prt "Reference {{error:#{reference}}} is not pointing to a tree or commit"
     end
   end
 
-  def load_untracked!
-    @load_untracked = true
+  # https://github.com/libgit2/rugged/blob/35102c0ca10ab87c4c4ffe2e25221d26993c069c/test/status_test.rb
+  def load_untracked!(untracked, reference:)
     repo.status do |path, status|
-      next unless status.include?(:worktree_new)
-      store(Rfix::Untracked.new(path, repo, nil))
+      say_debug "#{status.join(", ")}:#{path}"
+      if status.include?(:worktree_new) && untracked
+        store(Rfix::Untracked.new(path, repo, nil))
+      elsif status.include?(:index_new)
+        store(Rfix::Untracked.new(path, repo, nil))
+      elsif status.include?(:index_modified)
+        store(Rfix::Tracked.new(path, repo, reference))
+      end
     end
   end
-
-  private
 
   def store(file)
     @files.add(file)
