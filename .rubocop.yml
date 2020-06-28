@@ -4,7 +4,7 @@ AllCops:
     - 'bin/*'
     - 'vendor/bundle/**/*'
     - 'node_modules/**/*'
-    - 'spec/fixtures/'
+    - 'spec/fixtures/**'
 
 Metrics/MethodLength:
   Enabled: false
@@ -59,4 +59,6 @@ Layout/LineLength:
 Style/SymbolArray:
   EnforcedStyle: brackets
 Metrics/BlockLength:
+  Enabled: false
+Metrics/ClassLength:
   Enabled: false
