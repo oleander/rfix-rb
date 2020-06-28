@@ -15,8 +15,7 @@ class Rfix::Repository
     end
 
     @files = FileCache.new(root_path)
-    @repo  = Rugged::Repository.new(root_path)
-
+    @repo  = Rugged::Repository.discover(root_path)
     load!(from: load_tracked_since, untracked: load_untracked)
   end
 

@@ -247,7 +247,7 @@ class Change < Struct.new(:binding, :git, :type)
 
   def to_dest_path
     @to_dest_path ||= begin
-      count = random(number: 3)
+      count = random(number: 2)
       dir = Faker::File.dir(segment_count: count, root: nil)
       dir = dir.delete_prefix("/")
       ext = File.extname(to_fixture_path)
