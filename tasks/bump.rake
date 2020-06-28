@@ -1,6 +1,6 @@
 namespace :gem do
   task :inc do
-    sh "gem", "bump", "-c", "-m", "Bump version to %{version}"
+    sh "gem", "bump", "-c", "-m", "'Bump version to %{version}'"
   end
 
   task :amend do

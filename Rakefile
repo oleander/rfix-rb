@@ -24,4 +24,4 @@ desc "Rebuild bundles for testing"
 task Bundle::REBUILD => [Bundle::Complex::REBUILD, Bundle::Simple::REBUILD]
 
 # desc "Bump to a new version of rfix"
-# task bump: "build:"
+task bump: "gem:bump"
