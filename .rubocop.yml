@@ -58,7 +58,16 @@ Layout/LineLength:
   Enabled: false
 Style/SymbolArray:
   EnforcedStyle: brackets
+
+Style/RedundantReturn:
+  Enabled: false
+Style/EmptyLiteral:
+  Enabled: false
+
+# TODOs
 Metrics/BlockLength:
   Enabled: false
 Metrics/ClassLength:
+  Enabled: false
+Style/MixinUsage:
   Enabled: false
