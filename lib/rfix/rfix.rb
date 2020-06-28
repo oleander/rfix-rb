@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Layout/LineLength
-
 require "rubocop"
 require "optparse"
 require "rbconfig"

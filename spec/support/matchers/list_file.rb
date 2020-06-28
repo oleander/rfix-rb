@@ -17,7 +17,7 @@ RSpec::Matchers.define :list_file do |file|
 end
 
 [:untracked, :staged, :tracked].each do |type|
-  RSpec::Matchers.alias_matcher :"have_listed_#{type}_file" , :list_file
+  RSpec::Matchers.alias_matcher :"have_listed_#{type}_file", :list_file
 end
 
-RSpec::Matchers.alias_matcher :have_listed_file , :list_file
+RSpec::Matchers.alias_matcher :have_listed_file, :list_file

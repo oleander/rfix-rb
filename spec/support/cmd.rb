@@ -113,7 +113,4 @@ module Rfix::Support
 
     run_command_and_stop("rfix #{cmd}", fail_on_error: false)
   end
-
-  private
-
 end

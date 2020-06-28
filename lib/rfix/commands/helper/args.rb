@@ -13,7 +13,7 @@ def validate!(files:)
   files = files.each.to_a
 
   files.each do |file|
-    unless File.exists?(file)
+    unless File.exist?(file)
       say_abort "Passed file {{italic:#{file}}} does not exist"
     end
   end
@@ -21,7 +21,7 @@ def validate!(files:)
   files
 end
 
-def setup(r_args = [], opts, args, reference:)
+def setup(r_args = [], opts, _args, reference:)
   # files    = validate!(files: args)
   options  = RuboCop::Options.new
   store    = RuboCop::ConfigStore.new

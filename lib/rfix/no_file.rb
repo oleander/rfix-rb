@@ -1,5 +1,5 @@
 class NoFile < Struct.new(:path)
-  def include?(line)
+  def include?(_line)
     return true
   end
 

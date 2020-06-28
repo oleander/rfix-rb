@@ -22,6 +22,6 @@ RSpec::Matchers.define :have_fixed do |file|
 end
 
 [:untracked, :staged, :tracked].each do |type|
-  RSpec::Matchers.alias_matcher :"have_fixed_#{type}_file" , :have_fixed
+  RSpec::Matchers.alias_matcher :"have_fixed_#{type}_file", :have_fixed
 end
-RSpec::Matchers.alias_matcher :have_fixed_file , :have_fixed
+RSpec::Matchers.alias_matcher :have_fixed_file, :have_fixed

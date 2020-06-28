@@ -1,8 +1,8 @@
 extend Rfix::Log
 
-name        'help'
-summary     'Displays help'
+name        "help"
+summary     "Displays help"
 
-run do |opts, args, cmd|
+run do |_opts, _args, cmd|
   prt cmd.supercommand.help
 end

@@ -58,17 +58,17 @@ task :codeGen do
   sleep rand
 end
 
-task :compile => :codeGen do
+task compile: :codeGen do
   say "in compile"
   sleep rand
 end
 
-task :dataLoad => :codeGen do
+task dataLoad: :codeGen do
   say "in data"
   # sleep rand
 end
 
-task :gtest => [:compile, :dataLoad] do
+task gtest: [:compile, :dataLoad] do
   say "in test"
   sleep rand
 end

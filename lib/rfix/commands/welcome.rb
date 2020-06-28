@@ -1,10 +1,10 @@
-r_args   = []
+r_args = []
 
 helper("help", binding)
 
 summary "Welcome"
 
-run do |opts, args, cmd|
+run do |_opts, _args, _cmd|
   indent = " " * 2
   prt "{{v}} Thank you for installing {{green:rfix v#{Rfix::VERSION}}}!\n"
   prt ""

@@ -200,7 +200,6 @@ RSpec.shared_examples "a command" do
       it { is_expected.not_to have_fixed_file(file) }
     end
 
-
     describe "changed tracked files" do
       describe "invalid -> delete(invalid)" do
         let(:file) { f(:invalid).tracked.delete(:invalid) }

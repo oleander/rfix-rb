@@ -15,11 +15,11 @@ RSpec::Matchers.define :find do |*output|
     "{{italic:#{output}}}"
   end
 
-  failure_message do |actual|
+  failure_message do |_actual|
     ftm "expected to have output #{exp(output)} but got #{out}"
   end
 
-  failure_message_when_negated do |actual|
+  failure_message_when_negated do |_actual|
     ftm "expected not to have output #{exp(output)} but got #{out}"
   end
 end

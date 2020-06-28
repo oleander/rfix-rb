@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:enable Style/Semicolon
-
 require "rubocop"
 require "rainbow"
 require "rfix/log"

@@ -99,7 +99,7 @@ class Rfix::Repository
 
       path = delta.new_file.fetch(:path)
 
-      if delta.untracked? and untracked
+      if delta.untracked? && untracked
         store(Rfix::Untracked.new(path, repo, nil))
       else
         store(Rfix::Tracked.new(path, repo, from))

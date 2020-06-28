@@ -20,7 +20,7 @@ helper("help", binding)
 
 summary "Displays useful debug information"
 
-run do |opts, args|
+run do |_opts, _args|
   say "Using RuboCop {{info:#{RuboCop::Version.version}}}"
   say "Using Rugged {{info:#{Rugged::VERSION}}}"
   say "Using Rfix {{info:#{Rfix::VERSION}}}"

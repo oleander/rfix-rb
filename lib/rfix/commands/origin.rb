@@ -1,4 +1,4 @@
-r_args   = []
+r_args = []
 
 helper("help", binding)
 helper("rubocop", binding)
@@ -6,13 +6,13 @@ helper("args", binding)
 
 summary "Origin"
 
-run do |opts, args, cmd|
-  branch = if opts.key?(:"main-branch")
-    opts[:"main-branch"]
+run do |opts, args, _cmd|
+  if opts.key?(:"main-branch")
+    branch = opts[:"main-branch"]
   elsif branch = Rfix::Repository.main_branch(for_path: opts[:root])
-    branch
+    branch = branch
   else
-    say_abort "No main branch set, please run {{command:rfix setup}} first"
+    branch = say_abort "No main branch set, please run {{command:rfix setup}} first"
   end
 
   say "Using {{red:#{branch}}} as main branch"

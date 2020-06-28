@@ -1,10 +1,10 @@
-r_args   = []
+r_args = []
 
 helper("help", binding)
 
 summary "Setup"
 
-run do |opts, args, cmd|
+run do |_opts, _args, _cmd|
   CLI::UI::Prompt.ask("Which one is your main branch?") do |handler|
     repo = Rfix::Repository.new(Dir.pwd, nil)
 

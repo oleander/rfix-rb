@@ -1,5 +1,4 @@
 RSpec::Matchers.define :have_linted do |file|
-
   match do |actual|
     expect(actual.stdout).to_not include("corrected")
     expect(file.all_line_changes).not_to be_empty
@@ -27,7 +26,7 @@ RSpec::Matchers.define :have_linted do |file|
 end
 
 [:untracked, :staged, :tracked].each do |type|
-  RSpec::Matchers.alias_matcher :"have_linted_#{type}_file" , :have_linted
+  RSpec::Matchers.alias_matcher :"have_linted_#{type}_file", :have_linted
 end
 
-RSpec::Matchers.alias_matcher :have_linted_file , :have_linted
+RSpec::Matchers.alias_matcher :have_linted_file, :have_linted

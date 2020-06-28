@@ -1,5 +1,5 @@
 require "colorize"
-require 'fileutils'
+require "fileutils"
 require "shellwords"
 
 module Support
@@ -12,38 +12,38 @@ module Support
   alias _chdir chdir
 
   def say(msg)
-    $stderr.puts "#{"==>".blue} #{to_relative(msg).italic}"
+    warn "#{'==>'.blue} #{to_relative(msg).italic}"
   end
 
   def sh(*args)
     args = args.map(&:shellsplit).flatten
     colorize args
-    _sh *args
+    _sh(*args)
   end
 
   def chdir(*args, &block)
     colorize :cd, args
-    _chdir *args, &block
+    _chdir(*args, &block)
   end
 
   def rm_rf(*args)
     colorize :rm, args
-    _rm_rf *args
+    _rm_rf(*args)
   end
 
   def rm_f(*args)
     colorize :rm, args
-    _rm_f *args
+    _rm_f(*args)
   end
 
   def cd(*args, &block)
     colorize :cd, args
-    _cd *args, &block
+    _cd(*args, &block)
   end
 
   def mkdir_p(*args)
     colorize :mkdir, args
-    _mkdir_p *args
+    _mkdir_p(*args)
   end
 
   def clone_and_run(&block)
@@ -56,7 +56,7 @@ module Support
   def args(root)
     ["--root", root, "--force-default-config", "--main-branch", "master", "--config", Bundle::CONFIG]
   end
-  
+
   private
 
   def current_path

@@ -21,7 +21,7 @@ class Rfix::Tracked < Rfix::File
   end
 
   def changes
-    @changes or raise Rfix::Error.new("No changes found: #{self}")
+    @changes or raise(Rfix::Error, "No changes found: #{self}")
   end
 
   def needs_update?
@@ -44,11 +44,11 @@ class Rfix::Tracked < Rfix::File
 
   # https://github.com/libgit2/rugged/blob/f8172c2a177a6795553f38f01248daff923f4264/lib/rugged/tree.rb
   def diff
-    repo.diff_workdir(upstream, { recurse_untracked_dirs: true, context_lines: 0, include_ignored: false, include_untracked: true, include_untracked_content: true, ignore_whitespace: true, ignore_whitespace_change: true, ignore_whitespace_eol: true, ignore_submodules: true, paths: [path], disable_pathspec_match: true})
+    repo.diff_workdir(upstream, { recurse_untracked_dirs: true, context_lines: 0, include_ignored: false, include_untracked: true, include_untracked_content: true, ignore_whitespace: true, ignore_whitespace_change: true, ignore_whitespace_eol: true, ignore_submodules: true, paths: [path], disable_pathspec_match: true })
   end
 
   def line_numbers
-    changes.divide do |i,j|
+    changes.divide do |i, j|
       (i - j).abs == 1
     end.each.to_a.map(&:to_a).map do |set|
       "#{set.first}:#{set.last}"

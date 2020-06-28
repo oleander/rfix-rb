@@ -14,14 +14,14 @@ class Change < Struct.new(:binding, :git, :type)
   CHANGES = {
     invalid: "puts \"double quoted\"",
     valid: "puts 'hello world'"
-  }
+  }.freeze
 
   TYPES = {
     invalid: "{{red:invalid}}",
     valid: "{{blue:valid}}",
     unfixable: "{{cyan:unfixable}}",
     not_ruby: "{{magenta:not_ruby}}"
-  }
+  }.freeze
 
   ACTIONS = {
     tracked: "{{yellow:tracked}}",
@@ -30,7 +30,7 @@ class Change < Struct.new(:binding, :git, :type)
     append: "{{red:append}}",
     insert: "{{cyan:insert}}",
     delete: "{{red:delete}}"
-  }
+  }.freeze
 
   attr_reader :changed_lines, :lint_errors_at_lines
 
@@ -83,7 +83,8 @@ class Change < Struct.new(:binding, :git, :type)
 
   def to_s
     return to_path if all_line_changes.empty?
-    "#{to_path}:#{all_line_changes.join(":")}"
+
+    "#{to_path}:#{all_line_changes.join(':')}"
   end
 
   def all_line_changes
@@ -110,7 +111,8 @@ class Change < Struct.new(:binding, :git, :type)
 
   def to_tail(args)
     return "" if args.empty?
-    "{{italic:(#{args.join("")})}}"
+
+    "{{italic:(#{args.join('')})}}"
   end
 
   def manipulate!
@@ -132,6 +134,7 @@ class Change < Struct.new(:binding, :git, :type)
 
   def random_line_number
     return 1 if file_lines.empty?
+
     Faker::Number.between(from: 1, to: file_lines.count)
   end
 

@@ -32,7 +32,7 @@ module Rfix::Log
 
   def say_debug(message)
     # unless_debug do
-      prt("{{i}} #{strip(message)}", to: $stderr)
+    prt("{{i}} #{strip(message)}", to: $stderr)
     # end
   end
 

@@ -19,8 +19,6 @@ Gem::Specification.new do |spec|
 
   spec.authors       = ["Linus Oleander"]
   spec.email         = ["linus@oleander.nu"]
-
-  # rubocop:disable Layout/LineLength
   spec.summary       = "RuboCop CLI that only lints and auto-fixes code you committed by utilizing `git-log` and `git-diff`"
   # rubocop:enable Layout/LineLength
 
@@ -51,11 +49,11 @@ Gem::Specification.new do |spec|
 
   spec.requirements << "git, v2.0+"
 
+  spec.add_runtime_dependency "cri", "~> 2.15.10"
   spec.add_runtime_dependency "rainbow", "~> 3.0"
   spec.add_runtime_dependency "rouge", "~> 3.20"
   spec.add_runtime_dependency "rubocop", ">= 0.80"
   spec.add_runtime_dependency "rugged", "~> 1.0.0"
-  spec.add_runtime_dependency "cri", "~> 2.15.10"
   spec.add_runtime_dependency "git", "~> 1.7.0"
   spec.add_runtime_dependency "listen", "~> 3.0"
 

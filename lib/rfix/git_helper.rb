@@ -12,14 +12,15 @@ module Rfix::GitHelper
 
   def git(*params, root: Dir.pwd, quiet: false, &block)
     args = split_args(params)
-    args.unshift *["--git-dir", File.join(root, ".git")]
-    args.unshift *["--work-tree", root]
+    args.unshift("--git-dir", File.join(root, ".git"))
+    args.unshift("--work-tree", root)
     cmd("git", *args, quiet: quiet, &block)
   end
 
   def split_args(params)
     return if params.empty?
     return split(params.first) if params.count == 1
+
     return params
   end
 
