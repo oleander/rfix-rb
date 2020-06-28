@@ -3,7 +3,6 @@ PATH
   specs:
     rfix (1.0.17)
       cri (~> 2.15.10)
-      git (~> 1.7.0)
       listen (~> 3.0)
       rainbow (~> 3.0)
       rouge (~> 3.20)
@@ -161,6 +160,7 @@ DEPENDENCIES
   colorize
   faker
   gem-release
+  git (~> 1.7.0)
   guard
   guard-rspec
   pry

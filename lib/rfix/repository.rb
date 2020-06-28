@@ -3,7 +3,6 @@ require "rfix/file"
 require "rfix/file_cache"
 require "rfix/untracked"
 require "rfix/tracked"
-require "git"
 
 class Rfix::Repository
   include Rfix::Log
@@ -16,7 +15,6 @@ class Rfix::Repository
     end
 
     @files = FileCache.new(root_path)
-    @git   = ::Git.open(root_path)
     @repo  = Rugged::Repository.new(root_path)
 
     load!(from: load_tracked_since, untracked: load_untracked)
@@ -55,7 +53,7 @@ class Rfix::Repository
   end
 
   def current_branch
-    git.current_branch
+    repo.head.name
   end
 
   def has_reference?(reference)
@@ -69,7 +67,7 @@ class Rfix::Repository
   end
 
   def git_path
-    git.dir.to_s
+    repo.workdir
   end
 
   def head
@@ -135,9 +133,5 @@ class Rfix::Repository
     if File.exist?(file.path)
       @files.add(file)
     end
-  end
-
-  def git
-    @git
   end
 end

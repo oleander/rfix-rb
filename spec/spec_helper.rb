@@ -4,6 +4,7 @@ require "rfix"
 require "aruba/rspec"
 require "rugged"
 require "fileutils"
+require "git"
 
 Aruba.configure do |config|
   config.allow_absolute_paths = true
