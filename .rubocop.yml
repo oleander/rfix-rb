@@ -85,3 +85,5 @@ Metrics/CyclomaticComplexity:
   Enabled: false
 Style/FormatStringToken:
   Enabled: false
+Style/StderrPuts:
+  Enabled: false

@@ -56,10 +56,18 @@ def setup(r_args = [], opts, _args, reference:)
 
   params2.merge!(params)
 
-  if config = opts[:config]
-    store.options_config = config
-  elsif root_path = opts[:root]
-    store.for(root_path)
+  begin
+    if config = opts[:config]
+      store.options_config = config
+    elsif root_path = opts[:root]
+      store.for(root_path)
+    end
+  rescue RuboCop::Error => e
+    say_abort e.to_s
+  rescue TypeError => e
+    say_abort e.to_s
+  rescue Psych::SyntaxError => e
+    say_abort e.to_s
   end
 
   if paths.empty? && repo.paths.empty?
