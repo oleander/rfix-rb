@@ -95,7 +95,7 @@ class Rfix::Repository
       ignore_whitespace_change: true,
       ignore_whitespace_eol: true,
       ignore_submodules: true,
-      include_unmodified: true
+      include_unmodified: false
     ).each_delta do |delta|
       next if delta.deleted?
 
