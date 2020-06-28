@@ -45,8 +45,8 @@ RSpec.configure do |config|
 
   if ENV["CI"]
     config.before(:suite) do
-      sh "git config --global user.email 'this@is-not-my-email.com'"
-      sh "git config --global user.name 'John Doe'"
+      system "git config --global user.email 'this@is-not-my-email.com'"
+      system "git config --global user.name 'John Doe'"
     end
   end
 end
@@ -66,8 +66,8 @@ RSpec.shared_context "setup:cmd", shared_context: :metadata, type: :aruba do
 
     if ENV["CI"]
       cd(repo) do
-        sh "git config user.email 'this@is-not-my-email.com'"
-        sh "git config user.name 'John Doe'"
+        system "git config user.email 'this@is-not-my-email.com'"
+        system "git config user.name 'John Doe'"
       end
     end
 
