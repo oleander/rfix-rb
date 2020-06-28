@@ -43,7 +43,12 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-  # This is cleaned up by aruba
+  if ENV["CI"]
+    config.before(:suite) do
+      sh "git config --global user.email 'this@is-not-my-email.com'"
+      sh "git config --global user.name 'John Doe'"
+    end
+  end
 end
 
 RSpec.shared_context "setup:cmd", shared_context: :metadata, type: :aruba do
@@ -56,7 +61,14 @@ RSpec.shared_context "setup:cmd", shared_context: :metadata, type: :aruba do
 
   around(:each) do |example|
     rugged.status do |path, status|
-      fail "expected clean directory, #{path} #{status.join(", ")}"
+      raise "expected clean directory, #{path} #{status.join(', ')}"
+    end
+
+    if ENV["CI"]
+      cd(repo) do
+        sh "git config user.email 'this@is-not-my-email.com'"
+        sh "git config user.name 'John Doe'"
+      end
     end
 
     cd(repo) do
@@ -99,7 +111,7 @@ RSpec.shared_context "setup:cmd", shared_context: :metadata, type: :aruba do
 
   prepend_before(:each, :read_only) do
     rugged.status do |path, status|
-      fail "expected a clean directory but got {{italic:#{path}}} with status {{red:#{status.join(", ")}}}"
+      raise "expected a clean directory but got {{italic:#{path}}} with status {{red:#{status.join(', ')}}}"
     end
   end
 
