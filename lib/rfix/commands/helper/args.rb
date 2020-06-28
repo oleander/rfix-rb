@@ -40,7 +40,8 @@ def setup(r_args = [], opts, _args, files: [], reference:)
     Rfix.repo = repo = Rfix::Repository.new(
       root_path: opts[:root],
       load_untracked: opts[:untracked],
-      load_tracked_since: reference
+      load_tracked_since: reference,
+      paths: files
     )
   rescue Rugged::RepositoryError => e
     say_abort e.to_s

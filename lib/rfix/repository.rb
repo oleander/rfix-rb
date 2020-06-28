@@ -9,13 +9,14 @@ class Rfix::Repository
   attr_reader :files, :repo
   MAIN_BRANCH = "rfix.main"
 
-  def initialize(root_path:, load_untracked: false, load_tracked_since: nil)
+  def initialize(root_path:, load_untracked: false, load_tracked_since: nil, paths: [])
     unless File.exist?(root_path)
       raise Rfix::Error, "#{root_path} does not exist"
     end
 
     @files = FileCache.new(root_path)
     @repo  = Rugged::Repository.discover(root_path)
+    @paths = paths
     load!(from: load_tracked_since, untracked: load_untracked)
   end
 
@@ -84,8 +85,7 @@ class Rfix::Repository
   private
 
   def load_tracked!(reference)
-    repo.rev_parse(reference).diff(
-      repo.rev_parse("HEAD"),
+    params = {
       recurse_untracked_dirs: true,
       include_untracked_content: true,
       context_lines: 0,
@@ -96,6 +96,16 @@ class Rfix::Repository
       ignore_whitespace_eol: true,
       ignore_submodules: true,
       include_unmodified: false
+    }
+
+    unless @paths.empty?
+      params[:disable_pathspec_match] = true
+      params[:paths] = @paths
+    end
+
+    repo.rev_parse(reference).diff(
+      repo.rev_parse("HEAD"),
+      **params
     ).each_delta do |delta|
       next if delta.deleted?
 
