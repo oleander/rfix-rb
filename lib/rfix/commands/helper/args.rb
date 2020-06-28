@@ -10,6 +10,8 @@ flag nil, :test, "{{*}} Used in tests" do
 end
 
 def validate!(files:)
+  return [] unless files.is_a?(Array)
+
   files.each do |file|
     unless File.exist?(file)
       say_abort "Passed file {{error:#{file}}} does not exist"

@@ -1,13 +1,15 @@
 #!/usr/bin/env ruby
 
-require "rubocop"
 require "cri"
 require "rfix"
+require "rfix/log"
+require "rubocop"
 require "rfix/extensions/string"
 require "rfix/commands/extensions/options"
 require "rfix/commands/helper/loader"
 
 include Rfix::Loader
+include Rfix::Log
 
 root = Cri::Command.new
 
@@ -15,8 +17,9 @@ Dir.glob(File.join(__dir__, "../lib/rfix/commands/*.rb")).each do |command|
   root.add_command(Cri::Command.load_file(command, infer_name: true))
 end
 
-if root.run(ARGV)
+if root.run(ARGV, {}, hard_exit: false)
   exit 0
 else
+  prt root.help
   exit 1
 end
