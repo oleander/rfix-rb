@@ -54,7 +54,7 @@ module Support
   end
 
   def args(root)
-    ["--root", root, "--force-default-config", "--main-branch", "master", "--config", Bundle::CONFIG]
+    ["--force-default-config", "--main-branch", "master", "--config", Bundle::CONFIG]
   end
 
   private
