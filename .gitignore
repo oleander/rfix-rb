@@ -40,3 +40,4 @@ git
 
 spec/fixtures/complex.bundle
 spec/fixtures/simple.bundle
+spec/support/g.rb

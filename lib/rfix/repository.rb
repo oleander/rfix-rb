@@ -103,12 +103,15 @@ class Rfix::Repository
       params[:paths] = @paths
     end
 
-    repo.rev_parse(reference).diff(
-      repo.rev_parse("HEAD"),
-      **params
-    ).each_delta do |delta|
+    repo.rev_parse(reference).diff(repo.rev_parse("HEAD"), **params).tap do |diff|
+      diff.find_similar!(
+        renames: true,
+        renames_from_rewrites: true,
+        copies: true,
+        ignore_whitespace: true
+      )
+    end.each_delta do |delta|
       next if delta.deleted?
-
       path = delta.new_file.fetch(:path)
 
       if delta.untracked? && untracked
