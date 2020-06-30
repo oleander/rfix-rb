@@ -1,32 +1,52 @@
 RSpec::Matchers.define :have_linted do |file|
-  match do |actual|
-    expect(actual.stdout).to_not include("corrected")
-    expect(file.all_line_changes).not_to be_empty
+  include Rfix::Log
 
-    file.all_line_changes.each do |line|
-      expect(actual).to find_path(file.to_path).with_line(line)
+  match do |actual|
+    unless actual.has_linted?(file)
+      next false
+    end
+
+    if file.all_line_changes.empty?
+      next true
+    end
+
+    actual.offenses(file) do |offense|
+      file.all_line_changes.each do |line|
+        unless offense.linted?(on: line)
+          next false
+        end
+      end
     end
   end
 
   match_when_negated do |actual|
-    expect(file.all_line_changes).to be_empty
-
-    file.all_line_changes.each do |line|
-      expect(actual).not_to find_path(file.to_path).with_line(line)
-    end
+    !actual.has_linted?(file)
   end
 
   failure_message do |actual|
-    ftm "expected to find {{italic:#{file}}} in stdout '#{actual.stdout.chomp}'"
+    if actual.has_corrected?(file)
+      next "expected #{file} to have be {{warning:linted}} but was {{error:fixed}}".fmt
+    end
+
+    unless actual.has_linted?(file)
+      next "expected #{file} to have be {{warning:linted}} but we #{actual.linted_lines_str}".fmt
+    end
+
+    actual.offenses(file) do |offense|
+      file.all_line_changes.each do |line|
+        unless offense.corrected?(on: line)
+          next "expected #{file} to have be {{warning:linted}} on line #{line} #{actual.linted_lines_str}".fmt
+        end
+      end
+    end
   end
 
   failure_message_when_negated do |actual|
-    ftm "expected not to find {{italic:#{file}}} in stdout '#{actual.stdout.chomp}'"
+    "expected #{file} not to have be {{error:linted}} but was together with #{actual.linted_lines_str}".fmt
   end
 end
 
 [:untracked, :staged, :tracked].each do |type|
   RSpec::Matchers.alias_matcher :"have_linted_#{type}_file", :have_linted
 end
-
 RSpec::Matchers.alias_matcher :have_linted_file, :have_linted

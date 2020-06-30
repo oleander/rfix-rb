@@ -1,23 +1,48 @@
 RSpec::Matchers.define :have_fixed do |file|
   match do |actual|
-    expect(actual.stdout).to include("corrected")
-    expect(file.all_line_changes).not_to be_empty
+    unless actual.has_corrected?(file)
+      next false
+    end
 
-    file.all_line_changes.each do |line|
-      expect(actual).to find_path(file.to_path).with_line(line)
+    if file.all_line_changes.empty?
+      next true
+    end
+
+    actual.offenses(file) do |offense|
+      file.all_line_changes.each do |line|
+        unless offense.corrected?(on: line)
+          next false
+        end
+      end
     end
   end
 
   match_when_negated do |actual|
-    expect(actual.stdout).not_to include("corrected")
+    !actual.has_corrected?(file)
   end
 
   failure_message do |actual|
-    ftm "expected to fixed {{italic:#{file}}} in stdout '#{actual.stdout.chomp}'"
+    actual.dump!
+
+    unless actual.has_corrected?(file)
+      next "expected #{file.to_path} to have been {{error:fixed}} but #{actual.fixed_lines_str}".fmt
+    end
+
+    actual.offenses(file) do |offense|
+      file.all_line_changes.each do |line|
+        unless offense.corrected?(on: line)
+          next "expected #{file.to_path} at line #{line} to have been {{error:fixed}} but #{actual.fixed_lines_str}".fmt
+        end
+      end
+    end
+
+    "{{warning:This should not happend!}}".fmt
   end
 
   failure_message_when_negated do |actual|
-    ftm "expected not to fix {{italic:#{file}}} but got #{file.all_line_changes} '#{actual.stdout.chomp}'"
+    actual.dump!
+
+    "expected #{file.to_path} not have been {{error:fixed}} but was together with #{actual.fixed_lines_str}".fmt
   end
 end
 

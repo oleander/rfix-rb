@@ -8,14 +8,12 @@ summary "Auto-fixes commits between HEAD and origin branch"
 usage "rfix origin [opts] [path ..]"
 
 run do |opts, args, _cmd|
-  if opts.key?(:"main-branch")
-    branch = opts[:"main-branch"]
-  elsif branch = Rfix::Repository.main_branch(for_path: opts[:root])
-    branch = branch
+  if main = opts[:"main-branch"]
+    branch = Rfix::Branch::Name.new(main)
   else
-    branch = say_abort "No main branch set, please run {{command:rfix setup}} first"
+    branch = Rfix::Branch::MAIN
   end
 
-  say "Using {{red:#{branch}}} as main branch"
+  # say "Using {{red:#{branch}}} as main branch"
   setup(r_args, opts, args, files: args.each.to_a, reference: branch)
 end

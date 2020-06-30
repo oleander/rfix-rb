@@ -5,6 +5,8 @@ require "aruba/rspec"
 require "rugged"
 require "fileutils"
 require "git"
+require 'shellwords'
+require "rfix/extensions/string"
 
 Aruba.configure do |config|
   config.allow_absolute_paths = true
@@ -17,15 +19,25 @@ end
 
 Dir[File.join(__dir__, "support/**/*.rb")].each(&method(:require))
 
-setup = SetupGit.setup!
-
 RSpec.configure do |config|
   config.include Rfix::Log
   config.include SharedData
   config.include Aruba::Api
   config.include Rfix::Support
+  config.include Rfix::FileSetup, type: :aruba
+  config.include Rfix::Cmd
+
+  config.add_setting :debug
+  config.debug = true
+
+  if ENV.key?("CI")
+    config.debug = false
+  end
+
+  config.formatter = :documentation
 
   config.order = :random
+
   config.example_status_persistence_file_path = ".rspec_status"
   config.shared_context_metadata_behavior = :apply_to_host_groups
   config.disable_monkey_patching!
@@ -44,137 +56,123 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-  if ENV["CI"]
+  if ENV.key?("CI")
     config.before(:suite) do
       system "git config --global user.email 'this@is-not-my-email.com'"
       system "git config --global user.name 'John Doe'"
     end
   end
+
+  config.after(:each, :success, :git) do
+    is_expected.to have_exit_status(0)
+  end
+
+  config.after(:each, :failure, :git) do
+    is_expected.to have_exit_status(1)
+  end
+
+  config.after(:each, :read_only, :git) do
+    repo.status do |path, status|
+      fail "expected [after] clean directory, instead got dirty #{path} #{status.join(', ')}".fmt
+    end
+  end
 end
 
-RSpec.shared_context "setup:cmd", shared_context: :metadata, type: :aruba do
+RSpec.shared_context "setup:git", shared_context: :metadata, type: :aruba do
+  let(:main_path)  { Dir.mktmpdir("setup-plain", expand_path(".")) }
+  let(:repo_path)  { File.join(main_path, "repo") }
+  let(:config_path) { File.expand_path(File.join(__dir__, "fixtures/rubocop.yml")) }
+  let(:repo)     { Rugged::Repository.new(repo_path) }
+  let(:git)      { Git.clone(Bundle::Simple::FILE, "repo", path: main_path, branch: "master") }
+
   subject { last_command_started }
 
-  let(:main) { Dir.mktmpdir("aruba", expand_path(".")) }
-  let(:repo) { git.dir.path }
-  let(:git) { Git.clone(Bundle::Simple::FILE, "repo", path: main) }
-  let(:rugged) { Rugged::Repository.new(repo) }
+  def setup_git!
+    git
+  end
+
+  def l(type)
+    Change.new(self, git, type)
+  end
+
+  def f(type)
+    l(type)
+  end
+
+  before(:each) do |example|
+    repo.status do |path, status|
+      fail "expected clean directory, instead got dirty #{path} #{status.join(', ')}".fmt
+    end
+
+    if repo.head_detached?
+      fail "Head is detached!"
+    end
+  end
+
+  prepend_before(:each, :upstream) do |example|
+    upstream = example.metadata.fetch(:upstream)
+    say_debug("Set upstream branch to {{warning:#{upstream}}}")
+    cmd "git", "branch", "--set-upstream-to", upstream
+  end
+
+  prepend_before(:each, :checkout) do |example|
+    branch = example.metadata.fetch(:checkout)
+    say_debug("Checkout the {{warning:#{branch}}} branch")
+    git.branch(branch).checkout
+  end
+
+  append_before(:each, :commits, :git) do |example|
+    number_of_times = example.metadata.fetch(:commits)
+    say_debug "Creating {{info:#{number_of_times}}} commits"
+    number_of_times.times do |n|
+      f(:valid).tracked.write!
+    end
+  end
 
   around(:each) do |example|
-    rugged.status do |path, status|
-      raise "expected clean directory, #{path} #{status.join(', ')}"
-    end
+    setup_git!
 
-    if ENV["CI"]
-      cd(repo) do
-        system "git config user.email 'this@is-not-my-email.com'"
-        system "git config user.name 'John Doe'"
-      end
-    end
-
-    cd(repo) do
+    cd(repo_path) do
       example.run
     end
   end
-
-  def setup_all_files
-    setup_files(1)
-    load_file(:file)
-  end
-
-  before(:each, :branch) do |example|
-    checkout("master", "stable")
-    upstream("master")
-    setup_all_files
-    branch_cmd(branch: "master", root: repo, dry: false, main_branch: "master", **load_args(example))
-  end
-
-  before(:each, :local) do |example|
-    checkout("master", "stable")
-    upstream("master")
-    setup_all_files
-    local_cmd(root: repo, dry: false, main_branch: "master", **load_args(example))
-  end
-
-  before(:each, :lint) do |example|
-    checkout("master", "stable")
-    upstream("master")
-    setup_all_files
-    lint_cmd(root: repo, main_branch: "master", **load_args(example))
-  end
-
-  before(:each, :origin) do |example|
-    checkout("master", "stable")
-    upstream("master")
-    setup_all_files
-    origin_cmd(root: repo, dry: false, main_branch: "master", **load_args(example))
-  end
-
-  prepend_before(:each, :read_only) do
-    rugged.status do |path, status|
-      raise "expected a clean directory but got {{italic:#{path}}} with status {{red:#{status.join(', ')}}}"
-    end
-  end
-
-  after(:each, :read_only) do
-    expect(git).not_to be_dirty
-  end
-
-  def meta_to_args(keys)
-    keys.each_with_object({}) do |key, acc|
-      acc[key] = true
-    end
-  end
-
-  def load_args(example)
-    meta_to_args(example.metadata.fetch(:args, []))
-  end
-
-  def init_file(file)
-    public_send(file.to_sym)
-  rescue NoMethodError
-    nil
-  end
-
-  def load_file(file)
-    init_file(file).tap do |file_obj|
-      file_obj&.write!
-    end
-  end
-
-  def setup_files(order)
-    if load_file("file#{order}")
-      setup_files(order + 1)
-    end
-  end
 end
 
-RSpec.shared_context "setup:git", shared_context: :metadata do
-  subject(:git) { setup.git }
-  let(:git_path) { setup.git_path }
-  let(:rp) { Bundle::TAG }
-  let(:status) { git.status }
+RSpec.shared_context "setup:plain", :git, shared_context: :metadata do
+  include Rfix::Log
 
-  around(:each, type: :git) do |example|
-    setup.clone!
+  def exec!(metadata)
+    to_run = [
+      "bundle exec rfix", metadata.fetch(:cmd),
+      "--root", Shellwords.escape(repo_path),
+      "--config", Shellwords.escape(config_path),
+      "--format", "json",
+      "--cache", "false",
+      "--test"
+    ].flatten
 
-    Dir.chdir(setup.git_path) do
-      cd(setup.git_path) do
-        example.run
-      end
+    if branch = metadata.fetch(:branch, "master")
+      to_run += ["--main-branch", branch]
+    end
+
+    to_run += metadata.fetch(:args, [])
+
+    cd(repo_path) do
+      run_command_and_stop(to_run.join(" "), fail_on_error: false)
+    end
+
+    if !metadata.key?(:failure) && subject.failed?
+      subject.dump!
     end
   end
 
-  prepend_before(:suite, type: :git) do
-    setup.clone!
-  end
-
-  append_after(:suite, type: :git) do
-    setup.teardown!
+  before(:each) do |example|
+    setup_files!
+    exec!(example.metadata)
   end
 end
 
 RSpec.configure do |config|
-  config.include_context "setup:git", type: :git
-  config.include_context "setup:cmd", type: :aruba
+  config.include_context "setup:plain", :cmd
+  config.include_context "setup:git", :git
 end

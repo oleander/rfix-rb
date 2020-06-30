@@ -18,15 +18,6 @@ Style/Documentation:
 Style/FrozenStringLiteralComment:
   Enabled: false
 
-Style/HashEachMethods:
-  Enabled: true
-
-Style/HashTransformKeys:
-  Enabled: true
-
-Style/HashTransformValues:
-  Enabled: true
-
 Style/NumericLiterals:
   Enabled: false
 
@@ -87,3 +78,10 @@ Style/FormatStringToken:
   Enabled: false
 Style/StderrPuts:
   Enabled: false
+
+
+Layout/ParameterAlignment:
+  EnforcedStyle: with_fixed_indentation
+Layout/HashAlignment:
+  Enabled: false
+  EnforcedColonStyle: key

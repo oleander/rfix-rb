@@ -27,18 +27,27 @@ module Rfix::Log
   end
 
   def say_test(message)
-      prt("{{i}} #{strip(message)}")
+    prt("{{i}} #{strip(message)}")
   end
 
   def say_debug(message)
-    # unless_debug do
-    prt("{{i}} #{strip(message)}", to: $stderr)
-    # end
+    if debug? or test?
+      prt("{{i}} #{strip(message)}", to: $stderr)
+    end
   end
 
   def say_abort(message)
     prt("{{x}} #{message}")
     exit 1
+  end
+
+  def debug?
+    return false unless defined?(RSpec)
+    return RSpec.configuration.debug?
+  end
+
+  def test?
+    Rfix.test?
   end
 
   def say_exit(message)
@@ -93,15 +102,16 @@ module Rfix::Log
   end
 
   def strip(msg)
-    msg.gsub(current_path, "").gsub(Dir.pwd, ".").chomp
+    msg
+    # msg.gsub(current_path, "").gsub(Dir.pwd, ".").chomp
   end
 
   def current_path
     File.join(Dir.pwd, "/")
   end
 
-  def div(title)
-    CLI::UI::Frame.divider(title)
+  def div(title, **args)
+    CLI::UI::Frame.divider(title, **args)
     margin { yield }
   end
 

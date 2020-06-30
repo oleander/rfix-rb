@@ -1,26 +1,20 @@
-RSpec.describe "lint command", :lint, type: :aruba do
-  it_behaves_like "a lint command"
-  it_behaves_like "a destroyed file"
+RSpec.describe "lint command" do
+  describe "preload", cmd: "lint", checkout: "stable" do
+    it_behaves_like "a lint command"
+    it_behaves_like "a destroyed file"
+  end
 
-  describe "successful passing files" do
+  describe "successful passing files", :git, checkout: "stable" do
     it "only effects those files that are passed in" do
-      checkout("master", "stable")
-      upstream("master")
-
       file1 = f(:invalid).tracked.write!
       file2 = f(:invalid).tracked.write!
 
-      config = File.expand_path(File.join(__dir__, "../fixtures/rubocop.yml"))
+      run_command_and_stop("rfix lint --format json --root #{repo_path} --test --config #{config_path} --main-branch master #{file1.to_path}", fail_on_error: false)
 
-      run_command_and_stop("rfix lint --root #{repo} --config #{config} --main-branch master #{file1.to_path}", fail_on_error: false)
-
-      file1.all_line_changes.each do |line|
-        expect(last_command_started).to find_path(file1.to_path).with_line(line)
-      end
-
-      file2.all_line_changes.each do |line|
-        expect(last_command_started).to_not find_path(file2.to_path).with_line(line)
-      end
+      is_expected.to have_linted(file1)
+      is_expected.not_to have_fixed(file1)
+      is_expected.not_to have_fixed(file2)
+      is_expected.not_to have_linted(file2)
     end
   end
 end

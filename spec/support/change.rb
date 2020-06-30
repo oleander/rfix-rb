@@ -68,6 +68,10 @@ class Change < Struct.new(:binding, :git, :type)
     tap { @actions.append([:append, type]) }
   end
 
+  def commit!
+    tracked.write!
+  end
+
   def insert(type = :invalid, count = 1)
     tap do
       count.times do
@@ -103,13 +107,13 @@ class Change < Struct.new(:binding, :git, :type)
   def readable_actions
     actions = @actions.map do |name, *args|
       "#{to_color(name)}#{to_tail(args)}"
-    end.join(" {{blue:⇢}} ")
+    end.join(" {{>}} ")
 
     "#{type_prefix}#{actions}"
   end
 
   def type_prefix
-    "{{italic:#{TYPES.fetch(type)}}} {{>}} "
+    "{{italic:{{yellow:new}}(#{TYPES.fetch(type)})}} {{>}} "
   end
 
   def to_color(name)
@@ -124,7 +128,10 @@ class Change < Struct.new(:binding, :git, :type)
 
   def manipulate!
     @lint_errors_at_lines.append(*FIXTURES.fetch(type).first)
-    binding.copy(to_fixture, to_dest_path)
+    git.chdir do
+      # dr = Pathname.new(to_dest_path)
+      binding.copy(to_fixture, to_dest_path)
+    end
     @actions.each do |action, *args|
       send(:"perform_#{action}", *args)
     end
@@ -135,6 +142,7 @@ class Change < Struct.new(:binding, :git, :type)
   end
 
   def perform_tracked
+    # say_debug("Git add #{to_dest_path}")
     git.add(to_dest_path)
     git.commit("Add #{to_dest_path} file")
   end
@@ -231,7 +239,8 @@ class Change < Struct.new(:binding, :git, :type)
   end
 
   def perform_untracked
-    # NOP
+    to_dest_path
+    # say_debug("Do {{warning:NOT}} track #{to_dest_path}")
   end
 
   def perform_append(type)
@@ -254,11 +263,20 @@ class Change < Struct.new(:binding, :git, :type)
   end
 
   def tags
-    @actions.map(&:first).flatten
+    [type] + @actions.map(&:first).flatten
+  end
+
+  def file_name(dir)
+    other = Faker::File.file_name(dir: dir, ext: current_ext)
+    (tags + [other.delete_prefix("./")]).join("_")
   end
 
   def random(number:)
     Faker::Number.between(from: 0, to: number)
+  end
+
+  def current_ext
+    File.extname(to_fixture_path).delete_prefix(".")
   end
 
   def to_dest_path
@@ -266,14 +284,8 @@ class Change < Struct.new(:binding, :git, :type)
       count = random(number: 2)
       dir = Faker::File.dir(segment_count: count, root: nil)
       dir = dir.delete_prefix("/")
-      ext = File.extname(to_fixture_path)
-
       dir = "." if count == 0
-
-      Faker::File.file_name(
-        dir: dir,
-        ext: ext.delete_prefix(".")
-      ).delete_prefix("./")
+      file_name(dir)
     end
   end
 end

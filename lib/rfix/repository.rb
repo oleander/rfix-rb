@@ -7,21 +7,40 @@ require "rfix/tracked"
 class Rfix::Repository
   include Rfix::Log
   attr_reader :files, :repo
-  MAIN_BRANCH = "rfix.main"
+  MAIN_BRANCH = "rfix.main".freeze
 
-  def initialize(root_path:, load_untracked: false, load_tracked_since: nil, paths: [])
+  def initialize(root_path:, load_untracked: false, reference: Rfix::Branch::HEAD, paths: [])
     unless File.exist?(root_path)
       raise Rfix::Error, "#{root_path} does not exist"
     end
 
-    @files = FileCache.new(root_path)
-    @repo  = Rugged::Repository.discover(root_path)
-    @paths = paths
-    load!(from: load_tracked_since, untracked: load_untracked)
+    unless Pathname.new(root_path).absolute?
+      raise Rfix::Error, "#{root_path} is not absolute"
+    end
+
+    unless reference.is_a?(Rfix::Branch::Base)
+      raise Rfix::Error.new("Need Branch::Base, got {{error:#{reference.class}}}")
+    end
+
+    @files          = FileCache.new(root_path)
+    @repo           = Rugged::Repository.new(root_path)
+    @paths          = paths
+    @reference      = reference
+    @load_untracked = load_untracked
+
+    load!
   end
 
-  def self.main_branch(for_path:)
-    Rugged::Repository.new(for_path).config[MAIN_BRANCH]
+  def load_untracked?
+    @load_untracked
+  end
+
+  def load_tracked?
+    !! @reference
+  end
+
+  def reference
+    @reference
   end
 
   def self.set_main_branch(for_path:, branch:)
@@ -79,53 +98,54 @@ class Rfix::Repository
   end
 
   def head
-    repo.rev_parse("HEAD")
+    @head ||= repo.rev_parse("HEAD")
+  end
+
+  def upstream
+    @upstream ||= reference.resolve(with: repo)
   end
 
   private
 
-  def load_tracked!(reference)
+  def load_tracked!
     params = {
-      recurse_untracked_dirs: true,
+      # ignore_whitespace_change: true,
       include_untracked_content: true,
-      context_lines: 0,
-      include_ignored: false,
+      recurse_untracked_dirs: true,
+      # ignore_whitespace_eol: true,
+      include_unmodified: false,
       include_untracked: true,
-      ignore_whitespace: true,
-      ignore_whitespace_change: true,
-      ignore_whitespace_eol: true,
       ignore_submodules: true,
-      include_unmodified: false
+      # ignore_whitespace: true,
+      include_ignored: false,
+      context_lines: 0
     }
 
     unless @paths.empty?
-      params[:disable_pathspec_match] = true
+      say_debug("Use @paths #{@paths.join(", ")}")
+      params[:disable_pathspec_match] = false
       params[:paths] = @paths
     end
 
-    repo.rev_parse(reference).diff(repo.rev_parse("HEAD"), **params).tap do |diff|
+    say_debug("Run diff on #{reference}")
+    upstream.diff(head, **params).tap do |diff|
       diff.find_similar!(
-        renames: true,
         renames_from_rewrites: true,
-        copies: true,
-        ignore_whitespace: true
+        # ignore_whitespace: true,
+        renames: true,
+        copies: true
       )
     end.each_delta do |delta|
-      next if delta.deleted?
       path = delta.new_file.fetch(:path)
-
-      if delta.untracked? && untracked
-        store(Rfix::Untracked.new(path, repo, nil))
-      else
-        store(Rfix::Tracked.new(path, repo, reference))
-      end
+      say_debug("Found #{path} while diff")
+      try_store(path, [delta.status])
     end
   rescue Rugged::ReferenceError
     abort_box($ERROR_INFO.to_s) do
       prt "Reference {{error:#{reference}}} cannot be found in repository"
     end
   rescue Rugged::ConfigError
-    abort_box($!.to_s) do
+    abort_box($ERROR_INFO.to_s) do
       prt "No upstream branch set for {{error:#{current_branch}}}"
     end
   rescue TypeError
@@ -134,29 +154,66 @@ class Rfix::Repository
     end
   end
 
-  def load!(from:, untracked:)
-    load_tracked!(from) if from
-    load_untracked!(untracked, reference: from)
+  def load!
+    load_tracked!
+    load_untracked!
   end
 
   # https://github.com/libgit2/rugged/blob/35102c0ca10ab87c4c4ffe2e25221d26993c069c/test/status_test.rb
-  def load_untracked!(untracked, reference:)
+  # - +:index_new+: the file is new in the index
+  # - +:index_modified+: the file has been modified in the index
+  # - +:index_deleted+: the file has been deleted from the index
+  # - +:worktree_new+: the file is new in the working directory
+  # - +:worktree_modified+: the file has been modified in the working directory
+  # - +:worktree_deleted+: the file has been deleted from the working directory
+
+  MODIFIED  = [:modified, :worktree_modified, :index_modified].freeze
+  IGNORED   = [:ignored].freeze
+  STAGED    = [:added, :index_new].freeze
+  UNTRACKED = [:worktree_new, :untracked].freeze
+  COPIED    = [:copied].freeze
+  DELETED   = [:deleted, :worktree_deleted, :index_deleted].freeze
+  RENAMED   = [:renamed].freeze
+
+  SKIP = [*DELETED, *RENAMED, *COPIED, *IGNORED].freeze
+  ACCEPT = [*MODIFIED].freeze
+
+  def load_untracked!
     repo.status do |path, status|
-      if status.include?(:worktree_new) && untracked
-        store(Rfix::Untracked.new(path, repo, nil))
-      elsif status.include?(:index_new)
-        store(Rfix::Untracked.new(path, repo, nil))
-      elsif status.include?(:index_modified)
-        if reference
-          store(Rfix::Tracked.new(path, repo, reference))
-        end
-      end
+      try_store(path, status)
     end
   end
 
   def store(file)
-    if File.exist?(file.path)
+    say_debug("Trying to add #{file.absolute_path}")
+    if File.exist?(file.absolute_path)
       @files.add(file)
+    else
+      say_debug "#{file} does not exist"
     end
+  end
+
+  def try_store(path, status)
+    if SKIP.any?(&status.method(:include?))
+      return say_debug("Ignored {{warning:#{status.join(', ')}}} #{path}")
+    end
+
+    if STAGED.any?(&status.method(:include?))
+      return store(Rfix::Untracked.new(path, repo, nil))
+    end
+
+    if UNTRACKED.any?(&status.method(:include?))
+      unless load_untracked?
+        return say_debug("Ignore #{path} as untracked files are ignored: #{status}")
+      end
+
+      return store(Rfix::Untracked.new(path, repo, nil))
+    end
+
+    if ACCEPT.any?(&status.method(:include?))
+      return store(Rfix::Tracked.new(path, repo, reference))
+    end
+
+    say_debug "Status not found {{error:#{status.join(', ')}}} for {{italic:#{path}}}"
   end
 end

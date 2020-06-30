@@ -7,7 +7,7 @@ class Rfix::File < Struct.new(:path, :repo, :ref)
   include Rfix::Log
 
   def initialize(path, repo, ref)
-    check_absolute!(path)
+    # check_absolute!(path)
     super(path, repo, ref)
   end
 
@@ -34,7 +34,8 @@ class Rfix::File < Struct.new(:path, :repo, :ref)
   end
 
   def absolute_path
-    @absolute_path ||= to_abs(path)
+    path
+    # @absolute_path ||= to_abs(path)
   end
 
   def to_abs(path)

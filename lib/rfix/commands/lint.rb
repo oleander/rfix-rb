@@ -8,16 +8,15 @@ summary "Lints commits and untracked files not yet pushed to upstream"
 usage "rfix lint [opts] [path ..]"
 description "Lint (read-only) files"
 
+
 run do |opts, args, _cmd|
   opts[:dry] = true
   opts[:untracked] = true
 
-  if opts.key?(:"main-branch")
-    branch = opts[:"main-branch"]
-  elsif branch = Rfix::Repository.main_branch(for_path: opts[:root])
-    branch = branch
+  if main = opts[:"main-branch"]
+    branch = Rfix::Branch::Name.new(main)
   else
-    branch = say_abort "No main branch set, please run {{command:rfix setup}} first"
+    branch = Rfix::Branch::MAIN
   end
 
   setup(r_args, opts, args, files: args.each.to_a, reference: branch)

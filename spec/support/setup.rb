@@ -55,7 +55,7 @@ class SetupGit < Struct.new(:root_path, :id)
   end
 
   def check_clone_status!
-    say_abort "Run clone first!" unless @git
+    raise "Run clone first!" unless @git
   end
 
   def rm(path)

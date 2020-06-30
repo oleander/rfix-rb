@@ -5,33 +5,31 @@ option :b, :"main-branch", "{{*}} Branch to use", argument: :optional
 
 summary "Sets the default branch for {{command:rfix local}}"
 
-def set_branch(repo, branch)
-  repo.set_main_branch(branch)
-  say "Set main branch to {{italic:#{branch}}}"
-rescue Rfix::Error => e
-  say_abort e.to_s
+def set_branch(root_path, branch)
+  Rfix::Branch::Main.set(branch, at: root_path)
+  say "Main branch was set to {{italic:#{branch}}}"
 end
 
 run do |opts, _args|
-  begin
-    repo = Rfix::Repository.new(root_path: opts[:root])
-  rescue Rfix::Error => e
-    say_abort e.to_s
-  end
-
-  if branch = repo.main_branch
+  if branch = Rfix::Branch::Main.get(at: opts[:root])
     say "Current main branch set to {{info:#{branch}}}"
   end
 
   if branch = opts[:"main-branch"]
-    next set_branch(repo, branch)
+    next set_branch(opts[:root], branch)
   end
 
   CLI::UI::Prompt.ask("Which one is your main branch?") do |handler|
-    repo.local_branches.each do |local_branch|
-      handler.option(local_branch) do
-        set_branch(repo, local_branch)
+    Rfix::Branch.local(at: opts[:root]).each do |branch|
+      handler.option(branch.name) do
+        set_branch(repo, branch.name)
       end
     end
+  end
+
+  if branch = Rfix::Branch::Main.get(at: opts[:root])
+    say "Your main branch has been set to {{info:#{branch}}}"
+  else
+    say_error "No main branch has been set"
   end
 end

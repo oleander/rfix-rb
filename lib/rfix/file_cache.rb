@@ -9,11 +9,26 @@ class FileCache
   end
 
   def add(file)
-    @files[normalized_file_path(file)] ||= file
+    key = normalized_file_path(file)
+
+    if @files.key?(key)
+      return say_debug("File already exists with path {{error:#{file.path}}} using #{key}")
+    end
+
+    say_debug("Adding file with path {{green:#{file.path}}} using key {{info:#{key}}}")
+    @files[key] = file
   end
 
   def get(path)
-    @files[normalize_path(path)]
+    key = normalize_path(path)
+
+    if file = @files[key]
+      say_debug("Found file #{file} with path #{path}")
+      return file
+    end
+
+    say_debug("Could {{error:NOT}} find path #{path}")
+    nil
   end
 
   def pluck(&block)

@@ -7,6 +7,7 @@ require "rubocop"
 require "rfix/extensions/string"
 require "rfix/commands/extensions/options"
 require "rfix/commands/helper/loader"
+require "rfix/branch"
 
 include Rfix::Loader
 include Rfix::Log
@@ -17,9 +18,13 @@ Dir.glob(File.join(__dir__, "../lib/rfix/commands/*.rb")).each do |command|
   root.add_command(Cri::Command.load_file(command, infer_name: true))
 end
 
-if root.run(ARGV, {}, hard_exit: false)
-  exit 0
-else
-  prt root.help
-  exit 1
+begin
+  if root.run(ARGV, {}, hard_exit: false)
+    exit 0
+  else
+    prt root.help
+    exit 1
+  end
+rescue RuntimeError => e
+  say_abort e.to_s
 end
