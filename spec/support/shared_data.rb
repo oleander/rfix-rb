@@ -1,8 +1,8 @@
 module SharedData
   def init_rfix!(root)
-    Rfix.set_root(root)
-    Rfix.init!
-    Rfix.set_main_branch("master")
+    # Rfix.set_root(root)
+    # Rfix.init!
+    # Rfix.set_main_branch("master")
   end
 
   def dump!

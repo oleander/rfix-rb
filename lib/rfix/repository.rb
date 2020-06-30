@@ -7,7 +7,6 @@ require "rfix/tracked"
 class Rfix::Repository
   include Rfix::Log
   attr_reader :files, :repo
-  MAIN_BRANCH = "rfix.main".freeze
 
   def initialize(root_path:, load_untracked: false, reference: Rfix::Branch::HEAD, paths: [])
     unless File.exist?(root_path)
@@ -43,10 +42,6 @@ class Rfix::Repository
     @reference
   end
 
-  def self.set_main_branch(for_path:, branch:)
-    Rugged::Repository.new(for_path).config[MAIN_BRANCH] = branch
-  end
-
   def refresh!(path)
     @files.get(path).refresh!
   end
@@ -61,18 +56,6 @@ class Rfix::Repository
 
   def set_root(_path_path)
     using_path(root_path)
-  end
-
-  def set_main_branch(name)
-    unless has_reference?(name)
-      raise Rfix::Error, "Branch {{error:#{name}}} does not exist"
-    end
-
-    repo.config[MAIN_BRANCH] = name
-  end
-
-  def main_branch
-    repo.config[MAIN_BRANCH]
   end
 
   def paths

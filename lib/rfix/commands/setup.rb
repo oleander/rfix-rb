@@ -21,15 +21,9 @@ run do |opts, _args|
 
   CLI::UI::Prompt.ask("Which one is your main branch?") do |handler|
     Rfix::Branch.local(at: opts[:root]).each do |branch|
-      handler.option(branch) do
-        set_branch(repo, branch)
+      handler.option(branch) do |selection|
+        set_branch(opts[:root], selection)
       end
     end
-  end
-
-  if branch = Rfix::Branch::Main.get(at: opts[:root])
-    say "Your main branch has been set to {{info:#{branch}}}"
-  else
-    say_error "No main branch has been set"
   end
 end
