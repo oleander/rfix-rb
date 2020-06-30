@@ -21,8 +21,8 @@ run do |opts, _args|
 
   CLI::UI::Prompt.ask("Which one is your main branch?") do |handler|
     Rfix::Branch.local(at: opts[:root]).each do |branch|
-      handler.option(branch.name) do
-        set_branch(repo, branch.name)
+      handler.option(branch) do
+        set_branch(repo, branch)
       end
     end
   end
