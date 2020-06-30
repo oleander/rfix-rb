@@ -56,12 +56,6 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-  if ENV.key?("CI")
-    config.before(:suite) do
-      system "git config --global user.email 'this@is-not-my-email.com'"
-      system "git config --global user.name 'John Doe'"
-    end
-  end
 
   config.after(:each, :success, :git) do
     is_expected.to have_exit_status(0)
@@ -89,6 +83,13 @@ RSpec.shared_context "setup:git", shared_context: :metadata, type: :aruba do
 
   def setup_git!
     git
+
+    if ENV["CI"]
+      cd(repo_path) do
+        system "git config user.email 'this@is-not-my-email.com'"
+        system "git config user.name 'John Doe'"
+      end
+    end
   end
 
   def l(type)
