@@ -2,7 +2,11 @@
 
 require "rfix"
 require "aruba/rspec"
+require "rugged"
 require "fileutils"
+require "git"
+require 'shellwords'
+require "rfix/extensions/string"
 
 Aruba.configure do |config|
   config.allow_absolute_paths = true
@@ -14,10 +18,6 @@ Aruba.configure do |config|
 end
 
 Dir[File.join(__dir__, "support/**/*.rb")].each(&method(:require))
-
-src_repo = File.join(__dir__, "..", "tmp", "src-repo")
-bundle_path = File.join(__dir__, "..", "tmp", "snapshot.bundle")
-org_repo = File.join(__dir__, "..", "vendor", "oleander/git-fame-rb")
 
 setup = SetupGit.setup!
 
@@ -35,13 +35,24 @@ RSpec.shared_context "setup", shared_context: :metadata  do
 end
 
 RSpec.configure do |config|
-  config.include Rfix::Cmd
   config.include Rfix::Log
-  config.include Rfix::Git
+  config.include SharedData
   config.include Aruba::Api
   config.include Rfix::Support
+  config.include Rfix::FileSetup, type: :aruba
+  config.include Rfix::Cmd
+
+  config.add_setting :debug
+  config.debug = true
+
+  if ENV.key?("CI")
+    config.debug = false
+  end
+
+  config.formatter = :documentation
 
   config.order = :random
+
   config.example_status_persistence_file_path = ".rspec_status"
   config.shared_context_metadata_behavior = :apply_to_host_groups
   config.disable_monkey_patching!
@@ -78,30 +89,124 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-  config.before(:suite, type: :aruba) do
-    FileUtils.mkdir_p(src_repo)
 
-    FileUtils.copy_entry(org_repo, src_repo, true, true, true)
+  config.after(:each, :success, :git) do
+    is_expected.to have_exit_status(0)
+  end
 
-    Rfix::Git.git("checkout", "master", root: src_repo)
-    Rfix::Git.git("reset", "--hard", "27fec8", root: src_repo)
-    Rfix::Git.git("branch", "-D", "test", root: src_repo, quiet: true)
-    Rfix::Git.git("checkout", "-b", "test", root: src_repo)
-    Rfix::Git.git("reset", "--hard", "a9b9c25", root: src_repo)
-    Rfix::Git.git("checkout", "master", root: src_repo)
+  config.after(:each, :failure, :git) do
+    is_expected.to have_exit_status(1)
+  end
 
-    Rfix::Git.git("bundle", "create", bundle_path, "--all", root: src_repo)
+  config.after(:each, :read_only, :git) do
+    repo.status do |path, status|
+      fail "expected [after] clean directory, instead got dirty #{path} #{status.join(', ')}".fmt
+    end
+  end
+end
 
-    if Rfix::Git.dirty?(src_repo)
-      say_abort "[Src:1] Dirty repo on init {{italic:#{src_repo}}}"
+RSpec.shared_context "setup:git", shared_context: :metadata, type: :aruba do
+  let(:main_path)  { Dir.mktmpdir("setup-plain", expand_path(".")) }
+  let(:repo_path)  { File.join(main_path, "repo") }
+  let(:config_path) { File.expand_path(File.join(__dir__, "fixtures/rubocop.yml")) }
+  let(:git)      { Git.clone(Bundle::Simple::FILE, "repo", path: main_path, branch: "master") }
+  let(:repo)     { Rugged::Repository.new(repo_path) }
+
+  subject { last_command_started }
+
+  def setup_git!
+    git
+
+    if ENV["CI"]
+      cd(repo_path) do
+        system "git config user.email 'this@is-not-my-email.com'"
+        system "git config user.name 'John Doe'"
+      end
     end
   end
 
-  # This is cleaned up by aruba
-  config.around(:each, type: :aruba) do |example|
-    repo = Dir.mktmpdir("rspec", expand_path("."))
-    cmd("git", "clone", bundle_path, repo, "--branch", "master")
-    init!(repo)
-    cd(repo) { example.run }
+  def l(type)
+    Change.new(self, git, type)
   end
+
+  def f(type)
+    l(type)
+  end
+
+  before(:each) do |example|
+    repo.status do |path, status|
+      fail "expected clean directory, instead got dirty #{path} #{status.join(', ')}".fmt
+    end
+
+    if repo.head_detached?
+      fail "Head is detached!"
+    end
+  end
+
+  prepend_before(:each, :upstream) do |example|
+    upstream = example.metadata.fetch(:upstream)
+    say_debug("Set upstream branch to {{warning:#{upstream}}}")
+    cmd "git", "branch", "--set-upstream-to", upstream
+  end
+
+  prepend_before(:each, :checkout) do |example|
+    branch = example.metadata.fetch(:checkout)
+    say_debug("Checkout the {{warning:#{branch}}} branch")
+    git.branch(branch).checkout
+  end
+
+  append_before(:each, :commits, :git) do |example|
+    number_of_times = example.metadata.fetch(:commits)
+    say_debug "Creating {{info:#{number_of_times}}} commits"
+    number_of_times.times do |n|
+      f(:valid).tracked.write!
+    end
+  end
+
+  around(:each) do |example|
+    setup_git!
+
+    cd(repo_path) do
+      example.run
+    end
+  end
+end
+
+RSpec.shared_context "setup:plain", :git, shared_context: :metadata do
+  include Rfix::Log
+
+  def exec!(metadata)
+    to_run = [
+      "bundle exec rfix", metadata.fetch(:cmd),
+      "--root", Shellwords.escape(repo_path),
+      "--config", Shellwords.escape(config_path),
+      "--format", "json",
+      "--cache", "false",
+      "--test"
+    ].flatten
+
+    if branch = metadata.fetch(:branch, "master")
+      to_run += ["--main-branch", branch]
+    end
+
+    to_run += metadata.fetch(:args, [])
+
+    cd(repo_path) do
+      run_command_and_stop(to_run.join(" "), fail_on_error: false)
+    end
+
+    if !metadata.key?(:failure) && subject.failed?
+      subject.dump!
+    end
+  end
+
+  before(:each) do |example|
+    setup_files!
+    exec!(example.metadata)
+  end
+end
+
+RSpec.configure do |config|
+  config.include_context "setup:plain", :cmd
+  config.include_context "setup:git", :git
 end

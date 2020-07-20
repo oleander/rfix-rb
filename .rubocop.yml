@@ -1,3 +1,11 @@
+AllCops:
+  Exclude:
+    - 'ci/*'
+    - 'bin/*'
+    - 'vendor/bundle/**/*'
+    - 'node_modules/**/*'
+    - 'spec/fixtures/**'
+
 Metrics/MethodLength:
   Enabled: false
 
@@ -9,15 +17,6 @@ Style/Documentation:
 
 Style/FrozenStringLiteralComment:
   Enabled: false
-
-Style/HashEachMethods:
-  Enabled: true
-
-Style/HashTransformKeys:
-  Enabled: true
-
-Style/HashTransformValues:
-  Enabled: true
 
 Style/NumericLiterals:
   Enabled: false
@@ -46,3 +45,43 @@ Style/StructInheritance:
   Enabled: false
 Style/IfUnlessModifier:
   Enabled: false
+Layout/LineLength:
+  Enabled: false
+Style/SymbolArray:
+  EnforcedStyle: brackets
+
+Style/RedundantReturn:
+  Enabled: false
+Style/EmptyLiteral:
+  Enabled: false
+
+# TODOs
+Metrics/BlockLength:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
+Style/MixinUsage:
+  Enabled: false
+Naming/AccessorMethodName:
+  Enabled: false
+Security/Eval:
+  Enabled: false
+Style/OptionalArguments:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
+Metrics/ParameterLists:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Style/FormatStringToken:
+  Enabled: false
+Style/StderrPuts:
+  Enabled: false
+
+
+Layout/ParameterAlignment:
+  EnforcedStyle: with_fixed_indentation
+Layout/HashAlignment:
+  Enabled: false
+  EnforcedColonStyle: key

@@ -1,9 +1,19 @@
-RSpec::Matchers.define :have_path_count do |expected|
+RSpec::Matchers.define :have_paths_count do |expected|
+  include Rfix::Log
+
   match do |actual|
-    actual.stderr.include?("#{expected} paths")
+    [actual.stderr, actual.stdout].any? { |std| std.include?("#{expected} paths") }
   end
 
-  # failure_message do |actual|
-  #   "expected that stdout would contain '#{expected} paths'"
-  # end
+  def got(actual)
+    "{{italic:#{actual.stdout}}} and {{italic:#{actual.stderr}}}"
+  end
+
+  failure_message do |actual|
+    ftm "expected to have output {{italic:#{expected}}} but got #{got(actual)}"
+  end
+
+  failure_message_when_negated do |actual|
+    ftm "expected not to have output {{italic:#{expected}}} but got #{got(actual)}"
+  end
 end

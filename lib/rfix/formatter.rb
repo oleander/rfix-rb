@@ -10,28 +10,47 @@ module Rfix
     include Rfix::Log
 
     def started(files)
-      theme = Rouge::Themes::Gruvbox.new
+      theme      = Rouge::Themes::Gruvbox.new
       @formatter = Rouge::Formatters::TerminalTruecolor.new(theme)
-      @lexer = Rouge::Lexers::Ruby.new
-      out "{{v}} Loading {{yellow:#{files.count}}} files"
-      out("\n")
-      unless_debug do
-        @pg = CLI::UI::Progress.new
+      @current   = 0
+      @total     = files.count
+      @files     = {}
+      @lexer     = Rouge::Lexers::Ruby.new
+      @pg        = CLI::UI::Progress.new
+      @all_files = files
+    end
+
+    def truncate(path)
+      path.sub(::File.join(Dir.getwd, "/"), "")
+    end
+
+    def render_files(files)
+      return unless Rfix.test?
+
+      files.each do |file|
+        offenses = @files.fetch(file)
+        corrected = offenses.select(&:corrected?)
+
+        if offenses.empty?
+          say truncate(file)
+        elsif offenses.count == corrected.count
+          say truncate(file)
+        else
+          say_error truncate(file)
+        end
       end
-      @total = files.count
-      @current = 0
-      @files = {}
-      log_items(files, title: "Files to lint")
     end
 
     def finished(files)
+      render_files(files)
+
       files.each do |file|
         render_file(file, @files.fetch(file))
       end
 
       offenses = @files.values.flatten
       corrected = offenses.select(&:corrected?)
-      out("\n")
+      out("\n") unless @total.zero?
       report_summary(files.size, offenses.count, corrected.count)
     end
 
@@ -51,8 +70,9 @@ module Rfix
     end
 
     def file_finished(file, offenses)
+      out("\n") if @current == 0.0
       @current += 1.0
-      unless_debug do
+      unless Rfix.test?
         @pg.tick(set_percent: (@current / @total))
       end
       @files[file] = offenses

@@ -2,10 +2,13 @@ source "https://rubygems.org"
 
 
 group :development do
+  gem "pry"
+  gem "colorize"
   gem "faker"
   gem "gem-release", require: false
   gem "guard", require: false
   gem "guard-rspec", require: false
+  gem "jsonpath"
 end
 
 gemspec path: __dir__

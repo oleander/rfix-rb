@@ -1,11 +1,4 @@
 language: ruby
-# cache:
-#   bundler: true
-#   directories:
-#     - $HOME/.rvm
-#     - $HOME/Library/Caches/Homebrew
-before_cache:
-  - brew cleanup
 rvm:
   - 2.5.0
   - 2.6.2
@@ -23,14 +16,14 @@ gemfile:
   - ci/Gemfile.rubocop-0.85.1
 before_install:
   - yes | gem update --system --force
-  - make dir fetch
 install:
   - bundle install
+  - gem install colorize
+  - gem install rake
+  - rake travis:setup
 script:
-  - bundle exec rake git:config
-  - bundle exec rake spec
-  - bundle exec rake install
-  - rfix info
+  - bundle exec rake travis:spec
+  - bundle exec rake travis:verify
 jobs:
   include:
     deploy:

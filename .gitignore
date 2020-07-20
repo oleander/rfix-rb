@@ -37,3 +37,7 @@ bin/ruby-rewrite
 bin/thor
 ci/vendor/
 git
+
+spec/fixtures/complex.bundle
+spec/fixtures/simple.bundle
+spec/support/g.rb

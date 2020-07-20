@@ -1,13 +1,13 @@
-RSpec::Matchers.define :have_no_files do |*files|
+RSpec::Matchers.define :have_no_files do |*_files|
   result = lambda do
     Rfix.paths.empty?
   end
 
-  match do |actual|
+  match do |_actual|
     result.call
   end
 
-  match_when_negated do |actual|
+  match_when_negated do |_actual|
     !result.call
   end
 
@@ -17,6 +17,7 @@ RSpec::Matchers.define :have_no_files do |*files|
 
   def act
     return "nothing" if Rfix.paths.empty?
+
     Rfix.paths.map(&method(:to_relative)).join(", ")
   end
 

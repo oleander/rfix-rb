@@ -1,5 +1,22 @@
 AllCops:
   UseCache: false
+  NewCops: disable
 # Changed in 84.0: https://github.com/rubocop-hq/rubocop/blob/master/CHANGELOG.md#changes-2
 Layout/LineLength:
   Max: 120
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+Naming/FileName:
+  Enabled: false
+Style/AsciiComments:
+  Enabled: true
+Layout/TrailingEmptyLines:
+  Enabled: false
+Layout/EmptyLines:
+  Enabled: false
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Layout/LeadingEmptyLines:
+  Enabled: false
+Layout/EmptyLineAfterMagicComment:
+  Enabled: false
