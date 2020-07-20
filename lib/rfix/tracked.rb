@@ -5,7 +5,7 @@ class Rfix::Tracked < Rfix::File
 
   def include?(line)
     set = diff.each_line.to_a.map{ |l| l.new_lineno }.reject { |l| l == -1 }.to_set
-    set.include?(line - 1)
+    set.include?(line)
   end
 
   private
