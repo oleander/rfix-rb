@@ -114,7 +114,6 @@ class Rfix::Repository
     upstream.diff(head, **params).tap do |diff|
       diff.find_similar!(
         renames_from_rewrites: true,
-        # ignore_whitespace: true,
         renames: true,
         copies: true
       )

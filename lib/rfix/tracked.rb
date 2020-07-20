@@ -4,8 +4,7 @@ class Rfix::Tracked < Rfix::File
   include Rfix::Log
 
   def include?(line)
-    set = diff.each_line.to_a.map{ |l| l.new_lineno }.reject { |line| line == -1 }.to_set
-    say_debug "Checking line #{line} for #{path} :: #{set}"
+    set = diff.each_line.to_a.map{ |l| l.new_lineno }.reject { |l| l == -1 }.to_set
     set.include?(line - 1)
   end
 

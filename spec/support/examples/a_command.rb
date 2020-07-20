@@ -2,7 +2,7 @@ RSpec.shared_examples "a command", shared_examples: :metadata do
   describe "no files" do
     it { is_expected.to have_exit_status(0) }
   end
-  
+
   describe "status code", args: ["--dry"] do
     describe "does not include untracked" do
       describe "invalid untracked file" do

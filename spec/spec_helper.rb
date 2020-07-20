@@ -76,8 +76,8 @@ RSpec.shared_context "setup:git", shared_context: :metadata, type: :aruba do
   let(:main_path)  { Dir.mktmpdir("setup-plain", expand_path(".")) }
   let(:repo_path)  { File.join(main_path, "repo") }
   let(:config_path) { File.expand_path(File.join(__dir__, "fixtures/rubocop.yml")) }
-  let(:repo)     { Rugged::Repository.new(repo_path) }
   let(:git)      { Git.clone(Bundle::Simple::FILE, "repo", path: main_path, branch: "master") }
+  let(:repo)     { Rugged::Repository.new(repo_path) }
 
   subject { last_command_started }
 
