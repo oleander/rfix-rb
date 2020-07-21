@@ -1,3 +1,5 @@
+require_relative "base"
+
 module Rfix
   class Branch::Reference < Branch::Base
     attr_reader :reference

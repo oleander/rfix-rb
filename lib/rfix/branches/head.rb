@@ -1,3 +1,5 @@
+require_relative "base"
+
 module Rfix
   class Branch::Head < Branch::Base
     def resolve(with:)

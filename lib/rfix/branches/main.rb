@@ -1,4 +1,5 @@
 require "rugged"
+require_relative "base"
 
 module Rfix
   class Branch::Main < Branch::Base
