@@ -11,6 +11,8 @@ Gem::Specification.new do |spec|
 
   if ENV["TRAVIS"]
     spec.version = "#{Rfix::VERSION}-#{ENV.fetch('TRAVIS_BUILD_NUMBER')}"
+  elseif ENV["GITHUB_RUN_ID"]
+    spec.version = "#{Rfix::VERSION}-#{ENV.fetch('GITHUB_RUN_ID')}"
   else
     # rubocop:disable Gemspec/DuplicatedAssignment
     spec.version = Rfix::VERSION

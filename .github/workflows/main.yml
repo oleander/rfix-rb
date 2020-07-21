@@ -1,0 +1,22 @@
+---
+name: pre-release
+on: [push]
+jobs:
+  setup:
+    container: ruby:2.7
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: apt-get update -y
+      - run: apt-get install -y bash git libffi-dev build-essential wget cmake
+
+      - run: gem install bundler
+      - run: bundle config build.rugged --use-system-libraries
+      - run: bundle config build.ffi --use-system-libraries
+      - run: gem install rake rspec colorize
+      - run: rake libgit2:install
+
+      - run: bundle install --path vendor/bundle
+      - run: rake execute:local execute:origin execute:lint execute:branch
+      - run: echo "rake release"
