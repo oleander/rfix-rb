@@ -42,6 +42,10 @@ namespace :bundle do
 
         sh "git init"
         sh "git add .gitignore"
+
+        sh "git config user.email 'you@example.com'"
+        sh "git config user.name 'Your Name'"
+        
         sh "git commit -m 'A Commit Message'"
 
         sh "git config push.default current"
