@@ -1,5 +1,6 @@
 require "rfix/repository"
 require "rfix/error"
+autoload_rel "branches/*.rb"
 
 module Rfix
   module Branch

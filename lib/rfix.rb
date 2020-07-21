@@ -4,6 +4,7 @@
 # https://gist.github.com/skanev/9d4bec97d5a6825eaaf6
 
 require "cli/ui"
+require "require_all"
 require "rfix/version"
 require "rfix/log"
 require "rfix/cmd"
