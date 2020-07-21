@@ -8,11 +8,11 @@ end
 module Bundle
   INSTALL = "bundle:install".freeze
   ADD = "bundle:git:add".freeze
-  CONFIG = File.join(__dir__, "../../../.rubocop.yml")
   TAG = "rally-point".freeze
   REBUILD = "bundle:rebuild".freeze
   BUILD = "bundle:build".freeze
-  ROOT = File.expand_path(File.join(__dir__, "../../.."))
+  ROOT = Dir.getwd
+  CONFIG = File.join(ROOT, ".rubocop.yml")
   DIR = File.join(ROOT, "spec/fixtures")
   TMP = File.join(ROOT, "tmp")
 
