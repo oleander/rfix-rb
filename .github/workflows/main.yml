@@ -1,6 +1,8 @@
 ---
 name: pre-release
 on: [push]
+env:
+  RUBYGEMS_API_KEY: ${{secrets.RUBYGEMS_API_KEY}}
 jobs:
   setup:
     container: ruby:2.7
