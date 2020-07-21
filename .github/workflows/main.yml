@@ -21,4 +21,4 @@ jobs:
 
       - run: bundle install --path vendor/bundle
       - run: rake execute:local execute:origin execute:lint execute:branch
-      - run: echo "rake release"
+      - run: rake release
