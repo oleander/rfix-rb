@@ -5,6 +5,7 @@ class Rfix::Tracked < Rfix::File
 
   def include?(line)
     set = diff.each_line.to_a.map{ |l| l.new_lineno }.reject { |l| l == -1 }.to_set
+    say_debug "Does {{yellow:#{set}}} contain {{red:#{line}}}"
     set.include?(line)
   end
 
@@ -52,14 +53,10 @@ class Rfix::Tracked < Rfix::File
   end
 
   def diff
-    upstream.diff(head, {
+    upstream.diff_workdir({
       include_untracked_content: true,
-      # ignore_whitespace_change: true,
       recurse_untracked_dirs: true,
-      disable_pathspec_match: false,
-      # ignore_whitespace_eol: false,
       include_untracked: true,
-      # ignore_whitespace: true,
       ignore_submodules: true,
       include_ignored: false,
       context_lines: 0,
@@ -67,7 +64,6 @@ class Rfix::Tracked < Rfix::File
     }).tap do |diff|
       diff.find_similar!(
         renames_from_rewrites: true,
-        # ignore_whitespace: true,
         renames: true,
         copies: true
       )

@@ -47,10 +47,13 @@ class Rfix::Repository
   end
 
   def include?(path, line)
+    say_debug "Checking #{path}:#{line}"
+
     if file = @files.get(path)
       return file.include?(line)
     end
 
+    say_debug "\tSkip file (return false)"
     return false
   end
 
