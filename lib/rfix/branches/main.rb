@@ -14,13 +14,7 @@ module Rfix
     end
 
     def self.set(branch, at: Dir.pwd)
-      unless branch.is_a?(String)
-        raise Rfix::Error.new("Branch must be a string, got {{error:#{branch.class}}}")
-      end
-
-      check = Branch::Name.new(branch)
-      repo = Branch.repo(at: at)
-      Branch.repo(at: at).config[KEY] = check.branch(using: repo).name
+      Branch.repo(at: at).config[KEY] = branch
     end
 
     def self.get(at: Dir.pwd)
