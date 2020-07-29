@@ -27,7 +27,7 @@ namespace :execute do
 
   task lint: [repo_path, :install] do
     chdir(repo_path) do
-      sh "rfix lint"
+      sh "rfix lint --main-branch master"
     end
   end
 
