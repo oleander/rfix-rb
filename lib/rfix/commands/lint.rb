@@ -8,7 +8,6 @@ summary "Lints commits and untracked files not yet pushed to upstream"
 usage "rfix lint [opts] [path ..]"
 description "Lint (read-only) files"
 
-
 run do |opts, args, _cmd|
   opts[:dry] = true
   opts[:untracked] = true

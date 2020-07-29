@@ -3,11 +3,11 @@ require_relative "base"
 
 module Rfix
   class Branch::Main < Branch::Base
-    KEY = "rfix.main.branch"
+    KEY = "rfix.main.branch".freeze
 
     def resolve(with:)
       unless name = with.config[KEY]
-        raise Error.new("Please run {{command:rfix setup}} first")
+        raise Error, "Please run {{command:rfix setup}} first"
       end
 
       Branch::Name.new(name).resolve(with: with)

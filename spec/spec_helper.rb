@@ -5,7 +5,7 @@ require "aruba/rspec"
 require "rugged"
 require "fileutils"
 require "git"
-require 'shellwords'
+require "shellwords"
 require "rfix/extensions/string"
 
 Aruba.configure do |config|
@@ -89,7 +89,6 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-
   config.after(:each, :success, :git) do
     is_expected.to have_exit_status(0)
   end
@@ -100,7 +99,7 @@ RSpec.configure do |config|
 
   config.after(:each, :read_only, :git) do
     repo.status do |path, status|
-      fail "expected [after] clean directory, instead got dirty #{path} #{status.join(', ')}".fmt
+      raise "expected [after] clean directory, instead got dirty #{path} #{status.join(', ')}".fmt
     end
   end
 end
@@ -133,13 +132,13 @@ RSpec.shared_context "setup:git", shared_context: :metadata, type: :aruba do
     l(type)
   end
 
-  before(:each) do |example|
+  before(:each) do |_example|
     repo.status do |path, status|
-      fail "expected clean directory, instead got dirty #{path} #{status.join(', ')}".fmt
+      raise "expected clean directory, instead got dirty #{path} #{status.join(', ')}".fmt
     end
 
     if repo.head_detached?
-      fail "Head is detached!"
+      raise "Head is detached!"
     end
   end
 
@@ -158,7 +157,7 @@ RSpec.shared_context "setup:git", shared_context: :metadata, type: :aruba do
   append_before(:each, :commits, :git) do |example|
     number_of_times = example.metadata.fetch(:commits)
     say_debug "Creating {{info:#{number_of_times}}} commits"
-    number_of_times.times do |n|
+    number_of_times.times do |_n|
       f(:valid).tracked.write!
     end
   end

@@ -19,7 +19,7 @@ module ::Git
     end
 
     def number_of_dirty_files
-      [changed, untracked,added, deleted].flatten.reduce(0) do |acc, status|
+      [changed, untracked, added, deleted].flatten.reduce(0) do |acc, status|
         acc + status.keys.length
       end
     end

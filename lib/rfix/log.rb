@@ -31,7 +31,7 @@ module Rfix::Log
   end
 
   def say_debug(message)
-    if debug? or test?
+    if debug? || test?
       prt("{{i}} #{strip(message)}", to: $stderr)
     end
   end
@@ -43,6 +43,7 @@ module Rfix::Log
 
   def debug?
     return false unless defined?(RSpec)
+
     return RSpec.configuration.debug?
   end
 

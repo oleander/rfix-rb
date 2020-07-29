@@ -33,7 +33,7 @@ class Aruba::Processes::SpawnProcess
     @output ||= Stdout::Output.new(stdout)
   rescue JSON::ParserError => e
     dump!(include_output: false, error: e)
-    fail e.to_s
+    raise e.to_s
   end
 
   def have_offenses_for?(file)
@@ -118,7 +118,7 @@ class Aruba::Processes::SpawnProcess
 
       unless stderr.strip.empty?
         div("STDERR", color: :red) do
-          prt stderr #absolute_to_relative(stderr)
+          prt stderr # absolute_to_relative(stderr)
         end
       end
     end

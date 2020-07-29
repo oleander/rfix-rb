@@ -18,15 +18,15 @@ class Rfix::File < Struct.new(:path, :repo, :ref)
   end
 
   def include?(_)
-    raise Rfix::Error.new("#include? not implemented")
+    raise Rfix::Error, "#include? not implemented"
   end
 
   def refresh!
-    raise Rfix::Error.new("#refresh! not implemented")
+    raise Rfix::Error, "#refresh! not implemented"
   end
 
   def inspect
-    raise Rfix::Error.new("#inspect not implemented")
+    raise Rfix::Error, "#inspect not implemented"
   end
 
   def git_path

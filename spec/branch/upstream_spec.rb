@@ -12,7 +12,7 @@ RSpec.describe Rfix::Branch::Upstream do
 
         context "different branch then upstream", checkout: "stable" do
           it "resolves to current branch" do
-            expect(branches).to match_array(["master", "stable"])
+            expect(branches).to match_array(%w[master stable])
           end
         end
       end

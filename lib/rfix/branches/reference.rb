@@ -13,7 +13,7 @@ module Rfix
     rescue Branch::UnknownBranchError
       revparse(using: with, ref: reference)
     rescue Rugged::InvalidError
-      raise Branch::UnknownBranchError.new("Branch with reference {{error:#{reference}}} not found")
+      raise Branch::UnknownBranchError, "Branch with reference {{error:#{reference}}} not found"
     end
 
     alias to_s reference

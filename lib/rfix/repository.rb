@@ -18,7 +18,7 @@ class Rfix::Repository
     end
 
     unless reference.is_a?(Rfix::Branch::Base)
-      raise Rfix::Error.new("Need Branch::Base, got {{error:#{reference.class}}}")
+      raise Rfix::Error, "Need Branch::Base, got {{error:#{reference.class}}}"
     end
 
     @files          = FileCache.new(root_path)
@@ -35,12 +35,10 @@ class Rfix::Repository
   end
 
   def load_tracked?
-    !! @reference
+    !!@reference
   end
 
-  def reference
-    @reference
-  end
+  attr_reader :reference
 
   def refresh!(path)
     @files.get(path).refresh!
@@ -108,7 +106,7 @@ class Rfix::Repository
     }
 
     unless @paths.empty?
-      say_debug("Use @paths #{@paths.join(", ")}")
+      say_debug("Use @paths #{@paths.join(', ')}")
       params[:disable_pathspec_match] = false
       params[:paths] = @paths
     end

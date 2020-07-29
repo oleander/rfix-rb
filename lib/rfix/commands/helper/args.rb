@@ -116,7 +116,7 @@ def setup(r_args = [], opts, _args, files: [], reference:)
     paths = files
   elsif paths.empty? && repo.paths.empty?
     if opts[:format] == "json"
-      prt JSON.pretty_generate({"files": []})
+      prt JSON.pretty_generate({ "files": [] })
       exit 0
     else
       say_exit "Everything looks good, nothing to lint"
