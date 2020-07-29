@@ -21,7 +21,7 @@ namespace :execute do
 
   task origin: [repo_path, :install] do
     chdir(repo_path) do
-      sh "rfix origin"
+      sh "rfix origin --main-branch master"
     end
   end
 
