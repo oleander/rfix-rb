@@ -31,9 +31,9 @@ module Rfix::Log
   end
 
   def say_debug(message)
-    # if debug? or test?
+    if debug? or test?
       prt("{{i}} #{strip(message)}", to: $stderr)
-    # end
+    end
   end
 
   def say_abort(message)

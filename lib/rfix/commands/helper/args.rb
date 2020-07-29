@@ -78,6 +78,10 @@ def setup(r_args = [], opts, _args, files: [], reference:)
     say_debug "Cleared Rubocop`s cache"
   end
 
+  if opts[:debug]
+    Rfix.test = true
+  end
+
   if block_given?
     yield(repo, [])
   end
