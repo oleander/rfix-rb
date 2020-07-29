@@ -27,4 +27,6 @@ begin
   end
 rescue RuntimeError => e
   say_abort e.to_s
+rescue Rfix::Error => e
+  say_abort e.to_s
 end
