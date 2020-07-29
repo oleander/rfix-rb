@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
     spec.version = "#{Rfix::VERSION}-#{ENV.fetch('GITHUB_RUN_ID')}"
   else
     # rubocop:disable Gemspec/DuplicatedAssignment
-    spec.version = Rfix::VERSION
+    spec.version = [Rfix::VERSION, "pre"].join
     # rubocop:enable Gemspec/DuplicatedAssignment
   end
 
