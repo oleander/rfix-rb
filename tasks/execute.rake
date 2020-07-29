@@ -9,7 +9,7 @@ CLEAN.include(repo_path)
 namespace :execute do
   task local: [repo_path, :install] do
     chdir(repo_path) do
-      sh "rfix local"
+      sh "rfix local --main-branch master"
     end
   end
 
