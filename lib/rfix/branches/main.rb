@@ -10,7 +10,7 @@ module Rfix
         raise Error.new("Please run {{command:rfix setup}} first")
       end
 
-      String.new(name).resolve(with: with)
+      Branch::Name.new(name).resolve(with: with)
     end
 
     def self.set(branch, at: Dir.pwd)

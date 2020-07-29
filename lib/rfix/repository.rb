@@ -113,7 +113,7 @@ class Rfix::Repository
       params[:paths] = @paths
     end
 
-    say_debug("Run diff on #{reference}")
+    say_debug("Run diff on {{info:#{reference}}}")
     upstream.diff(head, **params).tap do |diff|
       diff.find_similar!(
         renames_from_rewrites: true,

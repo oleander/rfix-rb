@@ -1,5 +1,5 @@
 option :r, :root, "{{*}} Project root path", default: Dir.pwd, argument: :required
-option :b, :"main-branch", "{{*}} Branch to use", default: "master", argument: :required
+option :b, :"main-branch", "{{*}} Branch to use", argument: :required
 option :l, :limit, "{{*}} Limit number of files", argument: :required, transform: method(:Integer)
 
 flag nil, :dry, "{{*}} Run in dry mode"
