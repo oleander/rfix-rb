@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rfix (1.2.4)
+    rfix (1.2.5)
       cri (~> 2.15.10)
       listen (~> 3.0)
       rainbow (~> 3.0)
