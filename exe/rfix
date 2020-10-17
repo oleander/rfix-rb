@@ -1,5 +1,33 @@
 #!/usr/bin/env ruby
 
+class NullBundler
+  def self.use_system_gems?
+    false
+  end
+
+  def self.default_gemfile
+    nil
+  end
+end
+
+begin
+  require "bundler"
+  MaybeBundler = Bundler
+rescue LoadError
+  MaybeBundler = NullBundler
+end
+
+if (gemfile = MaybeBundler.default_gemfile) && MaybeBundler.use_system_gems?
+  if gemfile.readlines.any? { |line| line.include?("rubocop") }
+    ENV["BUNDLE_GEMFILE"] ||= gemfile.to_path
+    unless ENV.key?("__RFIX_LOOP")
+      ENV["__RFIX_LOOP"] ||= "1"
+      bundler = Gem.bin_path("bundler", "bundle")
+      exec bundler, "exec", __FILE__, *ARGV
+    end
+  end
+end
+
 require "cri"
 require "rfix"
 require "rfix/log"
