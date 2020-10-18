@@ -5,11 +5,11 @@ RSpec.describe "the setup command", :git, checkout: "master" do
       expect(all_output).to match(/master/)
     end
 
-    it "fails if the branch provided doesn't exist", :failure do
+    xit "fails if the branch provided doesn't exist", :failure do
       run_command("rfix setup --main-branch nope")
     end
 
-    it "fails if the branch provided doesn't exist" do
+    xit "fails if the branch provided doesn't exist" do
       run_command("rfix setup", exit_timeout: 2)
       is_expected.to have_exit_status(15)
     end
