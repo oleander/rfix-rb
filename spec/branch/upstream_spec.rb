@@ -1,6 +1,6 @@
 RSpec.describe Rfix::Branch::Upstream do
   describe "#resolve(with:)", :git do
-    describe "a named branch with upstream", checkout: "master", upstream: "master" do
+    xdescribe "a named branch with upstream", checkout: "master", upstream: "master" do
       let(:branches) { Rfix::Branch::UPSTREAM.resolve(with: repo).name }
 
       context "no commits" do
