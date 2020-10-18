@@ -1,30 +1,21 @@
-#!/usr/bin/env ruby
+# #!/usr/bin/env ruby
 
-class NullBundler
-  def self.use_system_gems?
-    false
-  end
+require "bundler"
 
-  def self.default_gemfile
-    nil
+require_relative "../lib/rfix/loader/spec.rb"
+require_relative "../lib/rfix/loader/bundler.rb"
+require_relative "../lib/rfix/loader/env.rb"
+
+if spec = Bundler.find_locked("rubocop")
+  Gem::Specification.deactivate(spec.name)
+  unless spec.__materialize__&.activation
+    abort "Could not load rubocop spec file"
   end
 end
 
-begin
-  require "bundler"
-  MaybeBundler = Bundler
-rescue LoadError
-  MaybeBundler = NullBundler
-end
-
-if (gemfile = MaybeBundler.default_gemfile) && MaybeBundler.use_system_gems?
-  if gemfile.readlines.any? { |line| line.include?("rubocop") }
-    ENV["BUNDLE_GEMFILE"] ||= gemfile.to_path
-    unless ENV.key?("__RFIX_LOOP")
-      ENV["__RFIX_LOOP"] ||= "1"
-      bundler = Gem.bin_path("bundler", "bundle")
-      exec bundler, "exec", __FILE__, *ARGV
-    end
+if spec = Gem.loaded_specs.fetch("rubocop")
+  unless Env.requirement === spec.version
+    abort "RuboCop version #{Env.pretty_req} required by rfix but #{spec.version} was found in Gemfile"
   end
 end
 
