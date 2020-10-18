@@ -4,14 +4,16 @@ begin
   module Bundler
     class Null
       def __materialize__
+
       end
 
       def version
         raise "#version not impl."
       end
 
-      alias activation version
-      alias __materialize__ version
+      def activation
+        raise "#activation not impl."
+      end
     end
 
     def self.locked_specs

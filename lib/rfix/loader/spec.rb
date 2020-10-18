@@ -4,7 +4,10 @@ class Gem::Specification
   end
 
   def deactivate
-    loaded_paths.each { |path| $:.delete(path) }
+    loaded_paths.each do |path|
+      $:.delete(path)
+    end
+
     Gem.loaded_specs.delete(name)
   end
 
@@ -20,13 +23,16 @@ class Gem::Specification
   def loaded_paths(spec = self, prev = [])
     return root_loaded_path unless loaded_into_path?
     return root_loaded_path if prev == root_loaded_path
+
     root_loaded_path + dependent_specs.map do |spec|
       loaded_paths(spec, root_loaded_path)
     end.flatten
   end
 
   def loaded_into_path?
-    @lip ||= root_loaded_path.any? { |path| $:.include?(path) }
+    @lip ||= root_loaded_path.any? do |path|
+      $:.include?(path)
+    end
   end
 
   def root_loaded_path

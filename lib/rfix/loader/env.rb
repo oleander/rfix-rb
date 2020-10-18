@@ -20,14 +20,6 @@ class Env
     Gem.bin_path("bundler", "bundle")
   end
 
-  def self.first_loop?
-    !ENV.key?(Env::KEY)
-  end
-
-  def self.first_loop!
-    ENV[Env::KEY] ||= path_to
-  end
-
   def self.log(msg)
     # return unless ARGV.include?("--debug")
 
