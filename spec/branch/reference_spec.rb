@@ -1,5 +1,5 @@
 RSpec.describe Rfix::Branch::Reference do
-  describe "#resolve(with:)", :git do
+  xdescribe "#resolve(with:)", :git do
     describe "a named branch" do
       let(:branch) { Rfix::Branch::Reference.new("master").resolve(with: repo) }
 
