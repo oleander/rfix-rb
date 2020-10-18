@@ -16,6 +16,8 @@ begin
 
     def self.locked_specs
       locked_gems&.specs || []
+    rescue Bundler::GemfileNotFound
+      []
     end
 
     def self.find_locked(name)
