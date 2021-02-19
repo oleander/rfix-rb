@@ -8,11 +8,8 @@ os:
   - linux
 gemfile:
   - ci/Gemfile.rubocop-0.80
-  - ci/Gemfile.rubocop-0.81
   - ci/Gemfile.rubocop-0.82
-  - ci/Gemfile.rubocop-0.83
   - ci/Gemfile.rubocop-0.84
-  - ci/Gemfile.rubocop-0.85
   - ci/Gemfile.rubocop-0.85.1
 before_install:
   - yes | gem update --system --force
