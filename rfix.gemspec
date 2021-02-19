@@ -52,6 +52,7 @@ Gem::Specification.new do |spec|
   spec.requirements << "git, v2.0+"
 
   spec.add_runtime_dependency "cri", "~> 2.15.10"
+  spec.add_runtime_dependency "dry-core", "~> 0.5.0"
   spec.add_runtime_dependency "listen", "~> 3.0"
   spec.add_runtime_dependency "rainbow", "~> 3.0"
   spec.add_runtime_dependency "require_all", "~> 3.0.0"
@@ -60,6 +61,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "rugged", "~> 1.0.0"
 
   spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "rspec-its", "~> 1.3.0"
   spec.add_development_dependency "aruba", "~> 1.0"
   spec.add_development_dependency "colorize", "~> 0.8.1"
   spec.add_development_dependency "git", "~> 1.7.0"

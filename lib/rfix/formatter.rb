@@ -113,11 +113,13 @@ module Rfix
     def report_line(_file, offense, _location, highlighted_area)
       extra = "  "
       src = highlighted_source_line(offense).lines.map { |line| extra + line }.join("\n")
+      indent = Indentation.new(src, extra_indentation: 2)
+      src = indent.call
       lines = @formatter.format(@lexer.lex(src)).gsub('\\e', CLI::UI::ANSI::ESC).lines.map(&:chomp)
       out("\n\n")
       out(lines.join("\n"), format: false)
-      b_pos = highlighted_area.begin_pos + extra.length
-      e_pos = highlighted_area.end_pos + extra.length
+      b_pos = highlighted_area.begin_pos + extra.length * 2 - indent.min_indentation
+      e_pos = highlighted_area.end_pos + extra.length * 2 - indent.min_indentation
       size =  e_pos - b_pos
       out((" " * b_pos) + Rainbow((" " * size)).underline.bold)
       out("\n\n")

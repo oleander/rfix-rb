@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rfix"
+require "rspec/its"
 require "aruba/rspec"
 require "rugged"
 require "fileutils"
