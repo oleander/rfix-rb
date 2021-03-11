@@ -121,7 +121,7 @@ module Rfix
       b_pos = highlighted_area.begin_pos + extra.length * 2 - indent.min_indentation
       e_pos = highlighted_area.end_pos + extra.length * 2 - indent.min_indentation
       size =  e_pos - b_pos
-      out((" " * b_pos) + Rainbow((" " * size)).underline.bold)
+      out((" " * b_pos) + Rainbow((" " * [size, 0].max)).underline.bold)
       out("\n\n")
     end
   end
