@@ -42,17 +42,10 @@ $ rfix                 # Displays this list of supported commands
 
 ### Setup
 
-1. Download repository
-  - `$ git clone https://github.com/oleander/rfix-rb`
-  - `$ cd rfix-rb`
-2. Downloads fixtures and run time dependencies
-  - `$ bundle install`
-  - `$ rake rebuild
-
-### Install from repository
-
 ``` shell
-$ bundle exec rake install
+git clone https://github.com/oleander/rfix-rb
+cd rfix-rb
+bundle install
 ```
 
 ### Run tests
