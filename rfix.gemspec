@@ -5,22 +5,11 @@ require_relative "lib/rfix/version"
 # require_relative "lib/rfix/gem_helper"
 
 Gem::Specification.new do |spec|
-  # extend GemHelper
-
   spec.name          = "rfix"
-
-  if ENV["TRAVIS"]
-    spec.version = "#{Rfix::VERSION}-#{ENV.fetch('TRAVIS_BUILD_NUMBER')}"
-  elsif ENV["GITHUB_RUN_ID"]
-    spec.version = "#{Rfix::VERSION}-#{ENV.fetch('GITHUB_RUN_ID')}"
-  else
-    # rubocop:disable Gemspec/DuplicatedAssignment
-    spec.version = Rfix::VERSION
-    # rubocop:enable Gemspec/DuplicatedAssignment
-  end
-
+  spec.version = Rfix::VERSION
   spec.authors       = ["Linus Oleander"]
   spec.email         = ["linus@oleander.nu"]
+  # rubocop:disable Layout/LineLength
   spec.summary       = "RuboCop CLI that only lints and auto-fixes code you committed by utilizing `git-log` and `git-diff`"
   # rubocop:enable Layout/LineLength
 
