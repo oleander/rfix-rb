@@ -21,4 +21,6 @@ jobs:
       - run: rake libgit2:install
 
       - run: bundle install --path vendor/bundle
-      - run: rake execute:local execute:origin execute:lint execute:branch
+      - run: bundle exec rake travis:setup
+      - run: bundle exec rake travis:spec
+      - run: bundle exec rake travis:verify
