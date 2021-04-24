@@ -1,4 +1,5 @@
 AllCops:
+  NewCops: enable
   Exclude:
     - 'ci/*'
     - 'bin/*'
@@ -8,20 +9,13 @@ AllCops:
 
 Metrics/MethodLength:
   Enabled: false
-
 Metrics/AbcSize:
   Enabled: false
-
 Style/Documentation:
   Enabled: false
-
 Style/FrozenStringLiteralComment:
   Enabled: false
-
 Style/NumericLiterals:
-  Enabled: false
-
-Style/ClassAndModuleChildren:
   Enabled: false
 Lint/AssignmentInCondition:
   Enabled: false
@@ -49,12 +43,10 @@ Layout/LineLength:
   Enabled: false
 Style/SymbolArray:
   EnforcedStyle: brackets
-
 Style/RedundantReturn:
   Enabled: false
 Style/EmptyLiteral:
   Enabled: false
-
 # TODOs
 Metrics/BlockLength:
   Enabled: false
@@ -78,10 +70,10 @@ Style/FormatStringToken:
   Enabled: false
 Style/StderrPuts:
   Enabled: false
-
-
 Layout/ParameterAlignment:
   EnforcedStyle: with_fixed_indentation
 Layout/HashAlignment:
   Enabled: false
   EnforcedColonStyle: key
+Style/ClassAndModuleChildren:
+  Enabled: true

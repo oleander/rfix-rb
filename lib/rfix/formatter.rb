@@ -1,128 +1,124 @@
 # frozen_string_literal: true
 
-require "rubocop"
-require "rouge"
-require "rainbow"
-require "shellwords"
+require "dry/core/constants"
+require "dry/initializer"
 
 module Rfix
   class Formatter < RuboCop::Formatter::SimpleTextFormatter
-    include Rfix::Log
+    attr_reader :indicator
+
+    include Dry::Core::Constants
+    extend Dry::Initializer
+    include CLI::UI
+    include Log
+
+    option :indicator, default: -> { Indicator.new }
+    option :reported_offenses
+    option :options
+    option :output
+
+    def initialize(output, options = EMPTY_HASH)
+      super(output: output, options: options, reported_offenses: EMPTY_ARRAY.dup)
+    end
 
     def started(files)
-      theme      = Rouge::Themes::Gruvbox.new
-      @formatter = Rouge::Formatters::TerminalTruecolor.new(theme)
-      @current   = 0
-      @total     = files.count
-      @files     = {}
-      @lexer     = Rouge::Lexers::Ruby.new
-      @pg        = CLI::UI::Progress.new
-      @all_files = files
+      indicator.start("{{italic:rfix}} is linting {{bold:#{files.count}}} files, hold on ...")
     end
 
-    def truncate(path)
-      path.sub(::File.join(Dir.getwd, "/"), "")
+    # @files [Array<File>]
+    def finished(files)
+      @indicator.stop
+      mark_command_line
+      report_summary(files)
     end
 
-    def render_files(files)
-      return unless Rfix.test?
+    # @file [File]
+    # @offenses [Array<Offence>]
+    def file_finished(*, offenses)
+      @reported_offenses += offenses
 
-      files.each do |file|
-        offenses = @files.fetch(file)
-        corrected = offenses.select(&:corrected?)
+      @indicator.stop if offenses?
 
-        if offenses.empty?
-          say truncate(file)
-        elsif offenses.count == corrected.count
-          say truncate(file)
-        else
-          say_error truncate(file)
+      offenses.each do |offense|
+        framed(offense) do
+          report_line_with_highlight(offense)
         end
       end
     end
 
-    def finished(files)
-      render_files(files)
+    private
 
-      files.each do |file|
-        render_file(file, @files.fetch(file))
-      end
-
-      offenses = @files.values.flatten
-      corrected = offenses.select(&:corrected?)
-      out("\n") unless @total.zero?
-      report_summary(files.size, offenses.count, corrected.count)
+    def framed(offense, &block)
+      newline
+      Frame.open("#{offense.icon} #{offense.msg}", color: :reset)
+      newline
+      block.call
+      newline
+      Frame.close("#{offense.clickable_severity} » #{offense.clickable_path}", color: :reset)
+      newline
     end
 
-    def render_file(file, offenses)
-      return if offenses.empty?
-
-      offenses.each do |offense|
-        out("\n\n")
-        CLI::UI::Frame.open("#{offense.icon} #{offense.msg}", color: :reset)
-        report_line(file, offense, offense.location, offense.highlighted_area)
-        CLI::UI::Frame.close("#{offense.clickable_severity} » #{offense.clickable_path}", color: :reset)
-      end
+    def report_summary(files)
+      super(*stats.insert(0, files.count).take(arity))
     end
 
-    def mark
-      CLI::UI::ANSI::ESC + "]1337;SetMark" + "\x07"
+    def arity
+      method(:report_summary).super_method.arity
     end
 
-    def file_finished(file, offenses)
-      out("\n") if @current == 0.0
-      @current += 1.0
-      unless Rfix.test?
-        @pg.tick(set_percent: (@current / @total))
-      end
-      @files[file] = offenses
+    def mark_command_line
+      "#{CLI::UI::ANSI::ESC}]1337;SetMark\a"
     end
 
-    def out(msg, format: true)
+    def report(msg, format: true)
       CLI::UI.puts(msg, to: output, format: format)
     end
 
-    def fmt(msg)
-      CLI::UI.fmt(msg, enable_color: true)
+    def newline(amount = 1)
+      report("\n" * amount)
     end
 
-    def dim(value)
-      Rainbow(value).lightgray
+    def report_line_with_highlight(offense)
+      location = offense.location
+      buffer = location.source_buffer
+
+      source = buffer.source
+      line = location.line
+      last_line = buffer.last_line
+      surrounding_lines = 2
+
+      min_line = [line - surrounding_lines * 0, 1].max
+      max_line = [line + surrounding_lines * 2, last_line].min
+
+      begin_index = buffer.line_range(min_line).begin_pos
+      end_index = buffer.line_range(max_line).end_pos
+
+      visible = begin_index...end_index
+      highlight = location.to_range
+
+      highlighter = Highlighter.new(
+        visible_lines: (min_line..max_line),
+        highlight: highlight,
+        visible: visible
+      )
+
+      (method(:report) << highlighter).call(source)
     end
 
-    def highlighted_source_line(offense)
-      source_before_highlight(offense) +
-        hightlight_source_tag(offense) +
-        source_after_highlight(offense)
-     end
-
-    def hightlight_source_tag(offense)
-      offense.highlighted_area.source
-   end
-
-    def source_before_highlight(offense)
-      source_line = offense.location.source_line
-      source_line[0...offense.highlighted_area.begin_pos]
+    def corrected
+      reported_offenses.select(&:corrected?)
     end
 
-    def source_after_highlight(offense)
-      source_line = offense.location.source_line
-      source_line[offense.highlighted_area.end_pos..-1]
+    def correctable
+      reported_offenses.select(&:correctable?)
     end
 
-    def report_line(_file, offense, _location, highlighted_area)
-      extra = "  "
-      src = highlighted_source_line(offense).lines.map { |line| extra + line }.join("\n")
-      indent = Indentation.new(src, extra_indentation: 2)
-      src = indent.call
-      lines = @formatter.format(@lexer.lex(src)).gsub('\\e', CLI::UI::ANSI::ESC).lines.map(&:chomp)
-      out("\n\n")
-      out(lines.join("\n"), format: false)
-      b_pos = highlighted_area.begin_pos + extra.length * 2 - indent.min_indentation
-      e_pos = highlighted_area.end_pos + extra.length * 2 - indent.min_indentation
-      size =  e_pos - b_pos
-      out((" " * b_pos) + Rainbow((" " * [size, 0].max)).underline.bold)
-      out("\n\n")
+    def stats
+      [reported_offenses.count, corrected.count, correctable.count]
+    end
+
+    def offenses?
+      reported_offenses.any?
     end
   end
 end

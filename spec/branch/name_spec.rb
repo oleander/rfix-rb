@@ -1,7 +1,7 @@
 RSpec.describe Rfix::Branch::Name do
   xdescribe "#resolve(with:)", :git do
     describe "a named branch" do
-      let(:branch) { Rfix::Branch::Name.new("master").resolve(with: repo) }
+      let(:branch) { described_class.new("master").resolve(with: repo) }
 
       it "resolves to named branch with commits", checkout: "stable", commits: 3 do
         expect(branch.name).to eq("master")

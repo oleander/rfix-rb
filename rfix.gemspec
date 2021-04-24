@@ -2,14 +2,12 @@
 
 require "pathname"
 require_relative "lib/rfix/version"
-# require_relative "lib/rfix/gem_helper"
 
 Gem::Specification.new do |spec|
   spec.name          = "rfix"
-  spec.version = Rfix::VERSION
+  spec.version       = Rfix::VERSION
   spec.authors       = ["Linus Oleander"]
   spec.email         = ["linus@oleander.nu"]
-  # rubocop:disable Layout/LineLength
   spec.summary       = "RuboCop CLI that only lints and auto-fixes code you committed by utilizing `git-log` and `git-diff`"
   # rubocop:enable Layout/LineLength
 
@@ -40,20 +38,20 @@ Gem::Specification.new do |spec|
 
   spec.requirements << "git, v2.0+"
 
+  spec.add_runtime_dependency "activesupport"
+  spec.add_runtime_dependency "bundler"
   spec.add_runtime_dependency "cri", "~> 2.15.10"
-  spec.add_runtime_dependency "dry-core", "~> 0.5.0"
+  spec.add_runtime_dependency "dry-core"
+  spec.add_runtime_dependency "dry-initializer"
+  spec.add_runtime_dependency "dry-struct"
+  spec.add_runtime_dependency "dry-types"
   spec.add_runtime_dependency "listen", "~> 3.0"
+  spec.add_runtime_dependency "pry"
+  spec.add_runtime_dependency "rake"
   spec.add_runtime_dependency "rainbow", "~> 3.0"
-  spec.add_runtime_dependency "require_all", "~> 3.0.0"
   spec.add_runtime_dependency "rouge", "~> 3.20"
-  spec.add_runtime_dependency "rubocop", ">= 0.80", "< 0.90"
-  spec.add_runtime_dependency "rugged", "~> 1.0.0"
-
-  spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency "rspec-its", "~> 1.3.0"
-  spec.add_development_dependency "aruba", "~> 1.0"
-  spec.add_development_dependency "colorize", "~> 0.8.1"
-  spec.add_development_dependency "git", "~> 1.7.0"
-  spec.add_development_dependency "pry", "~> 0.13.1"
-  spec.add_development_dependency "rake", "~> 12.3"
+  spec.add_runtime_dependency "rubocop"
+  spec.add_runtime_dependency "rugged"
+  spec.add_runtime_dependency "strings-ansi"
+  spec.add_runtime_dependency "zeitwerk"
 end

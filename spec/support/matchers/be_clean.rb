@@ -7,7 +7,7 @@ RSpec::Matchers.define :be_clean do
     "expected that git repo would be clean but found #{actual.status.number_of_dirty_files} dirty files"
   end
 
-  failure_message_when_negated do |actual|
-   "expected that git repo to be dirty but was clean"
+  failure_message_when_negated do |_actual|
+    "expected that git repo to be dirty but was clean"
   end
 end

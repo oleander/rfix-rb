@@ -1,4 +1,6 @@
 # frozen_string_literal: true
 
-module Rfix::Support
+module Rfix
+  module Support
+  end
 end

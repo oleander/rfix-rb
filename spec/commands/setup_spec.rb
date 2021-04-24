@@ -11,7 +11,7 @@ RSpec.describe "the setup command", :git, checkout: "master" do
 
     xit "fails if the branch provided doesn't exist" do
       run_command("rfix setup", exit_timeout: 2)
-      is_expected.to have_exit_status(15)
+      expect(subject).to have_exit_status(15)
     end
   end
 end

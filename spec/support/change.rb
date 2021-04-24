@@ -123,7 +123,7 @@ class Change < Struct.new(:binding, :git, :type)
   def to_tail(args)
     return "" if args.empty?
 
-    "{{italic:(#{args.join('')})}}"
+    "{{italic:(#{args.join})}}"
   end
 
   def manipulate!
@@ -156,7 +156,7 @@ class Change < Struct.new(:binding, :git, :type)
   def perform_insert(type)
     lines = file_lines.dup
     row_number = random_line_number
-    lines = lines.insert(row_number - 1, CHANGES.fetch(type))
+    lines.insert(row_number - 1, CHANGES.fetch(type))
 
     File.write(to_dest_path, lines.join("\n"))
 

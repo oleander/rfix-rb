@@ -1,7 +1,7 @@
 RSpec.describe Rfix::Branch::Reference do
   xdescribe "#resolve(with:)", :git do
     describe "a named branch" do
-      let(:branch) { Rfix::Branch::Reference.new("master").resolve(with: repo) }
+      let(:branch) { described_class.new("master").resolve(with: repo) }
 
       it "resolves to named branch with commits", checkout: "stable", commits: 3 do
         expect(branch.name).to eq("master")
@@ -13,7 +13,7 @@ RSpec.describe Rfix::Branch::Reference do
     end
 
     describe "a rev parse value" do
-      let(:branch) { Rfix::Branch::Reference.new("HEAD~1").resolve(with: repo) }
+      let(:branch) { described_class.new("HEAD~1").resolve(with: repo) }
 
       it "resolves to named branch with commits", checkout: "stable", commits: 1 do
         expect(branch.name).to eq("master")
@@ -25,7 +25,7 @@ RSpec.describe Rfix::Branch::Reference do
     end
 
     describe "HEAD" do
-      let(:branch) { Rfix::Branch::Reference.new("HEAD").resolve(with: repo) }
+      let(:branch) { described_class.new("HEAD").resolve(with: repo) }
 
       it "resolves HEAD with no commits", checkout: "stable" do
         expect(branch.name).to eq("stable")

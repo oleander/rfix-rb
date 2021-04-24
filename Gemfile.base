@@ -1,14 +1,27 @@
 source "https://rubygems.org"
 
-
 group :development do
-  gem "pry"
-  gem "colorize"
-  gem "faker"
   gem "gem-release", require: false
-  gem "guard", require: false
-  gem "guard-rspec", require: false
+
+  gem "colorize"
   gem "jsonpath"
+  gem "faker"
+  gem "aruba"
+  gem "git"
+
+  gem "pry-stack_explorer"
+  gem "pry-rescue"
+  gem "pry"
+
+  gem "rspec"
+  gem "rspec-its"
+
+  gem "rubocop-rspec"
+  gem "rubocop-rake"
+
+
+  gem "guard-rspec", require: false
+  gem "guard", require: false
 end
 
 gemspec path: __dir__

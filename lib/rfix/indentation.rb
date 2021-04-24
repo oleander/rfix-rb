@@ -1,5 +1,7 @@
 require "dry/core/memoizable"
+require "strings-ansi"
 
+require "pry"
 module Rfix
   class Indentation
     include Dry::Core::Memoizable
@@ -7,14 +9,18 @@ module Rfix
 
     attr_reader :extra_indentation, :input
 
-    def initialize(input, extra_indentation: 0)
+    def initialize(input, extra_indentation: 2)
       @input = input
       @extra_indentation = extra_indentation
     end
 
     def stripped
-      lines.map do |line|
-        line.sub(/^\s{#{min_indentation}}/, "")
+      lines.drop_while do |line|
+        Strings::ANSI.sanitize(line).blank?
+      end.take_while do |line|
+        Strings::ANSI.sanitize(line).present?
+      end.map do |line|
+        line.gsub(/^\s{#{min_indentation}}/, "")
       end.map do |line|
         [SPACE * extra_indentation, line].join
       end.join

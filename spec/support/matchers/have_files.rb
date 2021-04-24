@@ -13,11 +13,11 @@ RSpec::Matchers.define :have_files do |*files|
     end
   end
 
-  match do |actual|
+  match do |_actual|
     result.call
   end
 
-  match_when_negated do |actual|
+  match_when_negated do |_actual|
     !result.call
   end
 
@@ -44,4 +44,4 @@ RSpec::Matchers.define :have_files do |*files|
   end
 end
 
-RSpec::Matchers.alias_matcher :have_file , :have_files
+RSpec::Matchers.alias_matcher :have_file, :have_files

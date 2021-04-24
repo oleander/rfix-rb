@@ -19,7 +19,7 @@ def validate!(files:)
   files
 end
 
-def setup(r_args = [], opts, _args, files: [], reference:)
+def setup(r_args = [], opts, _args, reference:, files: [])
   # files    = validate!(files: files)
   options  = RuboCop::Options.new
   store    = RuboCop::ConfigStore.new
@@ -42,7 +42,7 @@ def setup(r_args = [], opts, _args, files: [], reference:)
     params.delete(:formatters)
     params[:format] = "json"
     params[:cache] = "false"
-    Rfix.test = true
+    # Rfix.test = true
 
     unless opts.key?(:root)
       raise "No --root passed with --test"
@@ -57,6 +57,8 @@ def setup(r_args = [], opts, _args, files: [], reference:)
     params[:cache] = "false"
   end
 
+  errors = [Rugged::RepositoryError, Rfix::Error, TypeError, Psych::SyntaxError]
+
   begin
     Rfix.repo = repo = Rfix::Repository.new(
       root_path: opts[:root],
@@ -64,9 +66,7 @@ def setup(r_args = [], opts, _args, files: [], reference:)
       reference: reference,
       paths: files || []
     )
-  rescue Rugged::RepositoryError => e
-    say_abort e.to_s
-  rescue Rfix::Error => e
+  rescue *errors => e
     say_abort e.to_s
   end
 
@@ -100,11 +100,7 @@ def setup(r_args = [], opts, _args, files: [], reference:)
     elsif root_path = opts[:root]
       store.for(root_path)
     end
-  rescue RuboCop::Error => e
-    say_abort e.to_s
-  rescue TypeError => e
-    say_abort e.to_s
-  rescue Psych::SyntaxError => e
+  rescue *errors => e
     say_abort e.to_s
   end
 
@@ -116,7 +112,7 @@ def setup(r_args = [], opts, _args, files: [], reference:)
     paths = files
   elsif paths.empty? && repo.paths.empty?
     if opts[:format] == "json"
-      prt JSON.pretty_generate({ "files": [] })
+      prt JSON.pretty_generate({ files: [] })
       exit 0
     else
       say_exit "Everything looks good, nothing to lint"
@@ -130,12 +126,11 @@ def setup(r_args = [], opts, _args, files: [], reference:)
   end
 
   env = RuboCop::CLI::Environment.new(params2, store, paths)
+  errors = [RuboCop::Runner::InfiniteCorrectionLoop, RuboCop::Error]
 
   begin
     exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
-  rescue RuboCop::Runner::InfiniteCorrectionLoop => e
-    say_abort e.to_s
-  rescue RuboCop::Error => e
+  rescue *errors => e
     say_abort e.to_s
   end
 end

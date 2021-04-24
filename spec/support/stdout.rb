@@ -4,6 +4,7 @@ require "rouge"
 module Stdout
   class Base
     attr_reader :json
+
     include Rfix::Log
 
     def select(path)
@@ -13,6 +14,7 @@ module Stdout
 
   class Output < Base
     def initialize(stdout)
+      super()
       @json = JSON.parse(stdout)
     end
 
@@ -96,12 +98,13 @@ module Stdout
     def load_offenses(file)
       @json.fetch("files").select do |other|
         other.fetch("path") == file.to_path
-      end.map { |file| file.fetch("offenses") }.first
+      end.map { |inner_file| inner_file.fetch("offenses") }.first
     end
   end
 
   class Offense < Base
     def initialize(obj)
+      super()
       @obj = obj
     end
 

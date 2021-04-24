@@ -1,30 +1,61 @@
-#!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# https://gist.github.com/skanev/9d4bec97d5a6825eaaf6
-
+require "active_support/all"
+require "dry/initializer"
+require "shellwords"
+require "dry/types"
+require "zeitwerk"
+require "rubocop"
+require "rainbow"
 require "cli/ui"
-require "require_all"
-require "rfix/version"
-require "rfix/log"
-require "rfix/cmd"
-require "rfix/repository"
-require "rfix/formatter"
-require "rfix/indentation"
-require "rfix/extensions/extensions"
-require "rfix/extensions/offense"
-require "rfix/branch"
-require "rfix/rfix"
-require "rfix/box"
-require "rfix/error"
+require "rouge"
+
+loader = Zeitwerk::Loader.for_gem
+loader.ignore("#{__dir__}/rfix/rake")
+loader.ignore("#{__dir__}/rfix/loader")
+loader.ignore("#{__dir__}/rfix/commands")
+loader.setup
 
 module Rfix
-  module Ext; end
-  extend self
+  # NOP
 end
 
-RuboCop::CommentConfig.prepend(Rfix::Ext::CommentConfig)
-RuboCop::Cop::Offense.prepend(Rfix::Ext::Offense)
+module Rfix
+  module_function
+
+  include Log
+  mattr_accessor :repo, :test
+
+  def global_enable!
+    @global_enable = true
+  end
+
+  def test?
+    test
+  end
+
+  def global_enable?
+    @global_enable
+  end
+
+  def refresh!(source)
+    return true if global_enable?
+
+    repo.refresh!(source.file_path)
+  end
+
+  def enabled?(path, line)
+    return true if global_enable?
+
+    repo.include?(path, line)
+  end
+end
+
+module Rfix
+  RuboCop::CommentConfig.prepend(Extension::CommentConfig)
+  RuboCop::Cop::Offense.prepend(Extension::Offense)
+  RuboCop::Options.prepend(Extension::Option)
+end
 
 CLI::UI::StdoutRouter.enable
 

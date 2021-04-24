@@ -1,40 +1,97 @@
-# #!/usr/bin/env ruby
+#!/usr/bin/env ruby -W0 --disable-all
 
+require "rubygems"
+require "bundler/inline"
+require "pathname"
 require "bundler"
 
-require_relative "../lib/rfix/loader/spec.rb"
-require_relative "../lib/rfix/loader/bundler.rb"
-require_relative "../lib/rfix/loader/env.rb"
+module Path
+  HOME = Pathname("~").expand_path
+  DIR = Pathname(__dir__)
+  LOCK = "Gemfile.lock".freeze
+  PWD = Pathname.getwd
+end
 
-if spec = Bundler.find_locked("rubocop")
-  Gem::Specification.deactivate(spec.name)
-  unless spec.__materialize__&.activation
-    abort "Could not load rubocop spec file"
+def lock_path
+  Path::PWD.ascend.find do |path|
+    return if (path <=> Path::HOME) == -1
+
+    path.join(Path::LOCK).file?
+  end.join(Path::LOCK)
+end
+
+def find(name, env: Bundler.rubygems)
+  env.loaded_specs(name) || env.find_name(name).max_by(&:version)
+end
+
+def deactivate(spec)
+  Gem.loaded_specs.delete(spec.name)
+
+  $LOAD_PATH.reject! do |path|
+    spec.load_paths.include?(path)
   end
 end
 
-if spec = Gem.loaded_specs.fetch("rubocop")
-  unless Env.requirement === spec.version
-    abort "RuboCop version #{Env.pretty_req} required by rfix but #{spec.version} was found in Gemfile"
+def specs
+  return [] unless (path = lock_path)
+
+  Bundler::LockfileParser.new(path.read).specs
+end
+
+def overlapping_specs
+  specs.select do |spec|
+    spec.name.start_with?("rubocop")
   end
 end
 
-require "cri"
-require "rfix"
-require "rfix/log"
-require "rubocop"
-require "rfix/extensions/string"
-require "rfix/commands/extensions/options"
+def rfix
+  find("rfix")
+end
+
+def rfix_path
+  return Path::DIR.parent if $PROGRAM_NAME == "exe/rfix"
+
+  Pathname(rfix.full_gem_path)
+end
+
+def commands
+  rfix_path.glob("lib/rfix/commands/*.rb").map do |command|
+    Cri::Command.load_file(command.to_path, infer_name: true)
+  end
+end
+
+def deactivate_all!
+  Gem.loaded_specs.each do |_name, spec|
+    deactivate(spec)
+  end
+end
+
+if overlapping_specs.any?
+  deactivate_all!
+
+  gemfile(false, ui: Bundler::UI::Silent.new) do
+    overlapping_specs.each do |spec|
+      gem spec.name, spec.version
+    end
+
+    gem "rfix", path: rfix_path
+  end
+else
+  require "rfix"
+end
+
 require "rfix/commands/helper/loader"
-require "rfix/branch"
+require "rfix/extension/string"
+require "cri"
 
 include Rfix::Loader
 include Rfix::Log
 
 root = Cri::Command.new
+errors = [RuntimeError, Rfix::Error]
 
-Dir.glob(File.join(__dir__, "../lib/rfix/commands/*.rb")).each do |command|
-  root.add_command(Cri::Command.load_file(command, infer_name: true))
+commands.each do |command|
+  root.add_command(command)
 end
 
 begin
@@ -44,8 +101,6 @@ begin
     prt root.help
     exit 1
   end
-rescue RuntimeError => e
-  say_abort e.to_s
-rescue Rfix::Error => e
+rescue *errors => e
   say_abort e.to_s
 end

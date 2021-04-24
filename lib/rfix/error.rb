@@ -1,2 +1,4 @@
-class Rfix::Error < StandardError
+module Rfix
+  class Error < StandardError
+  end
 end

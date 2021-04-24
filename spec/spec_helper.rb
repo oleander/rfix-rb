@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require "rfix"
-require "rspec/its"
+# require "pry-rescue/rspec"
 require "aruba/rspec"
-require "rugged"
-require "fileutils"
+require "rspec/its"
+require "rfix"
 require "git"
-require "shellwords"
-require "rfix/extensions/string"
 
 Aruba.configure do |config|
   config.allow_absolute_paths = true
@@ -18,7 +15,7 @@ Aruba.configure do |config|
   }
 end
 
-Dir[File.join(__dir__, "support/**/*.rb")].each(&method(:require))
+Dir[File.join(__dir__, "support/**/*.rb")].sort.each(&method(:require))
 
 setup = SetupGit.setup!
 
@@ -28,8 +25,9 @@ def init!(root)
   Rfix.set_main_branch("master")
 end
 
-RSpec.shared_context "setup", shared_context: :metadata  do
+RSpec.shared_context "setup", shared_context: :metadata do
   subject(:git) { setup.git }
+
   let(:git_path) { setup.git_path }
   let(:rp) { SetupGit::RP }
   let(:status) { git.status }
@@ -91,11 +89,11 @@ RSpec.configure do |config|
   end
 
   config.after(:each, :success, :git) do
-    is_expected.to have_exit_status(0)
+    expect(subject).to have_exit_status(0)
   end
 
   config.after(:each, :failure, :git) do
-    is_expected.to have_exit_status(1)
+    expect(subject).to have_exit_status(1)
   end
 
   config.after(:each, :read_only, :git) do
@@ -106,13 +104,13 @@ RSpec.configure do |config|
 end
 
 RSpec.shared_context "setup:git", shared_context: :metadata, type: :aruba do
+  subject { last_command_started }
+
   let(:main_path)  { Dir.mktmpdir("setup-plain", expand_path(".")) }
   let(:repo_path)  { File.join(main_path, "repo") }
   let(:config_path) { File.expand_path(File.join(__dir__, "fixtures/rubocop.yml")) }
   let(:git)      { Git.clone(Bundle::Simple::FILE, "repo", path: main_path, branch: "master") }
-  let(:repo)     { Rugged::Repository.new(repo_path) }
-
-  subject { last_command_started }
+  let(:repo)     { Rugged::Repository.discover(repo_path) }
 
   def setup_git!
     git
@@ -133,7 +131,7 @@ RSpec.shared_context "setup:git", shared_context: :metadata, type: :aruba do
     l(type)
   end
 
-  before(:each) do |_example|
+  before do |_example|
     repo.status do |path, status|
       raise "expected clean directory, instead got dirty #{path} #{status.join(', ')}".fmt
     end
@@ -163,7 +161,7 @@ RSpec.shared_context "setup:git", shared_context: :metadata, type: :aruba do
     end
   end
 
-  around(:each) do |example|
+  around do |example|
     setup_git!
 
     cd(repo_path) do
@@ -200,7 +198,7 @@ RSpec.shared_context "setup:plain", :git, shared_context: :metadata do
     end
   end
 
-  before(:each) do |example|
+  before do |example|
     setup_files!
     exec!(example.metadata)
   end

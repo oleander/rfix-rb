@@ -20,8 +20,8 @@ run do |opts, _args|
   end
 
   CLI::UI::Prompt.ask("Which one is your main branch?") do |handler|
-    Rfix::Branch.local(at: opts[:root]).each do |branch|
-      handler.option(branch) do |selection|
+    Rfix::Branch.local(at: opts[:root]).each do |inner_branch|
+      handler.option(inner_branch) do |selection|
         set_branch(opts[:root], selection)
       end
     end

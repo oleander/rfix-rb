@@ -7,7 +7,7 @@ require_relative "lib/rfix/rake/support"
 
 Dir[File.join(__dir__, "tasks/*")].each(&method(:load))
 
-extend Rfix::Support
+extend Rfix::Rake::Support
 
 desc "Remove and create tmp file"
 task :clear do

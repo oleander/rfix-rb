@@ -11,10 +11,10 @@ RSpec.describe "lint command" do
 
       run_command_and_stop("rfix lint --format json --root #{repo_path} --test --config #{config_path} --main-branch master #{file1.to_path}", fail_on_error: false)
 
-      is_expected.to have_linted(file1)
-      is_expected.not_to have_fixed(file1)
-      is_expected.not_to have_fixed(file2)
-      is_expected.not_to have_linted(file2)
+      expect(subject).to have_linted(file1)
+      expect(subject).not_to have_fixed(file1)
+      expect(subject).not_to have_fixed(file2)
+      expect(subject).not_to have_linted(file2)
     end
   end
 end
