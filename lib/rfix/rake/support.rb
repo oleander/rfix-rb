@@ -5,17 +5,19 @@ require "shellwords"
 module Rfix
   module Rake
     module Support
-      include FileUtils
 
-      def included(base)
+      class Utils
+        include FileUtils
+      end
+
+      def self.extended(base)
         super
 
-        base.alias_method :_sh, :sh
-        base.alias _cd cd
-        base.alias _rm_rf rm_rf
-        base.alias _rm_f rm_f
-        base.alias _mkdir_p mkdir_p
-        base.alias _chdir chdir
+        utils = Utils.new
+
+        %i[cd sh rm_rf rm mkdir_p chdir].each do |name|
+          base.define_singleton_method("_#{name}".to_sym, &utils.method(name))
+        end
       end
 
       def gemfiles
