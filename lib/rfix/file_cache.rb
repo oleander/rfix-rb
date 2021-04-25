@@ -1,62 +1,50 @@
+require "active_support/core_ext/module/delegation"
+require "dry/core/constants"
+
 module Rfix
-  class FileCache
-    attr_reader :root_path
+  class FileCache < Dry::Struct
+    include Dry::Core::Constants, Log
+    NoFileFound = Class.new(Error)
 
-    include Log
+    attribute :repository, Types::Rugged
 
-    def initialize(path)
-      @files = Hash.new
-      @paths = Hash.new
-      @root_path = path
-    end
-
-    def add(file)
-      key = normalized_file_path(file)
-
-      if @files.key?(key)
-        return say_debug("File already exists with path {{error:#{file.path}}} using #{key}")
+    using Module.new {
+      refine String do
+        def key
+          Pathname(self).realpath
+        end
       end
+    }
 
-      say_debug("Adding file with path {{green:#{file.path}}} using key {{info:#{key}}}")
-      @files[key] = file
+    def initialize(**)
+      @files = EMPTY_HASH.dup
+      @paths = EMPTY_HASH.dup
+
+      super
     end
 
-    def get(path)
-      key = normalize_path(path)
+    def add(file_path)
+      @files[key(file_path)] = file_path
+    end
 
-      if file = @files[key]
-        say_debug("Found file #{file} with path #{path}")
-        return file
+    def get(file_path)
+      @files.fetch(key(file_path)) do
+        raise NoFileFound, file_path
       end
-
-      say_debug("Could {{error:NOT}} find path #{path}")
-      nil
     end
 
-    def pluck(&block)
-      @files.values.map(&block)
+    def files
+      @files.values
     end
 
     private
 
-    def normalized_file_path(file)
-      normalize_path(file.absolute_path)
+    def path
+      Pathname(repository.path)
     end
 
-    def to_abs(path)
-      ::File.join(root_path, path)
-    end
-
-    def normalize_path(path)
-      if cached = @paths[path]
-        return cached
-      end
-
-      if Pathname.new(path).absolute?
-        @paths[path] = ::File.realdirpath(path)
-      else
-        @paths[path] = ::File.realdirpath(to_abs(path))
-      end
+    def key(file)
+      path.join(file).realpath
     end
   end
 end

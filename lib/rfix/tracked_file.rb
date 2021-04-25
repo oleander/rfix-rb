@@ -9,7 +9,7 @@ module Rfix
       end
     end
 
-    def include?(line)
+    def include?(line:)
       @ranges.any? { |range| range.include?(line) }
     end
   end

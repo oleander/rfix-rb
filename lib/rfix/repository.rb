@@ -20,59 +20,46 @@ module Rfix
     attribute? :load_untracked, Types::Bool.default(false)
     attribute :reference, Types.Instance(Branch::Base)
 
+    delegate :head, :branches, :workdir, :rev_parse, :status, to: :repository
+    delegate :store, to: :@files
+
     alias_method :load_untracked?, :load_untracked
     alias_method :load_tracked?, :reference
-
-    delegate :head, :branches, :workdir, :rev_parse, :status, to: :repository
+    alias_method :git_path, :workdir
 
     def initialize(**)
+      @files = EMPTY_HASH.dup
       super
       load!
     end
 
-    def files
-      @files ||= FileCache.new(repository.path)
+    def store(file)
+      @files.store(file.path, file)
     end
 
+    # @path [String]
     def refresh!(path)
-      files.get(path).refresh!
+      @files.fetch(path).refresh!
     end
 
+    # @path [String]
+    # @line [Integer]
+    # @return Bool
     def include?(path, line)
-      say_debug "Checking #{path}:#{line}"
-
-      if file = files.get(path)
-        return file.include?(line)
-      end
-
-      say_debug "\tSkip file (return false)"
-      return false
+      @files.fetch(path).include?(line)
     end
 
-    def set_root(_path_path)
-      using_path(root_path)
-    end
-
-    def paths
-      files.pluck(&:absolute_path)
-    end
-
+    # @return [Branch]
     def current_branch
-      head.name
+      Branch::Name.new(branches[head.name].name)
     end
 
+    # @return [Array]
     def local_branches
       branches.each_name(:local).to_a
     end
 
-    alias_method :git_path, :workdir
-
-    # TODO: Memo
-    def head
-      @head ||= rev_parse("HEAD")
-    end
-
-    # TODO: Memo
+    # @return [Rugged::Commit]
     def upstream
       @upstream ||= reference.resolve(with: repository)
     end
@@ -100,28 +87,19 @@ module Rfix
       end
 
       say_debug("Run diff on {{info:#{reference}}}")
-      upstream.diff(head, **params).tap do |diff|
+      upstream.diff(head.target, **params).tap do |diff|
         diff.find_similar!(
           renames_from_rewrites: true,
           renames: true,
           copies: true
         )
       end.each_delta do |delta|
+
         path = delta.new_file.fetch(:path)
         say_debug("Found #{path} while diff")
         try_store(path, [delta.status])
-      end
-    rescue Rugged::ReferenceError
-      abort_box($ERROR_INFO.to_s) do
-        prt "Reference {{error:#{reference}}} cannot be found in repository"
-      end
-    rescue Rugged::ConfigError
-      abort_box($ERROR_INFO.to_s) do
-        prt "No upstream branch set for {{error:#{current_branch}}}"
-      end
-    rescue TypeError
-      abort_box($ERROR_INFO.to_s) do
-        prt "Reference {{error:#{reference}}} is not pointing to a tree or commit"
+      rescue
+        binding.pry
       end
     end
 
@@ -130,57 +108,10 @@ module Rfix
       load_untracked!
     end
 
-    # https://github.com/libgit2/rugged/blob/35102c0ca10ab87c4c4ffe2e25221d26993c069c/test/status_test.rb
-    # - +:index_new+: the file is new in the index
-    # - +:index_modified+: the file has been modified in the index
-    # - +:index_deleted+: the file has been deleted from the index
-    # - +:worktree_new+: the file is new in the working directory
-    # - +:worktree_modified+: the file has been modified in the working directory
-    # - +:worktree_deleted+: the file has been deleted from the working directory
-
-    MODIFIED  = [:modified, :worktree_modified, :index_modified].freeze
-    IGNORED   = [:ignored].freeze
-    STAGED    = [:added, :index_new].freeze
-    UNTRACKED = [:worktree_new, :untracked].freeze
-    COPIED    = [:copied].freeze
-    DELETED   = [:deleted, :worktree_deleted, :index_deleted].freeze
-    RENAMED   = [:renamed].freeze
-
-    SKIP = [*DELETED, *RENAMED, *COPIED, *IGNORED].freeze
-    ACCEPT = [*MODIFIED].freeze
-
     def load_untracked!
       status do |path, status|
         try_store(path, status)
       end
-    end
-
-    def store(file)
-      files.add(file)
-    end
-
-    def try_store(path, status)
-      if SKIP.any?(&status.method(:include?))
-        return say_debug("Ignored {{warning:#{status.join(', ')}}} #{path}")
-      end
-
-      if STAGED.any?(&status.method(:include?))
-        return store(Untracked.new(path, repo, nil))
-      end
-
-      if UNTRACKED.any?(&status.method(:include?))
-        unless load_untracked?
-          return say_debug("Ignore #{path} as untracked files are ignored: #{status}")
-        end
-
-        return store(Untracked.new(path, repo, nil))
-      end
-
-      if ACCEPT.any?(&status.method(:include?))
-        return store(Tracked.new(path, repo, reference))
-      end
-
-      say_debug "Status not found {{error:#{status.join(', ')}}} for {{italic:#{path}}}"
     end
   end
 end

@@ -204,7 +204,16 @@ RSpec.shared_context "setup:plain", :git, shared_context: :metadata do
   end
 end
 
+RSpec.shared_context "repo", shared_context: :metadata do
+  let(:test_path) { Pathname(__dir__).join("../tmp/complex") }
+  let(:dirname) { test_path.expand_path }
+  let(:rugged) { Rugged::Repository.new(test_path) }
+  let(:branch) { Rfix::Branch::Reference.new("HEAD~50") }
+end
+
 RSpec.configure do |config|
+  config.shared_context_metadata_behavior = :apply_to_host_groups
   config.include_context "setup:plain", :cmd
   config.include_context "setup:git", :git
+  config.include_context "repo", :repo
 end
