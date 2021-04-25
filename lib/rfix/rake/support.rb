@@ -28,6 +28,10 @@ module Rfix
         $stderr.puts "#{'==>'.color(:blue)} #{to_relative(msg).italic}"
       end
 
+      def directory(*args)
+        mkdir_p args
+      end
+
       def sh(*args)
         args = args.map(&:to_s).map(&:shellsplit).flatten
         colorize args
