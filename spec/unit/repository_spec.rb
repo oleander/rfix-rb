@@ -48,7 +48,7 @@ class Blob < Struct.new(:name)
   end
 
   def status
-    tap do { puts git.status.pretty }
+    tap { puts git.status.pretty }
   end
 
   def commit
@@ -127,7 +127,7 @@ RSpec.describe Rfix::Repository do
       it { is_expected.to ignore_file(name) }
     end
 
-    fcontext "when file is commited" do
+    context "when file is commited" do
       before { file.write.commit }
 
       it { is_expected.to track_file(name) }
