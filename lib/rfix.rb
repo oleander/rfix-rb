@@ -3,7 +3,6 @@
 require "active_support/core_ext/module/attribute_accessors"
 require "zeitwerk"
 require "rubocop"
-require "cli/ui"
 
 loader = Zeitwerk::Loader.for_gem
 loader.ignore("#{__dir__}/rfix/rake")
