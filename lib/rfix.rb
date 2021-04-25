@@ -33,9 +33,3 @@ module Rfix
   mattr_accessor :repo, :test
   module_function :enabled?, :refresh!, :global_enable?, :test?, :global_enable!
 end
-
-module Rfix
-  RuboCop::CommentConfig.prepend(Extension::CommentConfig)
-  RuboCop::Cop::Offense.prepend(Extension::Offense)
-  RuboCop::Options.prepend(Extension::Option)
-end

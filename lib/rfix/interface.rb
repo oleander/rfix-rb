@@ -1,5 +1,4 @@
 
-puts "AAA"
 module Rfix
   module Interface
     include Log

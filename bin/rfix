@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby -W0 --disable-all
 
-require "rubygems"
 require "bundler/inline"
+require "rubygems"
 require "pathname"
 require "bundler"
 
@@ -70,8 +70,7 @@ end
 if overlapping_specs.any?
   deactivate_all!
 
-  # , ui: Bundler::UI::Silent.newa
-  gemfile(false) do
+  gemfile(false, ui: Bundler::UI::Silent.new) do
     overlapping_specs.each do |spec|
       gem spec.name, spec.version
     end
@@ -82,6 +81,10 @@ if overlapping_specs.any?
 else
   require "rfix"
 end
+
+RuboCop::CommentConfig.prepend(Rfix::Extension::CommentConfig)
+RuboCop::Cop::Offense.prepend(Rfix::Extension::Offense)
+RuboCop::Options.prepend(Rfix::Extension::Option)
 
 require "cri"
 require "rfix/commands/helper/loader"
