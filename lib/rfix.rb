@@ -8,6 +8,7 @@ loader = Zeitwerk::Loader.for_gem
 loader.ignore("#{__dir__}/rfix/rake")
 loader.ignore("#{__dir__}/rfix/loader")
 loader.ignore("#{__dir__}/rfix/commands")
+loader.inflector.inflect "cli" => "CLI"
 
 ["Rfix::Formatter", "Rfix::Highlighter", "Rfix::Log"].each do |name|
   loader.on_load(name) do
