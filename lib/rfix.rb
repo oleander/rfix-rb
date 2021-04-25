@@ -9,6 +9,10 @@ loader.ignore("#{__dir__}/rfix/rake")
 loader.ignore("#{__dir__}/rfix/loader")
 loader.ignore("#{__dir__}/rfix/commands")
 
+loader.on_load("Rfix::Formatter") do
+  RuboCop::Options.prepend(Rfix::Extension::Option)
+end
+
 ["Rfix::Formatter", "Rfix::Highlighter", "Rfix::Log"].each do |name|
   loader.on_load(name) do
     @loaded ||= begin

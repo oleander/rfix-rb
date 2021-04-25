@@ -16,6 +16,11 @@ PATH
       strings-ansi
       zeitwerk
 
+PATH
+  remote: vendor/shopify/cli-ui
+  specs:
+    cli-ui (1.5.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -212,6 +217,7 @@ PLATFORMS
 
 DEPENDENCIES
   aruba
+  cli-ui!
   colorize
   faker
   gem-release

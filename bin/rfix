@@ -83,7 +83,6 @@ else
 end
 
 RuboCop::CommentConfig.prepend(Rfix::Extension::CommentConfig)
-RuboCop::Cop::Offense.prepend(Rfix::Extension::Offense)
 RuboCop::Options.prepend(Rfix::Extension::Option)
 
 require "cri"
