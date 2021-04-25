@@ -1,6 +1,7 @@
   # frozen_string_literal: true
 
 require "git"
+require "logger"
 require "bundler/gem_tasks"
 require 'rspec/core/rake_task'
 require_relative "lib/rfix/rake/paths"
@@ -77,7 +78,8 @@ namespace :testing do
 
     repo_path.join("Gemfile").write(gemfile)
 
-    git = Git.init(repo_path.to_path)
+    git = Git.init(repo_path.to_path, log: Logger.new(STDOUT))
+
     git.chdir do
       touch ".gitignore"
 
@@ -96,24 +98,29 @@ namespace :testing do
     git.add("example.rb")
     git.commit("example.rb")
     git.add_tag(tag)
-  end
 
-  file bundle_file => repo_path do
-    cd repo_path do
+    git.chdir do
       sh "git bundle create", bundle_file, "--branches", "--tags"
     end
   end
 
   file workspace_path => bundle_file do
-    git = Git.clone(bundle_file, "workspace", path: workspace_path)
-    git.checkout("master")
-    git.checkout("child")
+    sh "git", "clone", bundle_file, "--branch", "child", workspace_path
+
+    cd workspace_path do
+      sh "git", "checkout", "master"
+      sh "git", "checkout", "child"
+    end
   end
 
   namespace :lint do
     task rfix: workspace_path do
-      git = Git.init(workspace_path.to_path)
-
+      git = Git.open(workspace_path.to_path, log: Logger.new(STDOUT))
+      #
+      # git.checkout("master")
+      # git.add_tag(fixed_tag)
+      # next
+      #
       git.checkout("child")
 
       git.chdir do
@@ -128,7 +135,10 @@ namespace :testing do
     end
 
     task rubocop: workspace_path do
-      git = Git.init(workspace_path.to_path)
+      git = Git.open(workspace_path.to_path, log: Logger.new(STDOUT))
+
+      git.checkout("child")
+
       git.chdir do
         sh "bundle exec rubocop -A --fail-level F"
       end
@@ -156,6 +166,7 @@ namespace :testing do
 
   task :clean do
     rm_f bundle_file
+    rm_rf workspace_path
     rm_rf repo_path
     rm_rf test_path
   end
