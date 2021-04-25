@@ -51,7 +51,7 @@ end
 
 require "tmpdir"
 
-Blob = Struct.new(:name) do
+class Blob < Struct.new(:name)
   def self.new(*)
     blob = super
     blob.init
@@ -105,7 +105,6 @@ Blob = Struct.new(:name) do
   end
 
   def touch
-    puts "Touch #{name}"
     tap { path.join(name).write("") }
   end
 
@@ -159,6 +158,12 @@ RSpec.describe Rfix::Repository do
         it { is_expected.to skip(file) }
       end
 
+      context "then changed" do
+        let(:file) { super().write }
+
+        it { is_expected.to track(file) }
+      end
+
       context "given an untracked file" do
         let(:file) { super().new("file2.rb") }
 
@@ -168,6 +173,12 @@ RSpec.describe Rfix::Repository do
           let(:file) { super().stage }
 
           it { is_expected.not_to track(file) }
+        end
+
+        context "then deleted" do
+          let(:file) { super().delete }
+
+          it { is_expected.to_not skip(file) }
         end
       end
     end
