@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 r_args = []
 
 helper("help", binding)

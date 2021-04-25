@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Rfix
   module FileSetup
     def meta_to_args(keys)

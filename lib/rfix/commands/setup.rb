@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 helper("help", binding)
 
 option :r, :root, "{{*}} Project root path", default: Dir.pwd, argument: :required

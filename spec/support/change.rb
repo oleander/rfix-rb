@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require "faker"
 require "pry"
 
-class Change < Struct.new(:binding, :git, :type)
+Change = Struct.new(:binding, :git, :type) do
   include Rfix::Log
 
   FIXTURES = {
@@ -196,7 +198,7 @@ class Change < Struct.new(:binding, :git, :type)
       return pot_row
     end
 
-    return random_delete_number(type, rows)
+    random_delete_number(type, rows)
   end
 
   def perform_destroy

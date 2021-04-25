@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :have_fixed do |file|
   match do |actual|
     unless actual.has_corrected?(file)
@@ -46,7 +48,7 @@ RSpec::Matchers.define :have_fixed do |file|
   end
 end
 
-[:untracked, :staged, :tracked].each do |type|
+%i[untracked staged tracked].each do |type|
   RSpec::Matchers.alias_matcher :"have_fixed_#{type}_file", :have_fixed
 end
 RSpec::Matchers.alias_matcher :have_fixed_file, :have_fixed

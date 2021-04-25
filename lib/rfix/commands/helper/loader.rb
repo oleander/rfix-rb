@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Rfix
   module Loader
     def helper(file, bind)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rainbow/ext/string"
 require "shellwords"
 require "fileutils"
@@ -5,7 +7,6 @@ require "fileutils"
 module Rfix
   module Rake
     module Support
-
       class Utils
         include FileUtils
       end
@@ -25,7 +26,7 @@ module Rfix
       end
 
       def say(msg)
-        $stderr.puts "#{'==>'.color(:blue)} #{to_relative(msg).italic}"
+        warn "#{'==>'.color(:blue)} #{to_relative(msg).italic}"
       end
 
       def directory(*args)

@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module Rfix
   class Deleted < File
     def include?(_)
-      return false
+      false
     end
 
     def refresh!

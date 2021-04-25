@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples "a destroyed file" do
   Change::FIXTURES.each_key do |type|
     describe "a destroy file of type #{type}" do

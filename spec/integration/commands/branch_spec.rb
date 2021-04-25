@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # RSpec.fdescribe "lint", cmd: ["branch", "HEAD~2"], args: ["--dry"], checkout: "stable" do
 
 RSpec.describe "the branch command" do

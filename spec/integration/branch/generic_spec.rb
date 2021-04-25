@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "branch", cmd: ["branch", "HEAD~2"], checkout: "stable" do
   let(:file1) { l(:invalid).tracked }
   let(:file2) { l(:invalid).tracked }

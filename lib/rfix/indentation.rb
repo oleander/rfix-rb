@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require "dry/core/memoizable"
 require "strings-ansi"
 
 module Rfix
   class Indentation
     include Dry::Core::Memoizable
-    SPACE = " ".freeze
+    SPACE = " "
 
     attr_reader :extra_indentation, :input
 

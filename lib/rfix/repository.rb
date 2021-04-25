@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "active_support/core_ext/module/delegation"
 require "dry/core/constants"
 require "dry/core/memoizable"
@@ -22,9 +24,9 @@ module Rfix
 
     delegate :head, :branches, :workdir, :rev_parse, :status, to: :repository
 
-    alias_method :load_untracked?, :load_untracked
-    alias_method :load_tracked?, :reference
-    alias_method :git_path, :workdir
+    alias load_untracked? load_untracked
+    alias load_tracked? reference
+    alias git_path workdir
 
     OPTIONS = {
       include_untracked_content: true,
@@ -34,7 +36,7 @@ module Rfix
       ignore_submodules: true,
       include_ignored: false,
       context_lines: 0
-    }
+    }.freeze
 
     def self.call(**)
       super.tap(&:call)

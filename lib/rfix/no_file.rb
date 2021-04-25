@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module Rfix
-  class NoFile < Struct.new(:path)
+  NoFile = Struct.new(:path) do
     def include?(_line)
-      return true
+      true
     end
 
     def divide

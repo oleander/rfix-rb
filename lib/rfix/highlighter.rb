@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "dry/core/constants"
 require "dry/initializer"
 require "dry/types"
@@ -7,8 +9,8 @@ module Rfix
   class Highlighter < Rouge::Formatters::TerminalTruecolor
     tag "highlighter"
 
-    NEWLINE = "\n".freeze
-    SPACE = " ".freeze
+    NEWLINE = "\n"
+    SPACE = " "
 
     TEXT = Rouge::Token::Tokens::Text
 
@@ -89,11 +91,11 @@ module Rfix
         print_line_number = lambda do
           block.call(SPACE * 2)
 
-          if is_h[lineno]
-            bold = yellow
-          else
-            bold = dimness
-          end
+          bold = if is_h[lineno]
+                   yellow
+                 else
+                   dimness
+                 end
 
           (block << bold).call(lineno.to_s.ljust(4, SPACE))
         end

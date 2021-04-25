@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "the setup command", :git, checkout: "master" do
   describe "branch" do
     it "defaults to asking the user for their default branch", :success do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :have_files_count do |expected|
   include Rfix::Log
 

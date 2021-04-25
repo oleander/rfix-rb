@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "lint command" do
   describe "preload", cmd: "lint", checkout: "stable" do
     it_behaves_like "a lint command"

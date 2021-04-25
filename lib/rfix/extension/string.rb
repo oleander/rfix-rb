@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # TODO: Use refinements instead
 module Rfix
   module Extension

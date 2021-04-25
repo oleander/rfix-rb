@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby -W0 --disable-all
+# frozen_string_literal: true
 
 require "bundler/inline"
 require "rubygems"
@@ -8,7 +9,7 @@ require "bundler"
 module Path
   HOME = Pathname("~").expand_path
   DIR = Pathname(__dir__)
-  LOCK = "Gemfile.lock".freeze
+  LOCK = "Gemfile.lock"
   PWD = Pathname.getwd
   PROJECT = DIR.join("..").expand_path
 end

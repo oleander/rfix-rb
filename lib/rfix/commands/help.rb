@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 extend Rfix::Log
 
 summary "Displays help"

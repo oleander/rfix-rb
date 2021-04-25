@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 r_args = []
 
 helper("help", binding)
@@ -12,11 +14,11 @@ run do |opts, args, _cmd|
   opts[:dry] = true
   opts[:untracked] = true
 
-  if main = opts[:"main-branch"]
-    branch = Rfix::Branch::Name.new(main)
-  else
-    branch = Rfix::Branch::MAIN
-  end
+  branch = if main = opts[:"main-branch"]
+             Rfix::Branch::Name.new(main)
+           else
+             Rfix::Branch::MAIN
+           end
 
   setup(r_args, opts, args, files: args.each.to_a, reference: branch)
 end

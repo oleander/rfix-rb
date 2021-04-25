@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 2.5.0"
   spec.files                 = Dir["lib/**/*"]
   spec.executables           = ["rfix"]
-  spec.requirements          << "git >= 2"
+  spec.requirements << "git >= 2"
 
   spec.metadata["homepage_uri"] = spec.homepage
 
@@ -30,13 +30,13 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "cri", "~> 2.15.10"
   spec.add_runtime_dependency "dry-core"
   spec.add_runtime_dependency "dry-initializer"
+  spec.add_runtime_dependency "dry-struct"
   spec.add_runtime_dependency "dry-types"
   spec.add_runtime_dependency "rainbow", "~> 3.0"
   spec.add_runtime_dependency "rake"
   spec.add_runtime_dependency "rouge", "~> 3.20"
   spec.add_runtime_dependency "rubocop"
   spec.add_runtime_dependency "rugged"
-  spec.add_runtime_dependency "dry-struct"
-  spec.add_runtime_dependency "zeitwerk"
   spec.add_runtime_dependency "strings-ansi"
+  spec.add_runtime_dependency "zeitwerk"
 end

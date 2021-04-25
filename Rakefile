@@ -1,9 +1,9 @@
-  # frozen_string_literal: true
+# frozen_string_literal: true
 
 require "git"
 require "logger"
 require "bundler/gem_tasks"
-require 'rspec/core/rake_task'
+require "rspec/core/rake_task"
 require_relative "lib/rfix/rake/paths"
 require_relative "lib/rfix/rake/support"
 
@@ -147,7 +147,7 @@ namespace :testing do
       git.commit("changes")
     end
 
-    task diff: [:rfix, :rubocop] do
+    task diff: %i[rfix rubocop] do
       cd workspace_path do
         sh "git", "diff", fixed_tag
       end
@@ -156,7 +156,11 @@ namespace :testing do
 
   task soft_clean: workspace_path do
     cd workspace_path do
-      sh("git", "tag", "-d", fixed_tag) rescue nil
+      begin
+        sh("git", "tag", "-d", fixed_tag)
+      rescue StandardError
+        nil
+      end
       sh "git", "checkout", "."
       sh "git", "reset", "--hard", tag
     end

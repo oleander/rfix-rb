@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Rfix::Branch::Name do
   xdescribe "#resolve(with:)", :git do
     describe "a named branch" do

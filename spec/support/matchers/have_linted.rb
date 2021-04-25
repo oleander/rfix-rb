@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :have_linted do |file|
   include Rfix::Log
 
@@ -46,7 +48,7 @@ RSpec::Matchers.define :have_linted do |file|
   end
 end
 
-[:untracked, :staged, :tracked].each do |type|
+%i[untracked staged tracked].each do |type|
   RSpec::Matchers.alias_matcher :"have_linted_#{type}_file", :have_linted
 end
 RSpec::Matchers.alias_matcher :have_linted_file, :have_linted

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "jsonpath"
 require "rouge"
 
@@ -78,13 +80,13 @@ module Stdout
         return "{{error:didn't lint anything}}"
       end
       intro = "only #{files.join(', ')}"
-      if fixed_files.any?
-        intro << " linted and #{fixed_lines_str} {{red:fixed}}"
-      else
-        intro << " were"
-      end
+      intro << if fixed_files.any?
+                 " linted and #{fixed_lines_str} {{red:fixed}}"
+               else
+                 " were"
+               end
 
-      return intro
+      intro
     end
 
     def fixed_lines_str

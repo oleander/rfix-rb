@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 module Rfix
-  class Box < Struct.new(:out, :err, :status, :args, :quiet)
+  Box = Struct.new(:out, :err, :status, :args, :quiet) do
     include Log
 
     def render(color: :reset, debug: false)

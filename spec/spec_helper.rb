@@ -8,7 +8,7 @@ require "git"
 
 Aruba.configure do |config|
   config.allow_absolute_paths = true
-  config.activate_announcer_on_command_failure = [:stdout, :stderr]
+  config.activate_announcer_on_command_failure = %i[stdout stderr]
   config.command_runtime_environment = {
     "OVERCOMMIT_DISABLE" => "1",
     "GIT_TEMPLATE_DIR" => ""

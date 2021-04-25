@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples "a command", shared_examples: :metadata do
   describe "no files" do
     it { is_expected.to have_exit_status(0) }

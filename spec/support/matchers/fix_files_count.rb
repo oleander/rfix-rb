@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :fix_files_count do |count|
   match do |actual|
     before = no_changed_files

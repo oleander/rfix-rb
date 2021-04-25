@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module Rfix
   module Branch
     class Main < Base
-      KEY = "rfix.main.branch".freeze
+      KEY = "rfix.main.branch"
 
       def resolve(with:)
         unless name = with.config[KEY]

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :find_path do |file|
   match do |actual|
     @line ||= /\d+/

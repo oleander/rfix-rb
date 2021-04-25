@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # require "git"
 #
 # RSpec.shared_context "git", shared_context: :metadata do

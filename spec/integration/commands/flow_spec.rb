@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "flow", :git, checkout: "stable" do
   let(:branch) { "hello-world" }
 

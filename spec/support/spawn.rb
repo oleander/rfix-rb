@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rfix/log"
 require "rouge"
 require "rugged"
@@ -80,9 +82,9 @@ module Aruba
       def stdout_json?
         return false if stdout.chomp.empty?
 
-        return !!JSON.parse(stdout)
+        !!JSON.parse(stdout)
       rescue JSON::ParserError
-        return false
+        false
       end
 
       def dump!(include_output: true, **)

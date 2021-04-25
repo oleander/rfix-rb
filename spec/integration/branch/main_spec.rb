@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Rfix::Branch::Main do
   describe "set & get", :git do
     xit "throws error if the branch doesn't exist" do

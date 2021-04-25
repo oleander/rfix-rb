@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :list_file do |file|
   match do |actual|
     expect(actual.stdout).to include(file.to_path)
@@ -16,7 +18,7 @@ RSpec::Matchers.define :list_file do |file|
   end
 end
 
-[:untracked, :staged, :tracked].each do |type|
+%i[untracked staged tracked].each do |type|
   RSpec::Matchers.alias_matcher :"have_listed_#{type}_file", :list_file
 end
 

@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require "pathname"
 require "faker"
 require "fileutils"
 require "rfix/rake/paths"
 
-class SetupGit < Struct.new(:root_path, :id)
+SetupGit = Struct.new(:root_path, :id) do
   include Rfix::Log
 
   def self.setup!

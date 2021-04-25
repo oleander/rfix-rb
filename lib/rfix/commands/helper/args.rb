@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 option :r, :root, "{{*}} Project root path", default: Dir.pwd, argument: :required
 option :b, :"main-branch", "{{*}} Branch to use", argument: :required
 option :l, :limit, "{{*}} Limit number of files", argument: :required, transform: method(:Integer)

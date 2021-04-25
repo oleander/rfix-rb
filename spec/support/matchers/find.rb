@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :find do |*output|
   match do |actual|
     [actual.stderr, actual.stdout].any? do |stream|

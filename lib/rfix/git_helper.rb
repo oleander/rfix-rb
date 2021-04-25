@@ -18,7 +18,7 @@ module Rfix
       return if params.empty?
       return split(params.first) if params.count == 1
 
-      return params
+      params
     end
 
     def split(str)

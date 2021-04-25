@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples "a command that accepts files" do
   describe "successful passing files", :git, checkout: "stable", upstream: "master" do
     it "only effects those files that are passed in" do

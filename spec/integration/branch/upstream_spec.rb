@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Rfix::Branch::Upstream do
   describe "#resolve(with:)", :git do
     xdescribe "a named branch with upstream", checkout: "master", upstream: "master" do

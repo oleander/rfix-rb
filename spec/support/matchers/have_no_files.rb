@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :have_no_files do |*_files|
   result = lambda do
     Rfix.paths.empty?

@@ -43,7 +43,7 @@ module Rfix
     def debug?
       return false unless defined?(RSpec)
 
-      return RSpec.configuration.debug?
+      RSpec.configuration.debug?
     end
 
     def test?

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SharedData
   def init_rfix!(root)
     # Rfix.set_root(root)

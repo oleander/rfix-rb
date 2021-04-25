@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :bundle do
   namespace :simple do
     directory Bundle::Simple::REPO

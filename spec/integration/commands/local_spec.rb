@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "the local command", upstream: "master", checkout: "stable" do
   describe "preload", cmd: "local" do
     it_behaves_like "a command"

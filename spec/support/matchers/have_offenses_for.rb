@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :have_offenses_for do |file|
   match do |actual|
     actual.have_offenses_for?(file)

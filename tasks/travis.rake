@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Core::RakeTask.new(:rspec)
 
 namespace :travis do
@@ -26,7 +28,7 @@ namespace :travis do
 
   namespace :tasks do
     desc "Run this"
-    task all: [:welcome, :info]
+    task all: %i[welcome info]
 
     task :rfix do
       clone_and_run do
@@ -68,7 +70,7 @@ task dataLoad: :codeGen do
   # sleep rand
 end
 
-task gtest: [:compile, :dataLoad] do
+task gtest: %i[compile dataLoad] do
   say "in test"
   sleep rand
 end

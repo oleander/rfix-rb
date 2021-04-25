@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Path
   ROOT = Pathname(__dir__).join("..")
 
@@ -13,7 +15,7 @@ namespace :vendor do
   multitask build: [Path::CLI, Path::DRY]
 
   desc "Re-download vendors repository"
-  task rebuild: [:flush, :build]
+  task rebuild: %i[flush build]
 
   desc "Remove vendor repository"
   task :flush do
