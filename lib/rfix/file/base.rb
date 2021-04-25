@@ -14,7 +14,6 @@ module Rfix
       # - +:worktree_new+: the file is new in the working directory
       # - +:worktree_modified+: the file has been modified in the working directory
       # - +:worktree_deleted+: the file has been deleted from the working directory
-
       TRACKED   = [:modified, :worktree_modified, :index_modified].freeze
       UNTRACKED = [:added, :index_new, :worktree_new, :untracked].freeze
       DELETED   = [:deleted, :worktree_deleted, :index_deleted].freeze
