@@ -24,8 +24,8 @@ module Rfix
       abstract_class self
 
       attribute :repository, Types::Rugged
-      attribute :path, Types::String
-      alias_method :basename, :path
+      attribute :basename, Types::String
+      alias_method :key, :basename
 
       # @return [Pathnane]
       def path

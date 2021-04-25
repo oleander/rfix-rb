@@ -94,9 +94,9 @@ module Rfix
         )
       end.each_delta do |delta|
         file = File.call(
+          basename: delta.new_file[:path],
           repository: repository,
-          status: delta.status,
-          path: delta.new_file[:path]
+          status: delta.status
         )
 
         store(file)
@@ -110,7 +110,7 @@ module Rfix
 
     def load_untracked!
       status do |path, status|
-        File.call(path: path, status: status, repository: repository)
+        File.call(basename: path, status: status, repository: repository)
       end
     end
 
