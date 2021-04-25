@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "active_support/all"
+require "active_support/core_ext/module/attribute_accessors"
 require "dry/initializer"
 require "shellwords"
 require "dry/types"
@@ -15,10 +15,6 @@ loader.ignore("#{__dir__}/rfix/rake")
 loader.ignore("#{__dir__}/rfix/loader")
 loader.ignore("#{__dir__}/rfix/commands")
 loader.setup
-
-module Rfix
-  # NOP
-end
 
 module Rfix
   module_function
