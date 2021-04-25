@@ -112,13 +112,19 @@ namespace :testing do
 
   namespace :lint do
     task rfix: workspace_path do
-      cd workspace_path do
+      git = Git.init(workspace_path.to_path)
+
+      git.checkout("child")
+
+      git.chdir do
         sh rfix, "setup", "-b", "master"
         sh rfix, "origin", "--fail-level", "F"
-        sh "git commit -am changes"
-        sh "git", "tag", fixed_tag
-        sh "git", "reset", "--hard", "HEAD~1"
       end
+
+      git.add(all: true)
+      git.commit_all("changes")
+      git.add_tag(fixed_tag)
+      git.reset_hard("HEAD~1")
     end
 
     task rubocop: workspace_path do
