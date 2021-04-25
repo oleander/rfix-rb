@@ -1,3 +1,5 @@
+require "rugged"
+
 module Rfix
   module Branch
     UnknownBranchError = Class.new(Error)

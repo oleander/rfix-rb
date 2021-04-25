@@ -6,4 +6,5 @@ group :development, :test do
   gem "pry", require: true
 end
 
+gem "git", require: true
 gem "cli-ui", path: "vendor/shopify/cli-ui", require: false

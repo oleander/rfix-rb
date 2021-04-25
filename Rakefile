@@ -1,5 +1,6 @@
   # frozen_string_literal: true
 
+require "git"
 require "bundler/gem_tasks"
 require 'rspec/core/rake_task'
 require_relative "lib/rfix/rake/paths"
@@ -44,6 +45,7 @@ namespace :testing do
   workspace_path = test_path.join("workspace")
   last_commit_hash = "526654c"
   first_commit_hash = "a20ce6d"
+  first_commit_hash = "HEAD"
   tag = "rfix-checkpoint-tag"
   rfix = project_path.join("bin/rfix")
   repo_url = "https://github.com/fazibear/colorize.git"
@@ -53,30 +55,47 @@ namespace :testing do
 
   # CLEAN.include(workspace_path)
 
-  directory repo_path, test_path
+  directory test_path
 
   gemfile = <<~GEMFILE
     source 'https://rubygems.org'
     gem "rubocop"
   GEMFILE
 
+  example = <<~EXAMPLE
+    # This is a comment
+  EXAMPLE
+
+  directory repo_path
+
   file repo_path do
-    sh "git", "clone", repo_url, "--branch", "master", repo_path
+    mkdir_p repo_path
 
     cd repo_path do
-      rm "Gemfile"
-      rm ".rubocop.yml"
+      touch "Gemfile"
     end
 
     repo_path.join("Gemfile").write(gemfile)
 
-    cd repo_path do
-      sh "bundle install"
+    git = Git.init(repo_path.to_path)
+    git.chdir do
+      touch ".gitignore"
+
+      sh "bundle install --local"
       sh "bundle exec rubocop --init"
-      sh "git add ."
-      sh "git", "commit", "-m", "'Test commit'"
-      sh "git tag", tag
+      sh "bundle exec rubocop -A"
     end
+
+    git.add(all: true)
+    git.commit_all("changes")
+
+    git.branch("child").checkout
+
+    repo_path.join("example.rb").write(example)
+
+    git.add("example.rb")
+    git.commit("example.rb")
+    git.add_tag(tag)
   end
 
   file bundle_file => repo_path do
@@ -86,34 +105,51 @@ namespace :testing do
   end
 
   file workspace_path => bundle_file do
-    sh "git", "clone", bundle_file, "--branch", tag, workspace_path
+    git = Git.clone(bundle_file, "workspace", path: workspace_path)
+    git.checkout("master")
+    git.checkout("child")
   end
 
-  task lint: workspace_path do
-    cd workspace_path do
-      sh rfix, "branch", first_commit_hash, "--fail-level", "F"
-      sh "git add ."
-      sh "git commit -m 'rfix fixes'"
-      sh "git", "tag", fixed_tag
+  namespace :lint do
+    task rfix: workspace_path do
+      cd workspace_path do
+        sh rfix, "setup", "-b", "master"
+        sh rfix, "origin", "--fail-level", "F"
+        sh "git commit -am changes"
+        sh "git", "tag", fixed_tag
+        sh "git", "reset", "--hard", "HEAD~1"
+      end
+    end
 
-      sh "git", "reset", "--hard", "HEAD~1"
-      sh "bundle exec rubocop -A --fail-level F"
-      sh "git add ."
-      sh "git commit -m 'native fixes'"
+    task rubocop: workspace_path do
+      git = Git.init(workspace_path.to_path)
+      git.chdir do
+        sh "bundle exec rubocop -A --fail-level F"
+      end
 
-      sh "git", "diff", fixed_tag
+      git.add(all: true)
+      git.commit("changes")
+    end
+
+    task diff: [:rfix, :rubocop] do
+      cd workspace_path do
+        sh "git", "diff", fixed_tag
+      end
     end
   end
 
-  task :soft_clean do
+  task soft_clean: workspace_path do
     cd workspace_path do
-      sh "git", "tag", "-d", fixed_tag
+      sh("git", "tag", "-d", fixed_tag) rescue nil
       sh "git", "checkout", "."
       sh "git", "reset", "--hard", tag
     end
   end
 
+  task rebuild: [:clean, workspace_path]
+
   task :clean do
+    rm_f bundle_file
     rm_rf repo_path
     rm_rf test_path
   end
