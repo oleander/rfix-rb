@@ -18,13 +18,13 @@ Gem::Specification.new do |spec|
 
     Holds the same CLI arguments as RuboCop. Run `rfix --help` for a complete list or `rfix` for supported commands.
   TEXT
+
   spec.homepage      = "https://github.com/oleander/rfix-rb"
   spec.license       = "MIT"
-  spec.required_ruby_version = Gem::Requirement.new(">= 2.5.0")
+  spec.required_ruby_version = ">= 2.5.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  # Specify which files should be added to the gem when it is released.
-  # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
+
   validate_file = ->(f) { f.match(%r{^(test|spec|features)/}) }
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
     `git ls-files -z`.split("\x0").reject(&validate_file)
@@ -36,22 +36,18 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib", "vendor/shopify/cli-ui/lib"]
 
-  spec.requirements << "git, v2.0+"
+  spec.requirements << "git >= 2"
 
   spec.add_runtime_dependency "activesupport"
   spec.add_runtime_dependency "bundler"
   spec.add_runtime_dependency "cri", "~> 2.15.10"
   spec.add_runtime_dependency "dry-core"
   spec.add_runtime_dependency "dry-initializer"
-  spec.add_runtime_dependency "dry-struct"
   spec.add_runtime_dependency "dry-types"
-  spec.add_runtime_dependency "listen", "~> 3.0"
-  spec.add_runtime_dependency "pry"
   spec.add_runtime_dependency "rake"
   spec.add_runtime_dependency "rainbow", "~> 3.0"
   spec.add_runtime_dependency "rouge", "~> 3.20"
   spec.add_runtime_dependency "rubocop"
   spec.add_runtime_dependency "rugged"
-  spec.add_runtime_dependency "strings-ansi"
   spec.add_runtime_dependency "zeitwerk"
 end

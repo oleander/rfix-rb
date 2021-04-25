@@ -7,16 +7,12 @@ PATH
       cri (~> 2.15.10)
       dry-core
       dry-initializer
-      dry-struct
       dry-types
-      listen (~> 3.0)
-      pry
       rainbow (~> 3.0)
       rake
       rouge (~> 3.20)
       rubocop
       rugged
-      strings-ansi
       zeitwerk
 
 GEM
@@ -91,10 +87,6 @@ GEM
     dry-logic (1.1.1)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.5, >= 0.5)
-    dry-struct (1.4.0)
-      dry-core (~> 0.5, >= 0.5)
-      dry-types (~> 1.5)
-      ice_nine (~> 0.11)
     dry-types (1.5.1)
       concurrent-ruby (~> 1.0)
       dry-container (~> 0.3)
@@ -124,7 +116,6 @@ GEM
       rspec (>= 2.99.0, < 4.0)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
-    ice_nine (0.11.2)
     interception (0.5)
     jsonpath (1.1.0)
       multi_json
@@ -205,7 +196,6 @@ GEM
     ruby-progressbar (1.11.0)
     rugged (1.1.0)
     shellany (0.0.1)
-    strings-ansi (0.2.0)
     sys-uname (1.2.2)
       ffi (~> 1.1)
     thor (1.1.0)
@@ -238,4 +228,4 @@ DEPENDENCIES
   rubocop-rspec
 
 BUNDLED WITH
-   2.2.5
+   2.2.16
