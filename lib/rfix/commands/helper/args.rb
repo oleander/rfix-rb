@@ -57,7 +57,8 @@ def setup(r_args = [], opts, _args, reference:, files: [])
     params[:cache] = "false"
   end
 
-  errors = [Rugged::RepositoryError, Rfix::Error, TypeError, Psych::SyntaxError]
+  # errors = [Rugged::RepositoryError, Rfix::Error, TypeError, Psych::SyntaxError]
+  errors = [Rfix::Error, TypeError, Psych::SyntaxError]
 
   begin
     Rfix.repo = repo = Rfix::Repository.new(

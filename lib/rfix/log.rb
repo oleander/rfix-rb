@@ -47,7 +47,8 @@ module Rfix
     end
 
     def test?
-      Rfix.test?
+      # Rfix.test?
+      false
     end
 
     def say_exit(message)
