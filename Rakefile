@@ -31,3 +31,45 @@ task spec: Bundle::BUILD do
 end
 
 task default: [:rebuild]
+
+require "rake/clean"
+require "pathname"
+
+namespace :testing do
+  project_path = Pathname.pwd
+  repo_path = project_path.join("tmp/test")
+  last_commit_hash = "526654c"
+  first_commit_hash = "a20ce6d"
+  rfix = project_path.join("bin/rfix")
+  rubocop_config_path = repo_path.join(".rubocop.yml")
+  repo_url = "https://github.com/fazibear/colorize.git"
+
+  # CLEAN.include(repo_path)
+
+  gemfile = <<~GEMFILE
+    source 'https://rubygems.org'
+    gem "rubocop"
+  GEMFILE
+
+  file repo_path do
+    sh "git", "clone", repo_url, "--branch", "master", repo_path
+
+    cd repo_path do
+      sh "git", "reset", "--hard", last_commit_hash
+      rm "Gemfile"
+    end
+
+    repo_path.join("Gemfile").write(gemfile)
+
+    cd repo_path do
+      sh "bundle install"
+      sh "bundle exec rubocop --init"
+    end
+  end
+
+  task lint: repo_path do
+    cd repo_path do
+      sh rfix, "branch", first_commit_hash, "--fail-level=F"
+    end
+  end
+end

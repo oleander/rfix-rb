@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 require "rubocop/formatter/simple_text_formatter"
+require "rubocop/cop/offense"
 require "dry/core/constants"
 require "dry/initializer"
 require "cli/ui"
+
+RuboCop::Cop::Offense.prepend(Rfix::Extension::Offense)
 
 module Rfix
   class Formatter < RuboCop::Formatter::SimpleTextFormatter

@@ -50,7 +50,7 @@ def rfix
 end
 
 def rfix_path
-  return Path::DIR.parent if $PROGRAM_NAME == "bin/rfix"
+  return Path::DIR.parent if $PROGRAM_NAME.end_with?("bin/rfix")
 
   Pathname(rfix.full_gem_path)
 end

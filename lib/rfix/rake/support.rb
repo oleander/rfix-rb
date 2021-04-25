@@ -1,4 +1,5 @@
 require "rainbow/ext/string"
+require "shellwords"
 require "fileutils"
 
 module Rfix
@@ -28,7 +29,7 @@ module Rfix
       end
 
       def sh(*args)
-        args = args.map(&:shellsplit).flatten
+        args = args.map(&:to_s).map(&:shellsplit).flatten
         colorize args
         _sh(*args)
       end
