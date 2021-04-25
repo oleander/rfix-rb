@@ -19,14 +19,14 @@ module Rfix
 
     attribute? :paths, Types.Array(Types::String).default(EMPTY_ARRAY)
     attribute :repository, Types.Instance(Rugged::Repository)
-    attribute? :load_untracked, Types::Bool.default(false)
+
+    # attribute? :include do
+    #   attribute :untracked, Types::Bool.default(false)
+    # end
+
     attribute :reference, Types.Instance(Branch::Base)
 
-    delegate :head, :branches, :workdir, :rev_parse, :status, to: :repository
-
-    alias load_untracked? load_untracked
-    alias load_tracked? reference
-    alias git_path workdir
+    delegate :head, :branches, :workdir, :rev_parse, to: :repository
 
     OPTIONS = {
       include_unmodified: true,
@@ -45,27 +45,36 @@ module Rfix
       super.tap(&:call)
     end
 
+    def status
+      @status ||= begin
+        found = {}
+
+        repository.status do |path, statuses|
+          statuses.each do |status|
+            (found[path] ||= []) << status
+          end
+        end
+
+        repository.head.target.diff(**OPTIONS.dup).tap do |diff|
+          diff.find_similar!(
+            renames_from_rewrites: true,
+            renames: true,
+            copies: true
+          )
+        end.each_delta.each_with_object(found) do |delta, acc|
+          (acc[delta.new_file[:path]] ||= []) << delta.status
+        end
+      end
+    end
+
     def call
-      # Untracked files
-      status do |path, status|
-        build(path, status)
+      @call ||= begin
+        status.each do |path, statuses|
+          build(path, statuses)
+        end
       end
-
-      # Tracked files
-      unless paths.empty?
-        params[:disable_pathspec_match] = false
-        params[:paths] = paths
-      end
-
-      repository.head.target.diff(**OPTIONS.dup).tap do |diff|
-        diff.find_similar!(
-          renames_from_rewrites: true,
-          renames: true,
-          copies: true
-        )
-      end.each_delta.map do |delta|
-        build(delta.new_file[:path], [delta.status])
-      end
+    rescue
+      binding.pry
     end
 
     # @path [String]
@@ -102,14 +111,23 @@ module Rfix
       files.values.select(&:untracked?)
     end
 
+    def deleted
+      files.values.select(&:untracked?)
+    end
+
+    def staged
+      files.values.select(&:staged?)
+    end
+
     def to_s
       options = {
         untracked: untracked.map(&:basename).join(", "),
         tracked: tracked.map(&:basename).join(", "),
-        ignored: ignored.map(&:basename).join(", ")
+        ignored: ignored.map(&:basename).join(", "),
+        deleted: deleted.map(&:basename).join(", ")
       }
 
-      "Repository<Untracked: %<untracked>s, Tracked: %<tracked>s, Ignored: %<ignored>s>" % options
+      "Repository<Untracked: %<untracked>s, Tracked: %<tracked>s, Ignored: %<ignored>s, Deleted: %<deleted>s>" % options
     end
 
     private

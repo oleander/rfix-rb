@@ -3,7 +3,7 @@
 module Rfix
   module File
     class Tracked < Base
-      attribute :status, Types::Array(Types::Symbol).superset(*TRACKED)
+      attribute :status, Types.Value([:added])
 
       def include?(line:)
         diff.each_line.to_a.map(&:new_lineno).reject do |line|

@@ -3,27 +3,49 @@
 require "rspec/its"
 require 'rspec/expectations'
 
-RSpec::Matchers.define :ignore_file do |name|
+RSpec::Matchers.define :stage do |file|
   match do |repository|
-    repository.ignored.any? do |path|
-      path.basename == name
+    repository.staged.any? do |path|
+      path.basename == file.name
     end
   end
 
   failure_message do |repository|
-    "expected that #{repository} would include ignored file #{name}"
+    "expected that #{repository} would include staged file #{file.name}"
   end
 end
 
-RSpec::Matchers.define :track_file do |name|
+RSpec::Matchers.define :ignore do |file|
   match do |repository|
-    repository.tracked.any? do |path|
-      path.basename == name
+    repository.ignored.any? do |path|
+      path.basename == file.name
     end
   end
 
   failure_message do |repository|
-    "expected that #{repository} would include tracked file #{name}"
+    "expected that #{repository} would include ignored file #{file.name}"
+  end
+end
+
+RSpec::Matchers.define :track do |file|
+  match do |repository|
+    repository.tracked.any? do |path|
+      path.basename == file.name
+    end
+  end
+
+  match_when_negated do |repository|
+    repository.untracked.any? do |file|
+      path.basename == file.name
+    end
+  end
+
+  failure_message do |repository|
+    "expected that #{repository} would include tracked file [#{file.name}]"
+  end
+
+  failure_message_when_negated do |repository|
+    "expected that #{repository} would include untracked file [#{file.name}]"
   end
 end
 
@@ -37,14 +59,16 @@ class Blob < Struct.new(:name)
     blob
   end
 
-  def delete
-    puts "Delete #{name}"
-    path.rmtree
+  def new(name)
+    self.class.new(name)
   end
 
-  def staged
-    puts "Add #{name}"
-    tap { git.add(name) }
+  def delete
+    tap { file_path.delete }
+  end
+
+  def stage
+    write.tap { git.add(name) }
   end
 
   def status
@@ -52,9 +76,15 @@ class Blob < Struct.new(:name)
   end
 
   def commit
-    puts "Commit #{name}"
-    staged.tap do
+    stage.tap do
       git.commit("commit #{name}")
+    end
+  end
+  alias_method :track, :commit
+
+  def ignore
+    tap do
+      path.join(".gitignore").write(name, mode: 'a')
     end
   end
 
@@ -66,11 +96,9 @@ class Blob < Struct.new(:name)
     @repo ||= Rugged::Repository.new(path)
   end
 
-  def write_comment
-    puts "Write to #{name}"
+  def write
     tap { file_path.write("# comment", mode: 'a') }
   end
-  alias write write_comment
 
   def file_path
     path.join(name)
@@ -106,31 +134,66 @@ RSpec.describe Rfix::Repository do
   let(:file) { Blob.new(name) }
   let(:branch) { Rfix::Branch::Reference.new("HEAD") }
 
-  before do
-    file.write_comment.commit
+  # before do
+  #   file.write_comment.commit
+  # end
+
+
+  # describe "#include?" do
+  #   after { file.delete }
+  #
+  #   let(:name) { "file.rb" }
+  #
+  #   context "when file is tracked then modified" do
+  #     before { file.write }
+  #     it { is_expected.to track(name) }
+  #   end
+  #
+  #   context "when file is untracked" do
+  #     before { file.new("file2.rb").write }
+  #     it { is_expected.to track(name) }
+  #   end
+  #
+  #   context "when file is ignored" do
+  #     before { file.ignore }
+  #     it { is_expected.to ignore(name) }
+  #   end
+  #
+  #   context "when file is commited" do
+  #     before { file.write.commit }
+  #
+  #     it { is_expected.to track(name) }
+  #   end
+  # end
+
+  subject(:repository) { described_class.call(repository: file.repo, reference: branch) }
+
+  after do |example|
+    if example.exception
+      repository.status
+      binding.pry
+    end
   end
 
-  subject(:repo) { described_class.call(repository: file.repo, reference: branch) }
+  context "given a file" do
+    let(:file) { Blob.new("file.rb") }
 
-  describe "#include?" do
-    after { file.delete }
+    context "when tracked" do
+      let(:file) { super().track }
 
-    let(:name) { "file.rb" }
+      it { is_expected.to track(file) }
 
-    context "when file is untracked" do
-      it { is_expected.to ignore_file(name) }
-    end
+      # context "then staged" do
+      #   let(:file) { super().stage }
+      #
+      #   it { is_expected.to track(file) }
+      # end
 
-    context "when file is staged" do
-      before { file.staged.status }
+      context "then deleted" do
+        let(:file) { super().delete }
 
-      it { is_expected.to ignore_file(name) }
-    end
-
-    context "when file is commited" do
-      before { file.write.commit }
-
-      it { is_expected.to track_file(name) }
+        it { is_expected.to ignore(file) }
+      end
     end
   end
 end

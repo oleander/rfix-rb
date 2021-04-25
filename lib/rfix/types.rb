@@ -17,5 +17,18 @@ module Rfix
         end
       end
     end
+
+    def self.Statuses(*symbols)
+      set = symbols.map do |symbol|
+        Types.Value(symbol)
+      end.reduce(:|)
+
+      Types.Array(Types::Symbol).constructor do |value, type, &error|
+        type.call(value, &error).tap do |value|
+        end.map do |symbol|
+          set.call(symbol, &error)
+        end
+      end
+    end
   end
 end

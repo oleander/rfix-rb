@@ -3,7 +3,7 @@
 module Rfix
   module File
     class Untracked < Ignored
-      attribute :status, Types::Array(Types::Symbol).superset(*UNTRACKED)
+      attribute :status, Types.Statuses(*UNTRACKED)
 
       def untracked?
         true

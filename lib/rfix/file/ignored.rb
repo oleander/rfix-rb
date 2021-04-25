@@ -3,7 +3,7 @@
 module Rfix
   module File
     class Ignored < Base
-      attribute :status, Types::Array(Types::Symbol).superset(*IGNORED)
+      attribute :status, Types.Statuses(*IGNORED)
 
       def include?(*)
         false

@@ -17,10 +17,25 @@ module Rfix
       # - +:worktree_new+: the file is new in the working directory
       # - +:worktree_modified+: the file has been modified in the working directory
       # - +:worktree_deleted+: the file has been deleted from the working directory
-      TRACKED   = %i[modified worktree_modified index_modified].freeze
-      UNTRACKED = %i[added index_new worktree_new untracked].freeze
-      DELETED   = %i[deleted worktree_deleted index_deleted].freeze
-      IGNORED   = [*DELETED, :renamed, :copied, :ignored].freeze
+      # STATUSES = {
+       #   "staged_new_file" => [:index_new],
+       #   "staged_new_file_deleted_file" => [:index_new, :worktree_deleted],
+       #   "staged_new_file_modified_file" => [:index_new, :worktree_modified],
+       #   "file_deleted" => [:worktree_deleted],
+       #   "modified_file" => [:worktree_modified],
+       #   "new_file" => [:worktree_new],
+       #   "ignored_file" => [:ignored],
+       #   "subdir/deleted_file" => [:worktree_deleted],
+       #   "subdir/modified_file" => [:worktree_modified],
+       #   "subdir/new_file" => [:worktree_new],
+       #   "\xe8\xbf\x99" => [:worktree_new]
+       # }
+
+      STAGED    = %i[index_new index_deleted]
+      TRACKED   = %i[worktree_modified modified added].concat(STAGED)
+      UNTRACKED = %i[worktree_new].concat(STAGED)
+      DELETED   = %i[worktree_deleted].concat(STAGED)
+      IGNORED   = %i[ignored].concat(STAGED)
 
       schema schema.strict
       abstract_class self
@@ -46,7 +61,7 @@ module Rfix
         "<#{self.class.name}({{info:#{basename}}})>"
       end
 
-      [:untracked?, :tracked?, :ignored?].each do |name|
+      [:untracked?, :tracked?, :ignored?, :deleted?, :staged?].each do |name|
         define_method(name) do
           false
         end
