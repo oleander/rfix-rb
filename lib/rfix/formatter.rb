@@ -13,8 +13,9 @@ module Rfix
     attr_reader :indicator
 
     include Dry::Core::Constants
+    include ::CLI::UI::ANSI
     extend Dry::Initializer
-    include CLI::UI
+    include ::CLI::UI
     include Log
 
     option :indicator, default: -> { Indicator.new }
@@ -72,7 +73,7 @@ module Rfix
     end
 
     def mark_command_line
-      "#{CLI::UI::ANSI::ESC}]1337;SetMark\a"
+      "#{ESC}]1337;SetMark\a"
     end
 
     def report(msg, format: true)

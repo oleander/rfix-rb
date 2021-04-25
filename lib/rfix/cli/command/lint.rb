@@ -7,7 +7,7 @@ module Rfix
         option :auto_correct, type: :boolean, default: true
         option :branch, type: :string
 
-        def call(args: [], branch: Branch::MAIN, **)
+        def call(args: [], branch: Branch::MAIN, **params)
           # errors = [RuboCop::Runner::InfiniteCorrectionLoop, RuboCop::Error]
           # errors = [Rfix::Error, TypeError, Psych::SyntaxError]
           options  = RuboCop::Options.new
@@ -23,7 +23,7 @@ module Rfix
             paths: args
           )
 
-          env = RuboCop::CLI::Environment.new(EMPTY_HASH, store, handler.paths)
+          env = RuboCop::CLI::Environment.new(params, store, handler.paths)
 
           exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
         resuce Rfix::Error, TypeError, Psych::SyntaxError => e

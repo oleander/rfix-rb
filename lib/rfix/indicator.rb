@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
+require "cli/ui"
+
 module Rfix
   class Indicator
     include Dry::Core::Constants
 
     def initialize
       @condition = ConditionVariable.new
-      @group = CLI::UI::SpinGroup.new
+      @group = ::CLI::UI::SpinGroup.new
       @threads = EMPTY_ARRAY.dup
       @mutex = Mutex.new
     end
