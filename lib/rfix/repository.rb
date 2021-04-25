@@ -23,12 +23,12 @@ module Rfix
     delegate :head, :branches, :workdir, :rev_parse, to: :repository
 
     OPTIONS = {
-      include_unmodified: true,
-      ignore_whitespace_eol: false,
-      ignore_whitespace_change: false,
       include_untracked_content: true,
+      ignore_whitespace_change: false,
       recurse_untracked_dirs: true,
+      ignore_whitespace_eol: false,
       include_unmodified: false,
+      include_unmodified: true,
       include_untracked: true,
       ignore_submodules: true,
       include_ignored: false,
@@ -39,10 +39,8 @@ module Rfix
       super.tap(&:call)
     end
 
-    def status
+    def status(found = EMPTY_HASH.dup)
       @status ||= begin
-        found = {}
-
         repository.status do |path, statuses|
           statuses.each do |status|
             (found[path] ||= []) << status
@@ -157,6 +155,8 @@ module Rfix
 
     def build(path, status)
       store(Rfix::File.call(basename: path, status: status, repository: repository))
+    rescue Dry::Struct::Error => e
+      raise Error, {path: path, status: status, message: e.message}.inspect
     end
   end
 end

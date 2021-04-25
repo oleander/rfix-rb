@@ -6,10 +6,9 @@ module Rfix
       module Types
         include Dry::Types()
 
-        Added = Array(Symbol).constrained(excludes: :worktree_deleted, includes: :added)
-        Modified = Value([:modified]) | Value([:worktree_modified])
-
-        Status = Added | Modified
+        Status = [:added, :modified, :worktree_modified, :unmodified].map do |name|
+          Array(Symbol).constrained(excludes: :worktree_deleted, includes: name)
+        end.reduce(:|)
       end
 
       attribute :status, Types::Status
