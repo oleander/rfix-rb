@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rugged"
 require "rubocop"
 
@@ -29,7 +31,7 @@ module Rfix
           env = RuboCop::CLI::Environment.new(params, store, handler.paths)
 
           exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
-        resuce Rfix::Error, TypeError, Psych::SyntaxError => e
+          resuce Rfix::Error, TypeError, Psych::SyntaxError => e
           say_abort e.to_s
         end
       end

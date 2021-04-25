@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "rspec/its"
-require 'rspec/expectations'
+require "rspec/expectations"
 
 RSpec::Matchers.define :stage do |file|
   match do |repository|
@@ -49,9 +49,9 @@ RSpec::Matchers.define :track do |file|
   end
 end
 
-require 'tmpdir'
+require "tmpdir"
 
-class Blob < Struct.new(:name)
+Blob = Struct.new(:name) do
   def self.new(*)
     blob = super
     blob.init
@@ -84,7 +84,7 @@ class Blob < Struct.new(:name)
 
   def ignore
     tap do
-      path.join(".gitignore").write(name, mode: 'a')
+      path.join(".gitignore").write(name, mode: "a")
     end
   end
 
@@ -97,7 +97,7 @@ class Blob < Struct.new(:name)
   end
 
   def write
-    tap { file_path.write("# comment", mode: 'a') }
+    tap { file_path.write("# comment", mode: "a") }
   end
 
   def file_path
@@ -116,10 +116,10 @@ class Blob < Struct.new(:name)
 end
 
 RSpec.describe Rfix::Repository do
+  subject(:repository) { described_class.call(repository: file.repo, reference: branch) }
+
   let(:file) { Blob.new(name) }
   let(:branch) { Rfix::Branch::Reference.new("HEAD") }
-
-  subject(:repository) { described_class.call(repository: file.repo, reference: branch) }
 
   after do |example|
     if example.exception

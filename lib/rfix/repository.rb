@@ -156,7 +156,7 @@ module Rfix
     def build(path, status)
       store(Rfix::File.call(basename: path, status: status, repository: repository))
     rescue Dry::Struct::Error => e
-      raise Error, {path: path, status: status, message: e.message}.inspect
+      raise Error, { path: path, status: status, message: e.message }.inspect
     end
   end
 end

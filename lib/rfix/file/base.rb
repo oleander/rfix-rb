@@ -18,18 +18,18 @@ module Rfix
       # - +:worktree_modified+: the file has been modified in the working directory
       # - +:worktree_deleted+: the file has been deleted from the working directory
       # STATUSES = {
-       #   "staged_new_file" => [:index_new],
-       #   "staged_new_file_deleted_file" => [:index_new, :worktree_deleted],
-       #   "staged_new_file_modified_file" => [:index_new, :worktree_modified],
-       #   "file_deleted" => [:worktree_deleted],
-       #   "modified_file" => [:worktree_modified],
-       #   "new_file" => [:worktree_new],
-       #   "ignored_file" => [:ignored],
-       #   "subdir/deleted_file" => [:worktree_deleted],
-       #   "subdir/modified_file" => [:worktree_modified],
-       #   "subdir/new_file" => [:worktree_new],
-       #   "\xe8\xbf\x99" => [:worktree_new]
-       # }
+      #   "staged_new_file" => [:index_new],
+      #   "staged_new_file_deleted_file" => [:index_new, :worktree_deleted],
+      #   "staged_new_file_modified_file" => [:index_new, :worktree_modified],
+      #   "file_deleted" => [:worktree_deleted],
+      #   "modified_file" => [:worktree_modified],
+      #   "new_file" => [:worktree_new],
+      #   "ignored_file" => [:ignored],
+      #   "subdir/deleted_file" => [:worktree_deleted],
+      #   "subdir/modified_file" => [:worktree_modified],
+      #   "subdir/new_file" => [:worktree_new],
+      #   "\xe8\xbf\x99" => [:worktree_new]
+      # }
 
       schema schema.strict
       abstract_class self
@@ -52,10 +52,10 @@ module Rfix
       end
 
       def inspect
-        "<#{self.class.name}(#{status.join(", ")}:#{basename})>"
+        "<#{self.class.name}(#{status.join(', ')}:#{basename})>"
       end
 
-      [:untracked?, :tracked?, :ignored?, :deleted?].each do |name|
+      %i[untracked? tracked? ignored? deleted?].each do |name|
         define_method(name) do
           false
         end
