@@ -35,7 +35,7 @@ RSpec::Matchers.define :track do |file|
   end
 
   match_when_negated do |repository|
-    repository.untracked.any? do |file|
+    repository.untracked.any? do |path|
       path.basename == file.name
     end
   end
@@ -170,12 +170,12 @@ RSpec.describe Rfix::Repository do
 
   after do |example|
     if example.exception
-      repository.status
-      binding.pry
+      # repository.status
+      # binding.pry
     end
   end
 
-  context "given a file" do
+  context "given an untracked file" do
     let(:file) { Blob.new("file.rb") }
 
     context "when tracked" do
@@ -193,6 +193,12 @@ RSpec.describe Rfix::Repository do
         let(:file) { super().delete }
 
         it { is_expected.to ignore(file) }
+      end
+
+      context "given an untracked file" do
+        let(:file) { super().new("file2.rb") }
+
+        it { is_expected.not_to track(file) }
       end
     end
   end

@@ -55,6 +55,10 @@ module Rfix
           end
         end
 
+        if repository.head_unborn?
+          return found
+        end
+
         repository.head.target.diff(**OPTIONS.dup).tap do |diff|
           diff.find_similar!(
             renames_from_rewrites: true,
