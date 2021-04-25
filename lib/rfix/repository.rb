@@ -18,11 +18,6 @@ module Rfix
     include Dry::Core::Memoizable
 
     attribute :repository, Types.Instance(Rugged::Repository)
-
-    # attribute? :include do
-    #   attribute :untracked, Types::Bool.default(false)
-    # end
-
     attribute :reference, Types.Instance(Branch::Base)
 
     delegate :head, :branches, :workdir, :rev_parse, to: :repository
