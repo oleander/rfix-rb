@@ -6,11 +6,20 @@ require "dry/logic"
 module Rfix
   module Types
     include Dry::Types()
+    include Dry::Logic
 
     Rugged = Instance(::Rugged::Repository)
 
-    Dry::Types.define_builder(:not) do |type, fallback|
-      Dry::Types::Constrained.new(fallback, rule: Dry::Logic::Operations::Negation.new(type.rule))
+    Dry::Types.define_builder(:not) do |type|
+      Dry::Types::Constrained.new(type.lax, rule: Operations::Negation.new(type.rule))
+    end
+
+    Dry::Types.define_builder(:and) do |left, right|
+      Dry::Types::Constrained.new(left.lax, rule: Operations::And.new(left.rule, right.rule))
+    end
+
+    Dry::Types.define_builder(:or) do |left, right|
+      Dry::Types::Constrained.new(left.lax, rule: Operations::Or.new(left.rule, right.rule))
     end
 
     module Status
@@ -19,13 +28,17 @@ module Rfix
       List = Array(Symbol)
 
       Deleted = List.constrained(includes: :worktree_deleted)
-      Ignored = List.constrained(includes: :ignored) << Deleted.not(List)
+      Ignored = List.constrained(includes: :ignored).and(Deleted.not)
 
-      NewWorkTree = List.constrained(includes: :worktree_new)
-      NewIndex = List.constrained(includes: :index_new)
-      Untracked = (NewWorkTree | NewIndex) << Ignored.not(List)
+      module Staged
+        Tree = List.constrained(includes: :worktree_new)
+        Index = List.constrained(includes: :index_new)
+      end
 
-      Tracked = Untracked.not(List)
+      Untracked = Staged::Tree.or(Staged::Index).and(Ignored.not)
+      Tracked = Untracked.not
+
+      puts Tracked.rule.to_s
     end
 
     def self.Statuses(*symbols)
