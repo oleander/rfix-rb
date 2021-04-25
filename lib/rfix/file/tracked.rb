@@ -4,16 +4,17 @@ module Rfix
       attribute :status, Types::Symbol.enum(*TRACKED)
 
       def include?(line:)
-        set = diff.each_line.to_a.map(&:new_lineno).reject { |l| l == -1 }.to_set
-        set.include?(line)
+        diff.each_line.to_a.map(&:new_lineno).reject { |l| l == -1 }.to_set.include?(line)
       end
+
+      def refresh!
+        # NOP
+      end
+
+      private
 
       def upstream
-        @upstream ||= ref.resolve(with: repository)
-      end
-
-      def head
-        @head ||= repository.head.target
+        @upstream ||= repository.rev_parse("@{upstream}")
       end
 
       def diff
@@ -24,7 +25,7 @@ module Rfix
           ignore_submodules: true,
           include_ignored: false,
           context_lines: 0,
-          paths: [path]
+          paths: [path.to_s]
         }).tap do |diff|
           diff.find_similar!(
             renames_from_rewrites: true,

@@ -1,6 +1,6 @@
-RSpec.describe Rfix::File::Ignored, :repo do
+RSpec.describe Rfix::File::Tracked, :repo do
   let(:basename) { "Gemfile" }
-  let(:status) { Rfix::File::Base::IGNORED.first }
+  let(:status) { Rfix::File::Base::TRACKED.first }
   subject(:file) { described_class.new(repository: rugged, basename: basename, status: status) }
 
   describe "#path" do
@@ -12,7 +12,7 @@ RSpec.describe Rfix::File::Ignored, :repo do
 
   describe "#include?" do
     it 'returns false' do
-      expect(file.include?(line: 10)).to eq(false)
+      expect(file.include?(line: 1)).to eq(false)
     end
   end
 
