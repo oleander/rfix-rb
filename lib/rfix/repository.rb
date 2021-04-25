@@ -26,14 +26,42 @@ module Rfix
     alias_method :load_tracked?, :reference
     alias_method :git_path, :workdir
 
-    def initialize(**)
-      @files = EMPTY_HASH.dup
-      super
-      load!
+    OPTIONS = {
+      include_untracked_content: true,
+      recurse_untracked_dirs: true,
+      include_unmodified: false,
+      include_untracked: true,
+      ignore_submodules: true,
+      include_ignored: false,
+      context_lines: 0
+    }
+
+
+    def self.call(**)
+      super.tap(&:call)
     end
 
-    def store(file)
-      @files.store(file.key, file)
+    def call
+      # Untracked files
+      status do |path, status|
+        build(path, status)
+      end
+
+      # Tracked files
+      unless paths.empty?
+        params[:disable_pathspec_match] = false
+        params[:paths] = paths
+      end
+
+      upstream.diff(head.target, **OPTIONS).tap do |diff|
+        diff.find_similar!(
+          renames_from_rewrites: true,
+          renames: true,
+          copies: true
+        )
+      end.each_delta.map do |delta|
+        build(delta.new_file[:path], delta.status)
+      end
     end
 
     # @path [String]
@@ -58,68 +86,29 @@ module Rfix
       branches.each_name(:local).to_a
     end
 
+    private
+
     # @return [Rugged::Commit]
     def upstream
       @upstream ||= reference.resolve(with: repository)
     end
 
-    private
-
-    def load_tracked!
-      params = {
-        # ignore_whitespace_change: true,
-        include_untracked_content: true,
-        recurse_untracked_dirs: true,
-        # ignore_whitespace_eol: true,
-        include_unmodified: false,
-        include_untracked: true,
-        ignore_submodules: true,
-        # ignore_whitespace: true,
-        include_ignored: false,
-        context_lines: 0
-      }
-
-      unless paths.empty?
-        say_debug("Use @paths #{paths.join(', ')}")
-        params[:disable_pathspec_match] = false
-        params[:paths] = paths
-      end
-
-      say_debug("Run diff on {{info:#{reference}}}")
-      upstream.diff(head.target, **params).tap do |diff|
-        diff.find_similar!(
-          renames_from_rewrites: true,
-          renames: true,
-          copies: true
-        )
-      end.each_delta do |delta|
-        file = File.call(
-          basename: delta.new_file[:path],
-          repository: repository,
-          status: delta.status
-        )
-
-        store(file)
-      end
+    def files
+      @files ||= EMPTY_HASH.dup
     end
 
-    def load!
-      load_tracked!
-      load_untracked!
+    def store(file)
+      files.store(file.key, file)
     end
-
-    def load_untracked!
-      status do |path, status|
-        File.call(basename: path, status: status, repository: repository)
-      end
-    end
-
-    private
 
     def get(path)
-      @files.fetch(path)
+      files.fetch(path)
     rescue KeyError
-      raise Error, "#{path} not found among #{@files.keys}"
+      raise Error, "#{path} not found among #{files.keys}"
+    end
+
+    def build(path, status)
+      store(File.call(basename: path, status: status, repository: repository))
     end
   end
 end

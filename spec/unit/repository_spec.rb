@@ -5,7 +5,7 @@ RSpec.describe Rfix::Repository do
   let(:test_path) { Pathname(__dir__).join("../../tmp/complex") }
   let(:rugged) { Rugged::Repository.new(test_path) }
   let(:branch) { Rfix::Branch::Reference.new("HEAD~50") }
-  subject(:repo) { described_class.new(repository: rugged, reference: branch) }
+  subject(:repo) { described_class.call(repository: rugged, reference: branch) }
 
   its(:paths) { is_expected.to eq([]) }
   its(:head) { is_expected.to be_a(Rugged::Reference) }
