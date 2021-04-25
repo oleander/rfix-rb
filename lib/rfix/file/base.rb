@@ -45,6 +45,12 @@ module Rfix
       def inspect
         "<#{self.class.name}({{info:#{basename}}})>"
       end
+
+      [:untracked?, :tracked?, :ignored?].each do |name|
+        define_method(name) do
+          false
+        end
+      end
     end
   end
 end

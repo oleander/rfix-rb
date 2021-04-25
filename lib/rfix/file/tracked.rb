@@ -3,7 +3,7 @@
 module Rfix
   module File
     class Tracked < Base
-      attribute :status, Types::Symbol.enum(*TRACKED)
+      attribute :status, Types::Array(Types::Symbol).superset(*TRACKED)
 
       def include?(line:)
         diff.each_line.to_a.map(&:new_lineno).reject do |line|
@@ -13,6 +13,10 @@ module Rfix
 
       def refresh!
         # NOP
+      end
+
+      def tracked?
+        true
       end
 
       private

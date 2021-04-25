@@ -1,3 +1,6 @@
+require "rugged"
+require "rubocop"
+
 module Rfix
   module CLI
     module Command
@@ -7,7 +10,7 @@ module Rfix
         option :auto_correct, type: :boolean, default: true
         option :branch, type: :string
 
-        def call(args: [], branch: Branch::MAIN, **params)
+        def call(args: [], branch: "master", **params)
           # errors = [RuboCop::Runner::InfiniteCorrectionLoop, RuboCop::Error]
           # errors = [Rfix::Error, TypeError, Psych::SyntaxError]
           options  = RuboCop::Options.new
@@ -19,7 +22,7 @@ module Rfix
           handler = Rfix::Repository.new(
             repository: repository,
             load_untracked: true,
-            reference: branch,
+            reference: Branch::Reference.new(branch),
             paths: args
           )
 

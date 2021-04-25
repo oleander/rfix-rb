@@ -29,6 +29,9 @@ module Rfix
     alias git_path workdir
 
     OPTIONS = {
+      include_unmodified: true,
+      ignore_whitespace_eol: false,
+      ignore_whitespace_change: false,
       include_untracked_content: true,
       recurse_untracked_dirs: true,
       include_unmodified: false,
@@ -54,14 +57,14 @@ module Rfix
         params[:paths] = paths
       end
 
-      upstream.diff(head.target, **OPTIONS).tap do |diff|
+      repository.head.target.diff(**OPTIONS.dup).tap do |diff|
         diff.find_similar!(
           renames_from_rewrites: true,
           renames: true,
           copies: true
         )
       end.each_delta.map do |delta|
-        build(delta.new_file[:path], delta.status)
+        build(delta.new_file[:path], [delta.status])
       end
     end
 
@@ -85,6 +88,28 @@ module Rfix
     # @return [Array]
     def local_branches
       branches.each_name(:local).to_a
+    end
+
+    def tracked
+      files.values.select(&:tracked?)
+    end
+
+    def ignored
+      files.values.select(&:ignored?)
+    end
+
+    def untracked
+      files.values.select(&:untracked?)
+    end
+
+    def to_s
+      options = {
+        untracked: untracked.map(&:basename).join(", "),
+        tracked: tracked.map(&:basename).join(", "),
+        ignored: ignored.map(&:basename).join(", ")
+      }
+
+      "Repository<Untracked: %<untracked>s, Tracked: %<tracked>s, Ignored: %<ignored>s>" % options
     end
 
     private
