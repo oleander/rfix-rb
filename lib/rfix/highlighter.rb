@@ -8,7 +8,7 @@ module Rfix
     tag "terminal_line_highlighter"
 
     NEWLINE = "\n".freeze
-    LEXER = Rouge::Lexers::Ruby.new
+
     Error = Class.new(StandardError)
 
     include CLI::UI::ANSI
@@ -24,6 +24,7 @@ module Rfix
     option :highlight, type: Types::Range
     option :visible_lines, type: Types::Range
     param :theme, default: -> { Rouge::Themes::Gruvbox.new }
+    param :lexer, default: -> { Rouge::Lexers::Ruby.new }
 
     def call(source)
       unless source.is_a?(String)
@@ -34,7 +35,7 @@ module Rfix
         raise Error, "Document must end with newline"
       end
 
-      format(LEXER.lex(source))
+      format(lexer.lex(source))
     end
 
     TEXT = Rouge::Token::Tokens::Text
