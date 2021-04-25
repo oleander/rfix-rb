@@ -37,20 +37,6 @@ module Rfix
 
       Untracked = Staged::Tree.or(Staged::Index).and(Ignored.not)
       Tracked = Untracked.not
-
-      puts Tracked.rule.to_s
-    end
-
-    def self.Statuses(*symbols)
-      set = symbols.map do |symbol|
-        Types.Value(symbol)
-      end.reduce(:|)
-
-      Types.Array(Types::Symbol).constructor do |value, type, &error|
-        type.call(value, &error).map do |symbol|
-          set.call(symbol, &error)
-        end
-      end
     end
   end
 end
