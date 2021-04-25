@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "pathname"
-require "dry/struct"
+require "dry/struct/union"
 
 module Rfix
   module File

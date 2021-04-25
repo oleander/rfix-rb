@@ -17,7 +17,6 @@ module Rfix
     include Dry::Core::Constants
     include Dry::Core::Memoizable
 
-    attribute? :paths, Types.Array(Types::String).default(EMPTY_ARRAY)
     attribute :repository, Types.Instance(Rugged::Repository)
 
     # attribute? :include do
@@ -41,7 +40,7 @@ module Rfix
       context_lines: 0
     }.freeze
 
-    def self.call(**)
+    def self.new(**)
       super.tap(&:call)
     end
 
@@ -77,8 +76,6 @@ module Rfix
           build(path, statuses)
         end
       end
-    rescue
-      binding.pry
     end
 
     # @path [String]
@@ -123,6 +120,10 @@ module Rfix
       files.values.select(&:deleted?)
     end
 
+    def permitted
+      untracked + tracked
+    end
+
     def to_s
       options = {
         untracked: untracked.map(&:basename).join(", "),
@@ -138,6 +139,10 @@ module Rfix
       @files ||= EMPTY_HASH.dup
     end
 
+    def paths
+      permitted.map(&:basename)
+    end
+
     private
 
     # @return [Rugged::Commit]
@@ -150,13 +155,13 @@ module Rfix
     end
 
     def get(path)
-      files.fetch(path)
-    rescue KeyError
-      raise Error, "#{path} not found among #{files.keys}"
+      permitted.map do |file|
+        [file.key, file]
+      end.to_h.fetch(path)
     end
 
     def build(path, status)
-      store(File.call(basename: path, status: status, repository: repository))
+      store(Rfix::File.call(basename: path, status: status, repository: repository))
     end
   end
 end

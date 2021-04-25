@@ -3,7 +3,16 @@
 module Rfix
   module File
     class Tracked < Base
-      attribute :status, Types.Array(Types::Symbol).constrained(excludes: :worktree_deleted, includes: :added)
+      module Types
+        include Dry::Types()
+
+        Added = Array(Symbol).constrained(excludes: :worktree_deleted, includes: :added)
+        Modified = Value([:modified]) | Value([:worktree_modified])
+
+        Status = Added | Modified
+      end
+
+      attribute :status, Types::Status
 
       def include?(line:)
         diff.each_line.to_a.map(&:new_lineno).reject do |line|
