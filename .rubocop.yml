@@ -1,79 +1,85 @@
+require:
+  - rubocop-rspec
+
 AllCops:
-  NewCops: enable
+  TargetRubyVersion: 3.0
+
+Layout/LineLength:
+   Max: 120
+
+RSpec/NestedGroups:
   Exclude:
-    - 'ci/*'
-    - 'bin/*'
-    - 'vendor/bundle/**/*'
-    - 'node_modules/**/*'
-    - 'spec/fixtures/**'
+    - spec/**/*
+
+RSpec/ExampleLength:
+  Exclude:
+    - spec/**/*
+
+RSpec/ContextWording:
+  Prefixes:
+    - when
+    - with
+    - without
+    - if
+    - unless
+    - for
+    - given
 
 Metrics/MethodLength:
   Enabled: false
-Metrics/AbcSize:
-  Enabled: false
-Style/Documentation:
-  Enabled: false
-Style/FrozenStringLiteralComment:
-  Enabled: false
-Style/NumericLiterals:
-  Enabled: false
-Lint/AssignmentInCondition:
-  Enabled: false
-Style/MultilineBlockChain:
-  Enabled: false
-Style/StringLiterals:
-  EnforcedStyle: double_quotes
-Layout/MultilineAssignmentLayout:
-  EnforcedStyle: new_line
-Style/GuardClause:
-  Enabled: false
-Style/AsciiComments:
-  Enabled: false
-Style/ConditionalAssignment:
-  EnforcedStyle: assign_inside_condition
-Lint/AmbiguousBlockAssociation:
-  Enabled: false
-Style/Semicolon:
-  Enabled: false
-Style/StructInheritance:
-  Enabled: false
-Style/IfUnlessModifier:
-  Enabled: false
-Layout/LineLength:
-  Enabled: false
-Style/SymbolArray:
-  EnforcedStyle: brackets
-Style/RedundantReturn:
-  Enabled: false
-Style/EmptyLiteral:
-  Enabled: false
-# TODOs
+
 Metrics/BlockLength:
   Enabled: false
-Metrics/ClassLength:
-  Enabled: false
-Style/MixinUsage:
-  Enabled: false
-Naming/AccessorMethodName:
-  Enabled: false
-Security/Eval:
-  Enabled: false
-Style/OptionalArguments:
-  Enabled: false
-Metrics/PerceivedComplexity:
-  Enabled: false
-Metrics/ParameterLists:
-  Enabled: false
-Metrics/CyclomaticComplexity:
-  Enabled: false
-Style/FormatStringToken:
-  Enabled: false
-Style/StderrPuts:
-  Enabled: false
-Layout/ParameterAlignment:
-  EnforcedStyle: with_fixed_indentation
-Layout/HashAlignment:
-  Enabled: false
-  EnforcedColonStyle: key
-Style/ClassAndModuleChildren:
+Metrics/AbcSize:
+  Max: 40
+
+RSpec:
   Enabled: true
+
+Style/Documentation:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: False
+
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: true
+
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
+
+Style/ExponentialNotation:
+  Enabled: true
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+
+Style/SlicingWithRange:
+  Enabled: true
+
+Style/MultilineBlockChain:
+  Enabled: false
+
+Gemspec/RequiredRubyVersion:
+  Enabled: false
+
+Layout/FirstHashElementIndentation:
+  EnforcedStyle: consistent
+
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes

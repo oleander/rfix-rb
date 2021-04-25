@@ -1,10 +1,10 @@
 eval_gemfile(File.join(__dir__, "Gemfile.base"))
 
-gem "rubocop", "~> 0.85"
-
 group :development, :test do
   gem "pry", require: true
+  gem "rubocop-rspec"
   gem "rspec-its"
+  gem "rubocop"
 end
 
 gem "git", require: true

@@ -36,7 +36,6 @@ module Rfix
       context_lines: 0
     }
 
-
     def self.call(**)
       super.tap(&:call)
     end

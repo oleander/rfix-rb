@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rugged"
 require "pathname"
 require "dry/struct"
@@ -5,7 +7,8 @@ require "dry/struct"
 module Rfix
   module File
     class Base < Dry::Struct
-      include Log, Dry::Core::Constants
+      include Dry::Core::Constants
+      include Log
 
       # https://github.com/libgit2/rugged/blob/35102c0ca10ab87c4c4ffe2e25221d26993c069c/test/status_test.rb
       # - +:index_new+: the file is new in the index
@@ -14,9 +17,9 @@ module Rfix
       # - +:worktree_new+: the file is new in the working directory
       # - +:worktree_modified+: the file has been modified in the working directory
       # - +:worktree_deleted+: the file has been deleted from the working directory
-      TRACKED   = [:modified, :worktree_modified, :index_modified].freeze
-      UNTRACKED = [:added, :index_new, :worktree_new, :untracked].freeze
-      DELETED   = [:deleted, :worktree_deleted, :index_deleted].freeze
+      TRACKED   = %i[modified worktree_modified index_modified].freeze
+      UNTRACKED = %i[added index_new worktree_new untracked].freeze
+      DELETED   = %i[deleted worktree_deleted index_deleted].freeze
       IGNORED   = [*DELETED, :renamed, :copied, :ignored].freeze
 
       schema schema.strict
@@ -24,7 +27,7 @@ module Rfix
 
       attribute :repository, Types::Rugged
       attribute :basename, Types::String
-      alias_method :key, :basename
+      alias key basename
 
       # @return [Pathnane]
       def path
