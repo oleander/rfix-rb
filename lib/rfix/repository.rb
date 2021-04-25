@@ -21,7 +21,6 @@ module Rfix
     attribute :reference, Types.Instance(Branch::Base)
 
     delegate :head, :branches, :workdir, :rev_parse, :status, to: :repository
-    delegate :store, to: :@files
 
     alias_method :load_untracked?, :load_untracked
     alias_method :load_tracked?, :reference
@@ -34,19 +33,19 @@ module Rfix
     end
 
     def store(file)
-      @files.store(file.path, file)
+      @files.store(file.key, file)
     end
 
     # @path [String]
     def refresh!(path)
-      @files.fetch(path).refresh!
+      get(path).refresh!
     end
 
     # @path [String]
     # @line [Integer]
     # @return Bool
     def include?(path, line)
-      @files.fetch(path).include?(line)
+      get(path).include?(line: line)
     end
 
     # @return [Branch]
@@ -94,12 +93,13 @@ module Rfix
           copies: true
         )
       end.each_delta do |delta|
+        file = File.call(
+          repository: repository,
+          status: delta.status,
+          path: delta.new_file[:path]
+        )
 
-        path = delta.new_file.fetch(:path)
-        say_debug("Found #{path} while diff")
-        try_store(path, [delta.status])
-      rescue
-        binding.pry
+        store(file)
       end
     end
 
@@ -110,8 +110,16 @@ module Rfix
 
     def load_untracked!
       status do |path, status|
-        try_store(path, status)
+        File.call(path: path, status: status, repository: repository)
       end
+    end
+
+    private
+
+    def get(path)
+      @files.fetch(path)
+    rescue KeyError
+      raise Error, "#{path} not found among #{@files.keys}"
     end
   end
 end

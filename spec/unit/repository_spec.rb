@@ -9,20 +9,19 @@ RSpec.describe Rfix::Repository do
 
   its(:paths) { is_expected.to eq([]) }
   its(:head) { is_expected.to be_a(Rugged::Reference) }
-  its(:files) { is_expected.to be_a(Rfix::FileCache) }
   its("current_branch.name") { is_expected.to eq("master") }
   its(:local_branches) { is_expected.to eq(["master"]) }
   its(:upstream) { is_expected.to be_a(Rugged::Commit) }
 
   describe "#refresh!" do
     it 'does not raise an error' do
-      expect { repo.refresh!("Gemfile") }.not_to raise_error
+      expect { repo.refresh!("Rakefile") }.not_to raise_error
     end
   end
 
   describe "#include?" do
     it 'does not raise an error' do
-      expect { repo.include?("Gemfile", 10) }.not_to raise_error
+      expect { repo.include?("Rakefile", 10) }.not_to raise_error
     end
   end
 end

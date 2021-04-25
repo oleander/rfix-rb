@@ -24,11 +24,16 @@ module Rfix
       abstract_class self
 
       attribute :repository, Types::Rugged
-      attribute :basename, Types::String
+      attribute :path, Types::String
+      alias_method :basename, :path
 
       # @return [Pathnane]
       def path
         Pathname(repository.workdir).join(basename)
+      end
+
+      def key
+        basename
       end
 
       def include?(**)
