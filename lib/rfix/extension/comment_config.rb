@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require "rubocop"
-require "rainbow"
-require "rfix/log"
-
 module Rfix
   module Extension
     module CommentConfig

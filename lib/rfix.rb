@@ -1,19 +1,32 @@
 # frozen_string_literal: true
 
 require "active_support/core_ext/module/attribute_accessors"
-require "dry/initializer"
-require "shellwords"
-require "dry/types"
 require "zeitwerk"
 require "rubocop"
-require "rainbow"
 require "cli/ui"
-require "rouge"
+
+dependencies = {
+  ["Formatter", "Highlighter"] => ["dry/initializer"],
+  ["Highlighter"] => ["dry/types", "rouge"],
+  ["Extension::Offense"] => ["rainbow"],
+  ["Interface"] => ["active_support/core_ext/module/attribute_accessors"],
+}
 
 loader = Zeitwerk::Loader.for_gem
 loader.ignore("#{__dir__}/rfix/rake")
 loader.ignore("#{__dir__}/rfix/loader")
 loader.ignore("#{__dir__}/rfix/commands")
+
+dependencies.each do |modules, requirements|
+  modules.each do |name|
+    loader.on_load("Rfix::" + name) do
+      requirements.each do |requirement|
+        require requirement
+      end
+    end
+  end
+end
+
 loader.setup
 
 module Rfix
