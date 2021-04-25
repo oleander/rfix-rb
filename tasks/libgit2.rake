@@ -3,7 +3,6 @@ require "tmpdir"
 require "pathname"
 
 root_path = Pathname.new(Dir.mktmpdir)
-# root_path = Pathname.new(__dir__).join("../tmp")
 libgit2_gz_path = root_path.join("v1.0.1.tar.gz")
 libgit2_path = root_path.join("libgit2-1.0.1")
 
