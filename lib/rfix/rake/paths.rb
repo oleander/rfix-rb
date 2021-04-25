@@ -43,7 +43,7 @@ module Vendor
   DIR = File.join(ROOT, "vendor/shopify")
   REPO = File.join(DIR, "cli-ui")
   GITHUB = "https://github.com/shopify/cli-ui".freeze
-  START = "ef976d".freeze
+  START = "6058c301bb144c2f33f7910734d08b1490ed8112".freeze
   BUILD = "vendor:shopify:build".freeze
   REBUILD = "vendor:shopify:rebuild".freeze
   TEST = "vendor:shopify:test".freeze

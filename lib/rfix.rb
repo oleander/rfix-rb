@@ -62,5 +62,5 @@ CLI::UI::StdoutRouter.enable
 # TODO: Handle cases where color can't be resolved by CLI::UI
 RuboCop::Formatter::SimpleTextFormatter::COLOR_FOR_SEVERITY.each do |severity, color|
   id = RuboCop::Cop::Severity::CODE_TABLE.invert.fetch(severity)
-  CLI::UI::Glyph.new(id.to_s, 0x25cf, CLI::UI.resolve_color(color))
+  CLI::UI::Glyph.new(id.to_s, 0x25cf, "<G>", CLI::UI.resolve_color(color))
 end
