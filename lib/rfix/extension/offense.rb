@@ -1,3 +1,5 @@
+require "rainbow"
+
 module Rfix
   module Extension
     module Offense

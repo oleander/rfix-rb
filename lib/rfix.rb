@@ -5,27 +5,27 @@ require "zeitwerk"
 require "rubocop"
 require "cli/ui"
 
-dependencies = {
-  ["Formatter", "Highlighter"] => ["dry/initializer"],
-  ["Highlighter"] => ["dry/types", "rouge"],
-  ["Extension::Offense"] => ["rainbow"],
-  ["Interface"] => ["active_support/core_ext/module/attribute_accessors"],
-}
+# dependencies = {
+#   ["Formatter", "Highlighter"] => ["dry/initializer"],
+#   ["Highlighter"] => ["dry/types", "rouge"],
+#   ["Extension::Offense"] => ["rainbow"],
+#   ["Interface"] => ["active_support/core_ext/module/attribute_accessors"],
+# }
 
 loader = Zeitwerk::Loader.for_gem
 loader.ignore("#{__dir__}/rfix/rake")
 loader.ignore("#{__dir__}/rfix/loader")
 loader.ignore("#{__dir__}/rfix/commands")
 
-dependencies.each do |modules, requirements|
-  modules.each do |name|
-    loader.on_load("Rfix::" + name) do
-      requirements.each do |requirement|
-        require requirement
-      end
-    end
-  end
-end
+# dependencies.each do |modules, requirements|
+#   modules.each do |name|
+#     loader.on_load("Rfix::" + name) do
+#       requirements.each do |requirement|
+#         require requirement
+#       end
+#     end
+#   end
+# end
 
 loader.setup
 

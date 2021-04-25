@@ -1,3 +1,10 @@
+require "rouge/Formatters/terminal_truecolor"
+require "rouge/themes/gruv_box"
+require "dry/core/constants"
+require "rouge/lexers/ruby"
+require "dry/initializer"
+require "dry/types"
+
 module Rfix
   class Highlighter < Rouge::Formatters::TerminalTruecolor
     tag "terminal_line_highlighter"
