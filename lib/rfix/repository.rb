@@ -1,48 +1,47 @@
+require "active_support/core_ext/module/delegation"
+require "dry/core/constants"
+require "dry/core/memoizable"
+require "dry/struct"
 require "rugged"
 
 module Rfix
-  class Repository
+  class Repository < Dry::Struct
     include Log
-    attr_reader :files, :repo, :reference
 
-    def initialize(root_path:, load_untracked: false, reference: Branch::HEAD, paths: [])
-      unless ::File.exist?(root_path)
-        raise Error, "#{root_path} does not exist"
-      end
+    module Types
+      include Dry::Types()
+    end
 
-      unless Pathname.new(root_path).absolute?
-        raise Error, "#{root_path} is not absolute"
-      end
+    include Dry::Core::Constants
+    include Dry::Core::Memoizable
 
-      unless reference.is_a?(Branch::Base)
-        raise Error, "Need Branch::Base, got {{error:#{reference.class}}}"
-      end
+    attribute? :paths, Types.Array(Types::String).default(EMPTY_ARRAY)
+    attribute :repository, Types.Instance(Rugged::Repository)
+    attribute? :load_untracked, Types::Bool.default(false)
+    attribute :reference, Types.Instance(Branch::Base)
 
-      @files          = FileCache.new(root_path)
-      @repo           = Rugged::Repository.discover(root_path)
-      @paths          = paths
-      @reference      = reference
-      @load_untracked = load_untracked
+    alias_method :load_untracked?, :load_untracked
+    alias_method :load_tracked?, :reference
 
+    delegate :head, :branches, :workdir, :rev_parse, :status, to: :repository
+
+    def initialize(**)
+      super
       load!
     end
 
-    def load_untracked?
-      @load_untracked
-    end
-
-    def load_tracked?
-      !!@reference
+    def files
+      @files ||= FileCache.new(repository.path)
     end
 
     def refresh!(path)
-      @files.get(path).refresh!
+      files.get(path).refresh!
     end
 
     def include?(path, line)
       say_debug "Checking #{path}:#{line}"
 
-      if file = @files.get(path)
+      if file = files.get(path)
         return file.include?(line)
       end
 
@@ -59,23 +58,23 @@ module Rfix
     end
 
     def current_branch
-      repo.head.name
+      head.name
     end
 
     def local_branches
-      repo.branches.each_name(:local).to_a
+      branches.each_name(:local).to_a
     end
 
-    def git_path
-      repo.workdir
-    end
+    alias_method :git_path, :workdir
 
+    # TODO: Memo
     def head
-      @head ||= repo.rev_parse("HEAD")
+      @head ||= rev_parse("HEAD")
     end
 
+    # TODO: Memo
     def upstream
-      @upstream ||= reference.resolve(with: repo)
+      @upstream ||= reference.resolve(with: repository)
     end
 
     private
@@ -94,10 +93,10 @@ module Rfix
         context_lines: 0
       }
 
-      unless @paths.empty?
-        say_debug("Use @paths #{@paths.join(', ')}")
+      unless paths.empty?
+        say_debug("Use @paths #{paths.join(', ')}")
         params[:disable_pathspec_match] = false
-        params[:paths] = @paths
+        params[:paths] = paths
       end
 
       say_debug("Run diff on {{info:#{reference}}}")
@@ -151,18 +150,13 @@ module Rfix
     ACCEPT = [*MODIFIED].freeze
 
     def load_untracked!
-      repo.status do |path, status|
+      status do |path, status|
         try_store(path, status)
       end
     end
 
     def store(file)
-      say_debug("Trying to add #{file.absolute_path}")
-      if ::File.exist?(file.absolute_path)
-        @files.add(file)
-      else
-        say_debug "#{file} does not exist"
-      end
+      files.add(file)
     end
 
     def try_store(path, status)

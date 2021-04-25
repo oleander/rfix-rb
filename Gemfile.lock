@@ -5,9 +5,9 @@ PATH
       activesupport
       bundler
       cri (~> 2.15.10)
-      dry-cli
       dry-core
       dry-initializer
+      dry-struct
       dry-types
       rainbow (~> 3.0)
       rake
@@ -99,6 +99,10 @@ GEM
     dry-logic (1.1.1)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.5, >= 0.5)
+    dry-struct (1.4.0)
+      dry-core (~> 0.5, >= 0.5)
+      dry-types (~> 1.5)
+      ice_nine (~> 0.11)
     dry-types (1.5.1)
       concurrent-ruby (~> 1.0)
       dry-container (~> 0.3)
@@ -128,6 +132,7 @@ GEM
       rspec (>= 2.99.0, < 4.0)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
+    ice_nine (0.11.2)
     interception (0.5)
     jsonpath (1.1.0)
       multi_json

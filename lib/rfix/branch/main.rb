@@ -5,7 +5,9 @@ module Rfix
 
       def resolve(with:)
         unless name = with.config[KEY]
-          raise Error, "Please run {{command:rfix setup}} first"
+          # TODO: Do not do this
+          with.config[KEY] = "master"
+          return resolve(with: with)
         end
 
         Branch::Name.new(name).resolve(with: with)
