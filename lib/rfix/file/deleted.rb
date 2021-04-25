@@ -8,6 +8,10 @@ module Rfix
       def deleted?
         true
       end
+
+      def refresh!
+        # NOP
+      end
     end
   end
 end

@@ -21,6 +21,10 @@ module Rfix
       def untracked?
         true
       end
+
+      def refresh!
+        # NOP
+      end
     end
   end
 end

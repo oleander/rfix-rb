@@ -31,12 +31,6 @@ module Rfix
        #   "\xe8\xbf\x99" => [:worktree_new]
        # }
 
-      STAGED    = %i[index_new index_deleted]
-      TRACKED   = %i[worktree_modified modified added].concat(STAGED)
-      UNTRACKED = %i[worktree_new].concat(STAGED)
-      DELETED   = %i[worktree_deleted].concat(STAGED)
-      IGNORED   = %i[ignored]
-
       schema schema.strict
       abstract_class self
 
