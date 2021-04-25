@@ -15,9 +15,9 @@ RSpec::Matchers.define :stage do |file|
   end
 end
 
-RSpec::Matchers.define :ignore do |file|
+RSpec::Matchers.define :skip do |file|
   match do |repository|
-    repository.ignored.any? do |path|
+    repository.skipped.any? do |path|
       path.basename == file.name
     end
   end
@@ -170,7 +170,7 @@ RSpec.describe Rfix::Repository do
 
   after do |example|
     if example.exception
-      # repository.status
+      puts repository.status
       # binding.pry
     end
   end
@@ -191,7 +191,7 @@ RSpec.describe Rfix::Repository do
         context "then deleted" do
           let(:file) { super().delete }
 
-          it { is_expected.to ignore(file) }
+          it { is_expected.to skip(file) }
         end
 
         context "then changed" do
@@ -204,13 +204,19 @@ RSpec.describe Rfix::Repository do
       context "then deleted" do
         let(:file) { super().delete }
 
-        it { is_expected.to ignore(file) }
+        it { is_expected.to skip(file) }
       end
 
       context "given an untracked file" do
         let(:file) { super().new("file2.rb") }
 
         it { is_expected.not_to track(file) }
+
+        context "then staged" do
+          let(:file) { super().stage }
+
+          it { is_expected.not_to track(file) }
+        end
       end
     end
   end

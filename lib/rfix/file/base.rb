@@ -35,7 +35,7 @@ module Rfix
       TRACKED   = %i[worktree_modified modified added].concat(STAGED)
       UNTRACKED = %i[worktree_new].concat(STAGED)
       DELETED   = %i[worktree_deleted].concat(STAGED)
-      IGNORED   = %i[ignored].concat(STAGED)
+      IGNORED   = %i[ignored]
 
       schema schema.strict
       abstract_class self
@@ -61,7 +61,7 @@ module Rfix
         "<#{self.class.name}({{info:#{basename}}})>"
       end
 
-      [:untracked?, :tracked?, :ignored?, :deleted?, :staged?].each do |name|
+      [:untracked?, :tracked?, :ignored?, :deleted?].each do |name|
         define_method(name) do
           false
         end

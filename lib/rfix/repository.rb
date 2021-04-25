@@ -103,6 +103,10 @@ module Rfix
       branches.each_name(:local).to_a
     end
 
+    def skipped
+      ignored + deleted
+    end
+
     def tracked
       files.values.select(&:tracked?)
     end
@@ -116,11 +120,7 @@ module Rfix
     end
 
     def deleted
-      files.values.select(&:untracked?)
-    end
-
-    def staged
-      files.values.select(&:staged?)
+      files.values.select(&:deleted?)
     end
 
     def to_s
@@ -134,15 +134,15 @@ module Rfix
       "Repository<Untracked: %<untracked>s, Tracked: %<tracked>s, Ignored: %<ignored>s, Deleted: %<deleted>s>" % options
     end
 
+    def files
+      @files ||= EMPTY_HASH.dup
+    end
+
     private
 
     # @return [Rugged::Commit]
     def upstream
       @upstream ||= reference.resolve(with: repository)
-    end
-
-    def files
-      @files ||= EMPTY_HASH.dup
     end
 
     def store(file)
