@@ -5,9 +5,12 @@ require "rouge"
 
 module Rfix
   class Highlighter < Rouge::Formatters::TerminalTruecolor
-    tag "terminal_line_highlighter"
+    tag "highlighter"
 
     NEWLINE = "\n".freeze
+    SPACE = " ".freeze
+
+    TEXT = Rouge::Token::Tokens::Text
 
     Error = Class.new(StandardError)
 
@@ -37,9 +40,6 @@ module Rfix
 
       format(lexer.lex(source))
     end
-
-    TEXT = Rouge::Token::Tokens::Text
-    SPACE = " ".freeze
 
     def stream(tokens, &block)
       prefix_spaces = 2
