@@ -4,7 +4,9 @@ module Rfix
       attribute :status, Types::Symbol.enum(*TRACKED)
 
       def include?(line:)
-        diff.each_line.to_a.map(&:new_lineno).reject { |l| l == -1 }.to_set.include?(line)
+        diff.each_line.to_a.map(&:new_lineno).reject do |line|
+          line == -1
+        end.to_set.include?(line)
       end
 
       def refresh!

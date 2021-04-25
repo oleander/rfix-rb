@@ -31,10 +31,6 @@ module Rfix
         Pathname(repository.workdir).join(basename)
       end
 
-      def key
-        basename
-      end
-
       def include?(**)
         raise NotImplementedError, self.class.name
       end
