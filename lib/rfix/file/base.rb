@@ -52,7 +52,7 @@ module Rfix
       end
 
       def inspect
-        "<#{self.class.name}({{info:#{basename}}})>"
+        "<#{self.class.name}(#{status.join(", ")}:#{basename})>"
       end
 
       [:untracked?, :tracked?, :ignored?, :deleted?].each do |name|
