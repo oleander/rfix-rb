@@ -1,7 +1,4 @@
-require "rugged"
-require "shellwords"
-require "digest"
-require "listen"
+require "pathname"
 
 module Rfix
   class File < Struct.new(:path, :repo, :ref)

@@ -1,5 +1,3 @@
-require "rfix/log"
-
 # TODO: Use refinements instead
 module Rfix
   module Extension

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "cli/ui"
-
 module Rfix
   module Log
     module_function

@@ -1,6 +1,5 @@
-require "colorize"
+require "rainbow/ext/string"
 require "fileutils"
-require "shellwords"
 
 module Rfix
   module Rake
@@ -25,7 +24,7 @@ module Rfix
       end
 
       def say(msg)
-        $stderr.puts "#{'==>'.blue} #{to_relative(msg).italic}"
+        $stderr.puts "#{'==>'.color(:blue)} #{to_relative(msg).italic}"
       end
 
       def sh(*args)
@@ -78,7 +77,7 @@ module Rfix
 
       def colorize(*args)
         head, *tail = args.flatten.map(&method(:to_relative))
-        say [head.yellow, tail.join(" ").italic].join(" ")
+        say [head.color(:yellow), tail.join(" ").italic].join(" ")
       end
     end
   end

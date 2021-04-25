@@ -1,7 +1,6 @@
 require "dry/core/memoizable"
 require "strings-ansi"
 
-require "pry"
 module Rfix
   class Indentation
     include Dry::Core::Memoizable

@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require "open3"
-require "rfix"
-require "rfix/log"
-require "rfix/cmd"
 require "shellwords"
 
 module Rfix
@@ -49,12 +45,5 @@ module Rfix
         "-p"
       ]
     end
-  end
-end
-
-# TODO: Rename above to just ::Git
-module Rfix
-  module Git
-    extend GitHelper
   end
 end

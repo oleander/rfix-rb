@@ -1,5 +1,3 @@
-require "rfix/no_file"
-
 module Rfix
   class Tracked < File
     include Log

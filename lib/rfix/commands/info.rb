@@ -1,5 +1,6 @@
+require "rubocop/version"
+require "rugged/version"
 require "rbconfig"
-require "rugged"
 
 extend Rfix::Log
 extend Rfix::Cmd

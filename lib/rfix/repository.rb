@@ -1,8 +1,4 @@
 require "rugged"
-require "rfix/file"
-require "rfix/file_cache"
-require "rfix/untracked"
-require "rfix/tracked"
 
 module Rfix
   class Repository

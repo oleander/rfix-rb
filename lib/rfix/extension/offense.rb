@@ -1,4 +1,5 @@
 require "rainbow"
+require "shellwords"
 
 module Rfix
   module Extension

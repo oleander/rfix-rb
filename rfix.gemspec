@@ -37,4 +37,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "rubocop"
   spec.add_runtime_dependency "rugged"
   spec.add_runtime_dependency "zeitwerk"
+  spec.add_runtime_dependency "strings-ansi"
 end
