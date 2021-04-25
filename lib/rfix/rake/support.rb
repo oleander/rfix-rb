@@ -15,7 +15,7 @@ module Rfix
 
         utils = Utils.new
 
-        %i[cd sh rm_rf rm mkdir_p chdir].each do |name|
+        %i[cd sh rm_rf rm_f rm mkdir_p chdir].each do |name|
           base.define_singleton_method("_#{name}".to_sym, &utils.method(name))
         end
       end
