@@ -24,8 +24,7 @@ module Rfix
       end.reduce(:|)
 
       Types.Array(Types::Symbol).constructor do |value, type, &error|
-        type.call(value, &error).tap do |value|
-        end.map do |symbol|
+        type.call(value, &error).map do |symbol|
           set.call(symbol, &error)
         end
       end
