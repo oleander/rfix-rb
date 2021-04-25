@@ -3,7 +3,7 @@
 module Rfix
   module File
     class Deleted < Base
-      attribute :status, Types.Array(Types::Symbol).constrained(includes: :worktree_deleted)
+      attribute :status, Types::Status::Deleted
 
       def deleted?
         true

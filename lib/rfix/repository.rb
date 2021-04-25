@@ -35,7 +35,7 @@ module Rfix
       context_lines: 0
     }.freeze
 
-    def self.new(**)
+    def self.new(*, **)
       super.tap(&:call)
     end
 
