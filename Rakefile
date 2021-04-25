@@ -29,3 +29,5 @@ task bump: "gem:bump"
 task spec: Bundle::BUILD do
   sh "bundle", "exec", "rspec", "spec"
 end
+
+task default: [:rebuild]
