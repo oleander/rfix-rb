@@ -75,7 +75,8 @@ if overlapping_specs.any?
       gem spec.name, spec.version
     end
 
-    gem "cli-ui", path: Path::PROJECT.join("vendor/shopify/cli-ui"), require: false
+    gem "cli-ui", path: Path::PROJECT.join("vendor/cli-ui"), require: false
+    gem "dry-cli", path: Path::PROJECT.join("vendor/dry-cli"), require: false
     gem "rfix", path: rfix_path
   end
 else

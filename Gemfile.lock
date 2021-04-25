@@ -5,6 +5,7 @@ PATH
       activesupport
       bundler
       cri (~> 2.15.10)
+      dry-cli
       dry-core
       dry-initializer
       dry-types
@@ -17,9 +18,14 @@ PATH
       zeitwerk
 
 PATH
-  remote: vendor/shopify/cli-ui
+  remote: vendor/cli-ui
   specs:
     cli-ui (1.5.1)
+
+PATH
+  remote: vendor/dry-cli
+  specs:
+    dry-cli (0.6.0)
 
 GEM
   remote: https://rubygems.org/
@@ -219,6 +225,7 @@ DEPENDENCIES
   aruba
   cli-ui!
   colorize
+  dry-cli!
   faker
   gem-release
   git

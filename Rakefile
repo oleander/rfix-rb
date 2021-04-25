@@ -17,7 +17,7 @@ task :clear do
 end
 
 desc "Rebuild vendor and bundles"
-task rebuild: [:clear, Vendor::REBUILD, Bundle::REBUILD]
+task rebuild: [:clear, "vendor:rebuild", Bundle::REBUILD]
 
 desc "Build bundles for testing"
 task Bundle::BUILD => [Bundle::Complex::BUILD, Bundle::Simple::BUILD]

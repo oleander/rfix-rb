@@ -7,4 +7,5 @@ group :development, :test do
 end
 
 gem "git", require: true
-gem "cli-ui", path: "vendor/shopify/cli-ui", require: false
+gem "cli-ui", path: "vendor/cli-ui", require: false
+gem "dry-cli", path: "vendor/dry-cli", require: false

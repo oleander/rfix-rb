@@ -1,34 +1,30 @@
+module Path
+  ROOT = Pathname(__dir__).join("..")
+
+  VENDOR = ROOT.join("vendor")
+  DRY = VENDOR.join("dry-cli")
+  CLI = VENDOR.join("cli-ui")
+end
+
 namespace :vendor do
-  namespace :shopify do
-    directory Vendor::DIR
+  directory Path::VENDOR
 
-    desc "Downloads shopify repository"
-    task build: [Vendor::REPO, Vendor::TEST]
+  desc "Download vendor repositories"
+  multitask build: [Path::CLI, Path::DRY]
 
-    desc "Re-download shopify repository"
-    task rebuild: [:flush, Vendor::BUILD]
+  desc "Re-download vendors repository"
+  task rebuild: [:flush, :build]
 
-    desc "Remove shopify repository"
-    task :flush do
-      rm_rf Vendor::REPO
-    end
+  desc "Remove vendor repository"
+  task :flush do
+    rm_rf Path::VENDOR
+  end
 
-    desc "Test validity of repo"
-    task test: Vendor::REPO do
-      cd Vendor::REPO do
-        sh "git rev-list --count HEAD"
-        sh "git status"
-      end
+  file Path::CLI => Path::VENDOR do
+    sh "git clone", "https://github.com/shopify/cli-ui", Path::CLI
+  end
 
-      say "Finished testing vendor"
-    end
-
-    file Vendor::REPO => Vendor::DIR do
-      sh "git clone", Vendor::GITHUB, Vendor::REPO
-
-      cd Vendor::REPO do
-        sh "git reset --hard", Vendor::START
-      end
-    end
+  file Path::DRY => Path::VENDOR do
+    sh "git clone", "https://github.com/dry-rb/dry-cli.git", Path::DRY
   end
 end
