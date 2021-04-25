@@ -187,6 +187,18 @@ RSpec.describe Rfix::Repository do
         let(:file) { super().stage }
 
         it { is_expected.to track(file) }
+
+        context "then deleted" do
+          let(:file) { super().delete }
+
+          it { is_expected.to ignore(file) }
+        end
+
+        context "then changed" do
+          let(:file) { super().write }
+
+          it { is_expected.to track(file) }
+        end
       end
 
       context "then deleted" do
