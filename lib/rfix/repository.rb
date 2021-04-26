@@ -50,7 +50,7 @@ module Rfix
           return found
         end
 
-        diff_workdir(origin, **OPTIONS.dup).tap do |diff|
+        origin.diff_workdir(**OPTIONS.dup).tap do |diff|
           diff.find_similar!(
             renames_from_rewrites: true,
             renames: true,

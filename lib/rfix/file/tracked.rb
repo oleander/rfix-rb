@@ -15,7 +15,7 @@ module Rfix
       }.freeze
 
       def include?(line)
-        diff.each_line.map(&:new_lineno).to_set.include?(line)
+        diff.each_line.map(&:new_lineno).select(&:positive?).to_set.include?(line)
       end
 
       def tracked?
@@ -38,7 +38,7 @@ module Rfix
       end
 
       def diff
-        repository.diff_workdir(repository.origin, **options).tap do |diff|
+        repository.origin.diff_workdir(**options).tap do |diff|
           diff.find_similar!(
             renames_from_rewrites: true,
             renames: true,

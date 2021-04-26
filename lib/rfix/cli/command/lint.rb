@@ -8,7 +8,6 @@ module Rfix
     module Command
       class Lint < Base
         option :formatters, type: :array, default: ["Rfix::Formatter"]
-        option :force_exclusion, type: :boolean, default: true
         option :auto_correct, type: :boolean, default: true
         option :auto_correct_all, type: :boolean, default: true
         option :cache, type: :boolean, default: false
@@ -25,7 +24,6 @@ module Rfix
           handler = Rfix::Repository.new(
             reference: Branch::Reference.new(branch),
             repository: repository,
-            load_untracked: true,
             paths: args
           )
 
