@@ -1,25 +1,26 @@
 # frozen_string_literal: true
 
+# https://www.rubydoc.info/gems/rubocop/RuboCop/OptionsHelp
+
 require "rugged"
-repo = Rugged::Repository.discover
+require "rubocop"
 
-repo.head.target.diff.tap do |diff|
-  diff.find_similar!(
-    renames_from_rewrites: true,
-    renames: true,
-    copies: true
-  )
-end.each_delta.map do |delta|
-  p delta.new_file
-  p delta.status
-  puts "------------"
-end
+options  = RuboCop::Options.new
+store    = RuboCop::ConfigStore.new
+repository = Rugged::Repository.discover
 
-repo.status do |file|
-  p file
-end
+params = {
+  fix_layout: true,
+  list_target_files: false,
+  auto_correct_all: true,
+  # auto_correct: "true",
+  cache: "false",
+  debug: true,
+  extra_details: true
+}
 
-# index_modified
-# git add <file>
+RuboCop::ResultCache.cleanup(store, true)
 
-# changed worktree_modified
+env = RuboCop::CLI::Environment.new(params, store, [])
+
+exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
