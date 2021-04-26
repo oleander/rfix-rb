@@ -12,7 +12,7 @@ module Rfix
         ignore_submodules: true,
         include_ignored: false,
         context_lines: 0
-      }
+      }.freeze
 
       def include?(line:)
         diff.each_line.map(&:new_lineno).to_set.include?(line)
@@ -30,15 +30,6 @@ module Rfix
 
       def diff
         repository.head.target.diff(**OPTIONS.dup.merge(paths: [basename])).tap do |value|
-
-
-
-
-
-
-
-
-          
           pp value.each_line.to_a
         end
       end

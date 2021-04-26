@@ -19,10 +19,10 @@ module Rfix
           end
 
           def cop_enabled_at_line?(_, line)
-             @rfix.include?(processed_source.file_path, line).tap do |value|
-               # pp processed_source.file_path
-             end
-          rescue => e
+            @rfix.include?(processed_source.file_path, line).tap do |value|
+              # pp processed_source.file_path
+            end
+          rescue StandardError => e
             puts e.message
           end
         end
@@ -48,7 +48,6 @@ module Rfix
               @comment_config ||= Config.new(handler, self)
             end
           end)
-
 
           new_params, paths = options.parse(handler.paths)
 

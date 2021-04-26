@@ -77,7 +77,7 @@ module Rfix
     end
 
     def report(msg, format: true)
-      CLI::UI.puts(msg, to: output, format: format)
+      ::CLI::UI.puts(msg, to: output, format: format)
     end
 
     def newline(amount = 1)
