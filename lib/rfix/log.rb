@@ -11,6 +11,7 @@ module Rfix
     def say_error(message)
       prt("{{x}} #{message}")
     end
+    alias say! say_error
 
     def say_error_sub(message)
       prt(message.to_s)

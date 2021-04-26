@@ -19,17 +19,13 @@ module Rfix
           end
 
           def cop_enabled_at_line?(_, line)
-            @rfix.include?(processed_source.file_path, line).tap do |value|
-              # pp processed_source.file_path
-            end
+            super && @rfix.include?(processed_source.file_path, line)
           rescue StandardError => e
             puts e.message
           end
         end
 
         def call(args: [], branch: "master", **params)
-          # errors = [RuboCop::Runner::InfiniteCorrectionLoop, RuboCop::Error]
-          # errors = [Rfix::Error, TypeError, Psych::SyntaxError]
           options  = RuboCop::Options.new
           store    = RuboCop::ConfigStore.new
           repository = Rugged::Repository.discover
@@ -49,15 +45,13 @@ module Rfix
             end
           end)
 
-          pp handler.files
-
           new_params, paths = options.parse(handler.paths)
 
           env = RuboCop::CLI::Environment.new(new_params.merge(params), store, paths)
 
           exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
           resuce Rfix::Error, TypeError, Psych::SyntaxError => e
-          say_abort e.to_s
+          say! e.to_s
         end
       end
     end
