@@ -8,14 +8,9 @@ require "rugged"
 
 module Rfix
   class Repository < Dry::Struct
-    include Log
-
-    module Types
-      include Dry::Types()
-    end
-
     include Dry::Core::Constants
     include Dry::Core::Memoizable
+    include Log
 
     attribute :repository, Types.Instance(Rugged::Repository)
     attribute :reference, Types.Instance(Branch::Base)
