@@ -61,15 +61,15 @@ module Rfix
         end.length
       end.compact.min || 0
 
-      is_h = token_lines(tokens).reduce([-1, 1, Hash.new(false)]) do |(position, lineno, lookup), tokens|
+      is_h = token_lines(tokens).reduce([1, 1, {}]) do |(position, lineno, lookup), tokens|
         tokens.reduce([position, lineno, lookup]) do |(index, lineno, lookup), (_, value)|
-          [index + value.length, lineno, lookup].tap do |_x|
-            if highlight.include?(index)
+          [index + value.length, lineno, lookup].tap do |next_index, _, _|
+            if highlight.include?(index) || highlight.include?(next_index)
               lookup[lineno] = true
             end
           end
         end.then do |index, lineno, lookup|
-          [index, lineno.succ, lookup]
+          [index.succ, lineno.succ, lookup]
         end
       end.last
 
