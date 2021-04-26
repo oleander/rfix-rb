@@ -16,7 +16,7 @@ module Rfix
 
     Error = Class.new(StandardError)
 
-    include CLI::UI::ANSI
+    include ::CLI::UI::ANSI
 
     extend Dry::Initializer
     include Dry::Core::Constants

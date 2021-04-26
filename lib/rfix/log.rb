@@ -67,11 +67,11 @@ module Rfix
     end
 
     def prt(*args)
-      CLI::UI.puts(*args)
+      ::CLI::UI.puts(*args)
     end
 
     def fmt(*args)
-      CLI::UI.fmt(*args)
+      ::CLI::UI.fmt(*args)
     end
 
     alias ftm fmt
@@ -96,7 +96,7 @@ module Rfix
 
     def box(title, color: :reset, &block)
       margin do
-        CLI::UI::Frame.open(title, color: color) do
+        ::CLI::UI::Frame.open(title, color: color) do
           margin(2, &block)
         end
       end
@@ -112,7 +112,7 @@ module Rfix
     end
 
     def div(title, **args, &block)
-      CLI::UI::Frame.divider(title, **args)
+      ::CLI::UI::Frame.divider(title, **args)
       margin(&block)
     end
 

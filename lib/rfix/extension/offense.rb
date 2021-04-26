@@ -64,7 +64,7 @@ module Rfix
       end
 
       def to_clickable(url, title)
-        esc = CLI::UI::ANSI::ESC
+        esc = ::CLI::UI::ANSI::ESC
         cmd = "#{esc}]8;;"
         slash = "\x07"
         cmd + "#{escape(url)}#{slash}#{escape(title)}" + cmd + slash

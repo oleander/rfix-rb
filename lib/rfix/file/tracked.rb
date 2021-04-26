@@ -31,7 +31,6 @@ module Rfix
       def diff
 
 
-        
         repository.head.target.diff(**OPTIONS.dup.merge(paths: [basename]))
       end
     end
