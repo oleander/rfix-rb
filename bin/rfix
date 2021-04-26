@@ -92,24 +92,6 @@ require "rfix/extension/string"
 include Rfix::Loader
 include Rfix::Log
 
-# root = Cri::Command.new
-# errors = [RuntimeError, Rfix::Error]
-#
-# commands.each do |command|
-#   root.add_command(command)
-# end
-#
-# begin
-#   if root.run(ARGV, {}, hard_exit: false)
-#     exit 0
-#   else
-#     prt root.help
-#     exit 1
-#   end
-# rescue *errors => e
-#   say_abort e.to_s
-# end
-
 module Rfix
   Dry::CLI.new(CLI::Command).call
 end
