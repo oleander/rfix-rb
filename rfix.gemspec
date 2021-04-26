@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.homepage              = "https://github.com/oleander/rfix-rb"
   spec.license               = "MIT"
   spec.required_ruby_version = ">= 2.5.0"
-  spec.files                 = Dir["lib/**/*"]
+  spec.files                 = Dir["lib/**/*", "vendor/**/*", "bin/rfix"]
   spec.executables           = ["rfix"]
   spec.requirements << "git >= 2"
 
@@ -27,7 +27,6 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "activesupport"
   spec.add_runtime_dependency "bundler"
-  spec.add_runtime_dependency "cri", "~> 2.15.10"
   spec.add_runtime_dependency "dry-core"
   spec.add_runtime_dependency "dry-initializer"
   spec.add_runtime_dependency "dry-struct"
