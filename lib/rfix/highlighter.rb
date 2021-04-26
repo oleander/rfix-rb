@@ -18,11 +18,6 @@ module Rfix
 
     include ::CLI::UI::ANSI
 
-
-
-
-    
-
     extend Dry::Initializer
     include Dry::Core::Constants
 
