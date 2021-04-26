@@ -55,7 +55,6 @@ module Rfix
     private
 
     def framed(offense, &block)
-      newline
       Frame.open("#{offense.icon} #{offense.msg}", color: :reset)
       newline
       block.call
@@ -98,7 +97,7 @@ module Rfix
       last_line = buffer.last_line
       surrounding_lines = 2
 
-      min_line = [line - surrounding_lines * 0, 1].max
+      min_line = [line - surrounding_lines * 2, 1].max
       max_line = [line + surrounding_lines * 2, last_line].min
 
       begin_index = buffer.line_range(min_line).begin_pos

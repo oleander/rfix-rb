@@ -16,6 +16,7 @@ module Rfix
         option :auto_correct, type: :boolean, default: true
         option :cache, type: :boolean, default: true
         option :debug, type: :boolean, default: false
+        # option :config, type: :string, default: "/Users/loleander/Code/rfix-rb/.rubocop.yml"
 
         private
 

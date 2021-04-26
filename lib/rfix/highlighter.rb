@@ -50,7 +50,8 @@ module Rfix
         next unless visible_lines.include?(lineno)
 
         text = tokens.take_while do |token, _|
-          token == TEXT
+          # token == TEXT
+          true
         end.map(&:last).join
 
         next if text.empty?
