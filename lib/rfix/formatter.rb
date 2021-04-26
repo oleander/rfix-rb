@@ -28,12 +28,12 @@ module Rfix
     end
 
     def started(files)
-      indicator.start("{{italic:rfix}} is linting {{bold:#{files.count}}} files, hold on ...")
+      # indicator.start("{{italic:rfix}} is linting {{bold:#{files.count}}} files, hold on ...")
     end
 
     # @files [Array<File>]
     def finished(files)
-      @indicator.stop
+      # @indicator.stop
       mark_command_line
       report_summary(files)
     end
@@ -43,7 +43,7 @@ module Rfix
     def file_finished(*, offenses)
       @reported_offenses += offenses
 
-      @indicator.stop if offenses?
+      # @indicator.stop if offenses?
 
       offenses.each do |offense|
         framed(offense) do

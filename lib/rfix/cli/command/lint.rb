@@ -8,10 +8,10 @@ module Rfix
     module Command
       class Lint < Base
         option :formatters, type: :array, default: ["Rfix::Formatter"]
-        option :auto_correct, type: :boolean, default: true
-        # option :auto_correct_all, type: :boolean, default: true
+        # option :auto_correct, type: :boolean, default: true
+        option :auto_correct_all, type: :string, default: "true"
         option :cache, type: :boolean, default: false
-        option :debug, type: :boolean, default: false
+        option :debug, type: :boolean, default: true
         option :branch, type: :string
 
         def call(args: [], branch: "master", **params)
@@ -19,7 +19,7 @@ module Rfix
           store    = RuboCop::ConfigStore.new
           repository = Rugged::Repository.discover
 
-          store.for(repository.path)
+          store.for(repository.workdir)
 
           handler = Rfix::Repository.new(
             reference: Branch::Reference.new(branch),
@@ -35,6 +35,7 @@ module Rfix
 
           new_params, paths = options.parse(handler.paths)
 
+          # pp new_params.merge!("auto-correct-all": true)
           env = RuboCop::CLI::Environment.new(new_params.merge(params), store, paths)
 
           exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
