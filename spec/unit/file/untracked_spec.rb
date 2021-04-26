@@ -15,7 +15,7 @@ RSpec.describe Rfix::File::Untracked, :repo do
 
   describe "#include?" do
     it "returns false" do
-      expect(file.include?(1)).to eq(false)
+      expect(file.include?(1)).to eq(true)
     end
   end
 
