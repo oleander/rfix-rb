@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+  # frozen_string_literal: true
 
 require "active_support/core_ext/module/delegation"
 require "dry/core/constants"
@@ -15,7 +15,7 @@ module Rfix
     attribute :repository, Types.Instance(Rugged::Repository)
     attribute :reference, Types.Instance(Branch::Base)
 
-    delegate :head, :branches, :workdir, :rev_parse, to: :repository
+    delegate :head, :branches, :workdir, :rev_parse, :diff_workdir, to: :repository
 
     OPTIONS = {
       include_untracked_content: true,
@@ -35,7 +35,7 @@ module Rfix
     end
 
     def origin
-      repository.rev_parse("HEAD~100")
+      repository.rev_parse("HEAD~150")
     end
 
     def status(found = EMPTY_HASH.dup)
@@ -50,7 +50,7 @@ module Rfix
           return found
         end
 
-        origin.diff(**OPTIONS.dup).tap do |diff|
+        diff_workdir(origin, **OPTIONS.dup).tap do |diff|
           diff.find_similar!(
             renames_from_rewrites: true,
             renames: true,
@@ -66,6 +66,10 @@ module Rfix
       @call ||= status.each do |path, statuses|
         build(path, statuses)
       end
+    end
+
+    def path
+      Pathname(repository.path)
     end
 
     # @path [String]
@@ -142,7 +146,7 @@ module Rfix
     end
 
     def build(path, status)
-      store(Rfix::File.call(basename: path, status: status, repository: repository))
+      store(Rfix::File.call(basename: path, status: status, repository: self))
     rescue Dry::Struct::Error => e
       raise Error, { path: path, status: status, message: e.message }.inspect
     end

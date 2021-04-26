@@ -34,12 +34,12 @@ module Rfix
       schema schema.strict
       abstract_class self
 
-      attribute :repository, Types::Rugged
+      attribute :repository, Repository
       attribute :basename, Types::String
 
       UNTRACKED = [:worktree_new, :index_new]
       DELETED = [:deleted, :worktree_deleted]
-      IGNORED = [:ignored].freeze
+      IGNORED = [:ignored, :unmodified].freeze
       TRACKED = [:added].freeze
 
       def key
@@ -48,7 +48,7 @@ module Rfix
 
       # @return [Pathnane]
       def path
-        Pathname(repository.workdir).join(basename)
+        repository.path.join(basename)
       end
 
       def include?(**)
