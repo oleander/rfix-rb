@@ -39,7 +39,6 @@ RSpec.configure do |config|
   config.include Aruba::Api
   config.include Rfix::Support
   config.include Rfix::FileSetup, type: :aruba
-  config.include Rfix::Cmd
 
   config.add_setting :debug
   config.debug = true
