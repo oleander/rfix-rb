@@ -14,12 +14,8 @@ module Rfix
         context_lines: 0
       }.freeze
 
-      def include?(line:)
+      def include?(line)
         diff.each_line.map(&:new_lineno).to_set.include?(line)
-      end
-
-      def refresh!
-        # NOP
       end
 
       def tracked?

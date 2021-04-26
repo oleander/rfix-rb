@@ -78,7 +78,7 @@ module Rfix
     # @line [Integer]
     # @return Bool
     def include?(path, line)
-      get(path).include?(line: line)
+      get(path).include?(line)
     rescue KeyError
       false
     end

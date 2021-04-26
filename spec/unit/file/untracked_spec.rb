@@ -4,7 +4,7 @@ RSpec.describe Rfix::File::Untracked, :repo do
   subject(:file) { described_class.new(repository: rugged, basename: basename, status: status) }
 
   let(:basename) { "Gemfile" }
-  let(:status) { Rfix::File::Base::UNTRACKED.first }
+  let(:status) { Rfix::File::Base::UNTRACKED }
 
   describe "#path" do
     subject { file.path }
@@ -15,7 +15,7 @@ RSpec.describe Rfix::File::Untracked, :repo do
 
   describe "#include?" do
     it "returns false" do
-      expect(file.include?(line: 1)).to eq(false)
+      expect(file.include?(1)).to eq(false)
     end
   end
 

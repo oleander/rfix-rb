@@ -15,7 +15,7 @@ RSpec.describe Rfix::File::Tracked, :repo do
 
   describe "#include?" do
     it "returns false" do
-      expect(file.include?(line: 1)).to eq(false)
+      expect(file.include?(1)).to eq(false)
     end
   end
 

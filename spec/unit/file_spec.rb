@@ -4,7 +4,7 @@ RSpec.describe Rfix::File, :repo do
   let(:basename) { "Gemfile" }
 
   def build(status)
-    described_class.call(repository: rugged, basename: basename, status: status)
+    described_class.call(repository: rugged, basename: basename, status: [status])
   end
 
   describe ".call" do

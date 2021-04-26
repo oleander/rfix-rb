@@ -41,6 +41,7 @@ module Rfix
 
       Untracked = Staged::Tree.or(Staged::Index).and(Ignored.not)
       Tracked = Untracked.not
+
     end
   end
 end

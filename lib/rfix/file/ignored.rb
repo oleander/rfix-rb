@@ -9,10 +9,6 @@ module Rfix
         false
       end
 
-      def refresh!
-        # NOP
-      end
-
       def ignored?
         true
       end

@@ -37,6 +37,11 @@ module Rfix
       attribute :repository, Types::Rugged
       attribute :basename, Types::String
 
+      TRACKED = [:added]
+      UNTRACKED = [:worktree_new, :index_new]
+      IGNORED = [:ignored]
+      DELETED = [:deleted, :worktree_deleted]
+
       def key
         path.to_s
       end
@@ -51,7 +56,7 @@ module Rfix
       end
 
       def refresh!(*)
-        raise NotImplementedError, self.class.name
+        # NOP
       end
 
       def inspect

@@ -9,8 +9,8 @@ module Rfix
         true
       end
 
-      def refresh!
-        # NOP
+      def include?(*)
+        false
       end
     end
   end

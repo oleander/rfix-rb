@@ -11,9 +11,10 @@ module Rfix
         true
       end
 
-      def refresh!
-        # NOP
+      def include?(*)
+        true
       end
+
     end
   end
 end
