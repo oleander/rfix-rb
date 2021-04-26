@@ -81,7 +81,7 @@ GEM
       cucumber-messages (~> 15.0, >= 15.0.0)
       sys-uname (~> 1.2, >= 1.2.2)
     cucumber-cucumber-expressions (12.1.1)
-    cucumber-gherkin (18.1.0)
+    cucumber-gherkin (18.1.1)
       cucumber-messages (~> 15.0, >= 15.0.0)
     cucumber-html-formatter (13.0.0)
       cucumber-messages (~> 15.0, >= 15.0.0)
@@ -104,7 +104,7 @@ GEM
       concurrent-ruby (~> 1.0)
     dry-inflector (0.2.0)
     dry-initializer (3.0.4)
-    dry-logic (1.1.1)
+    dry-logic (1.2.0)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.5, >= 0.5)
     dry-types (1.5.1)
@@ -198,22 +198,22 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
-    rubocop (0.93.1)
+    rubocop (1.13.0)
       parallel (~> 1.10)
-      parser (>= 2.7.1.5)
+      parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 1.8)
+      regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 0.6.0)
+      rubocop-ast (>= 1.2.0, < 2.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 1.4.0, < 2.0)
+      unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.4.1)
       parser (>= 2.7.1.5)
     rubocop-rake (0.5.1)
       rubocop
-    rubocop-rspec (1.44.1)
-      rubocop (~> 0.87)
-      rubocop-ast (>= 0.7.1)
+    rubocop-rspec (2.2.0)
+      rubocop (~> 1.0)
+      rubocop-ast (>= 1.1.0)
     ruby-progressbar (1.11.0)
     rugged (1.1.0)
     shellany (0.0.1)
@@ -224,11 +224,10 @@ GEM
     thread_safe (0.3.6)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (1.7.0)
+    unicode-display_width (2.0.0)
     zeitwerk (2.4.2)
 
 PLATFORMS
-  x86_64-darwin-19
   x86_64-darwin-20
 
 DEPENDENCIES

@@ -3,6 +3,7 @@ require:
 
 AllCops:
   TargetRubyVersion: 3.0
+  AutoCorrect: true
 
 Layout/LineLength:
    Max: 120

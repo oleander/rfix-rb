@@ -78,7 +78,7 @@ namespace :testing do
 
     repo_path.join("Gemfile").write(gemfile)
 
-    git = Git.init(repo_path.to_path, log: Logger.new(STDOUT))
+    git = Git.init(repo_path.to_path, log: Logger.new($stdout))
 
     git.chdir do
       touch ".gitignore"
@@ -115,7 +115,7 @@ namespace :testing do
 
   namespace :lint do
     task rfix: workspace_path do
-      git = Git.open(workspace_path.to_path, log: Logger.new(STDOUT))
+      git = Git.open(workspace_path.to_path, log: Logger.new($stdout))
       #
       # git.checkout("master")
       # git.add_tag(fixed_tag)
@@ -135,7 +135,7 @@ namespace :testing do
     end
 
     task rubocop: workspace_path do
-      git = Git.open(workspace_path.to_path, log: Logger.new(STDOUT))
+      git = Git.open(workspace_path.to_path, log: Logger.new($stdout))
 
       git.checkout("child")
 
