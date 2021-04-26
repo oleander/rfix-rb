@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "rubocop"
-
 module Rfix
   module CLI
     module Command
