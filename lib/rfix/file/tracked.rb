@@ -29,12 +29,12 @@ module Rfix
 
 
 
-      
+
 
       private
 
       def options
-        OPTIONS.dup.merge(paths: [basename])
+        Repository::OPTIONS.dup.merge(paths: [basename])
       end
 
       def diff
