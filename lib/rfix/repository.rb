@@ -35,7 +35,7 @@ module Rfix
     end
 
     def origin
-      repository.rev_parse("HEAD~80")
+      repository.rev_parse("HEAD~100")
     end
 
     def status(found = EMPTY_HASH.dup)
@@ -81,10 +81,9 @@ module Rfix
     # @line [Integer]
     # @return Bool
     def include?(path, line)
-      puts "PATH: #{path}: #{line}: #{files.keys}" if path.include?("tracked.rb")
       get(path).include?(line)
-      # rescue KeyError
-      # false
+    rescue KeyError
+      false
     end
 
     def skipped

@@ -34,7 +34,7 @@ module Rfix
       private
 
       def options
-        Repository::OPTIONS.dup.merge(paths: [basename])
+        OPTIONS.dup.merge(paths: [basename])
       end
 
       def diff

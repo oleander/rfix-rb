@@ -12,7 +12,7 @@ module Rfix
         option :auto_correct, type: :boolean, default: true
         option :auto_correct_all, type: :boolean, default: true
         option :cache, type: :boolean, default: false
-        option :debug, type: :boolean, default: true
+        option :debug, type: :boolean, default: false
         option :branch, type: :string
 
         def call(args: [], branch: "master", **params)
@@ -35,7 +35,6 @@ module Rfix
             end
           end)
 
-          puts handler.files
           new_params, paths = options.parse(handler.paths)
 
           env = RuboCop::CLI::Environment.new(new_params.merge(params), store, paths)
