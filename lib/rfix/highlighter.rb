@@ -49,10 +49,7 @@ module Rfix
       indentation = token_lines(tokens).map.with_index(1) do |tokens, lineno|
         next unless visible_lines.include?(lineno)
 
-        text = tokens.take_while do |token, _|
-          # token == TEXT
-          true
-        end.map(&:last).join
+        text = tokens.map(&:last).join
 
         next if text.empty?
 
@@ -61,10 +58,10 @@ module Rfix
         end.length
       end.compact.min || 0
 
-      is_h = token_lines(tokens).reduce([1, 1, {}]) do |(position, lineno, lookup), tokens|
+      is_h = token_lines(tokens).reduce([0, 1, {}]) do |(position, lineno, lookup), tokens|
         tokens.reduce([position, lineno, lookup]) do |(index, lineno, lookup), (_, value)|
-          [index + value.length, lineno, lookup].tap do |next_index, _, _|
-            if highlight.include?(index) || highlight.include?(next_index)
+          [index + value.length, lineno, lookup].tap do |_next_index, _, _|
+            if highlight.include?(index)
               lookup[lineno] = true
             end
           end
@@ -98,7 +95,7 @@ module Rfix
                    dimness
                  end
 
-          (block << bold).call(lineno.to_s.ljust(4, SPACE))
+          (block << bold).call(lineno.to_s.ljust(4, SPACE) + SPACE)
         end
 
         tokens.reduce(position) do |index, (token, value)|
