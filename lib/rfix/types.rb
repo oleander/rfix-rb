@@ -28,7 +28,10 @@ module Rfix
 
       List = Array(Symbol)
 
-      Deleted = List.constrained(includes: :worktree_deleted)
+      WorkTreeDeleted = List.constrained(includes: :worktree_deleted)
+      DeletedOther = List.constrained(includes: :deleted)
+      Deleted = WorkTreeDeleted.or(DeletedOther)
+
       Ignored = List.constrained(includes: :ignored).and(Deleted.not)
 
       module Staged

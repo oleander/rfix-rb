@@ -49,6 +49,7 @@ module Rfix
             end
           end)
 
+          pp handler.files
           new_params, paths = options.parse(handler.paths)
 
           env = RuboCop::CLI::Environment.new(new_params.merge(params), store, paths)

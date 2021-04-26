@@ -26,12 +26,13 @@ module Rfix
         true
       end
 
+
+
+
       private
 
       def diff
-
-
-        repository.head.target.diff(**OPTIONS.dup.merge(paths: [basename]))
+        repository.diff_workdir(repository.head.target, **OPTIONS.dup.merge(paths: [basename]))
       end
     end
   end

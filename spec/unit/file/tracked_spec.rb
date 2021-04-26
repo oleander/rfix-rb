@@ -4,7 +4,7 @@ RSpec.describe Rfix::File::Tracked, :repo do
   subject(:file) { described_class.new(repository: rugged, basename: basename, status: status) }
 
   let(:basename) { "Gemfile" }
-  let(:status) { Rfix::File::Base::TRACKED.first }
+  let(:status) { [:added] }
 
   describe "#path" do
     subject { file.path }
