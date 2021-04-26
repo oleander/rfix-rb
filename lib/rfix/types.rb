@@ -9,17 +9,18 @@ module Rfix
     include Dry::Logic
 
     Rugged = Instance(::Rugged::Repository)
+    Constrained = Dry::Types::Constrained
 
     Dry::Types.define_builder(:not) do |type|
-      Dry::Types::Constrained.new(type.lax, rule: Operations::Negation.new(type.rule))
+      Constrained.new(type.lax, rule: Operations::Negation.new(type.rule))
     end
 
     Dry::Types.define_builder(:and) do |left, right|
-      Dry::Types::Constrained.new(left.lax, rule: Operations::And.new(left.rule, right.rule))
+      Constrained.new(left.lax << right.lax, rule: left.rule & right.rule)
     end
 
     Dry::Types.define_builder(:or) do |left, right|
-      Dry::Types::Constrained.new(left.lax, rule: Operations::Or.new(left.rule, right.rule))
+      Constrained.new(left.lax << right.lax, rule: left.rule | right.rule)
     end
 
     module Status

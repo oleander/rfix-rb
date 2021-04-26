@@ -85,9 +85,6 @@ else
   require "rfix"
 end
 
-RuboCop::CommentConfig.prepend(Rfix::Extension::CommentConfig)
-RuboCop::Options.prepend(Rfix::Extension::Option)
-
 require "cri"
 require "rfix/commands/helper/loader"
 require "rfix/extension/string"

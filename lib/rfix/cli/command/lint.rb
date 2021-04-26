@@ -3,6 +3,14 @@
 require "rugged"
 require "rubocop"
 
+module ProcessedSource
+  def comment_config
+    @comment_config ||= Rfix::Extension::CommentConfig.new(self)
+  end
+end
+
+RuboCop::ProcessedSource.include(ProcessedSource)
+
 module Rfix
   module CLI
     module Command
@@ -28,7 +36,9 @@ module Rfix
             paths: args
           )
 
-          env = RuboCop::CLI::Environment.new(params, store, handler.paths)
+          new_params, paths = options.parse(handler.paths)
+
+          env = RuboCop::CLI::Environment.new(new_params.merge(params), store, paths)
 
           exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
           resuce Rfix::Error, TypeError, Psych::SyntaxError => e
