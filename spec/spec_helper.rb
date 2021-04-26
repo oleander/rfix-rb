@@ -208,6 +208,7 @@ RSpec.shared_context "repo", shared_context: :metadata do
   let(:dirname) { test_path.expand_path }
   let(:rugged) { Rugged::Repository.new(test_path) }
   let(:branch) { Rfix::Branch::Reference.new("HEAD~50") }
+  let(:repository) { Rfix::Repository.new(repository: rugged, reference: branch) }
 end
 
 RSpec.configure do |config|

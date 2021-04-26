@@ -9,7 +9,6 @@ require "rugged"
 module Rfix
   class Repository < Dry::Struct
     include Dry::Core::Constants
-    include Dry::Core::Memoizable
     include Log
 
     attribute :repository, Types.Instance(Rugged::Repository)
@@ -30,12 +29,13 @@ module Rfix
       context_lines: 0
     }.freeze
 
-    def self.new(*, **)
-      super.tap(&:call)
+    def initialize(*)
+      super
+      call
     end
 
     def origin
-      repository.rev_parse("HEAD~100")
+      repository.rev_parse("master")
     end
 
     def status(found = EMPTY_HASH.dup)

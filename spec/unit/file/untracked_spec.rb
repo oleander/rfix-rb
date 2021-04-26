@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Rfix::File::Untracked, :repo do
-  subject(:file) { described_class.new(repository: rugged, basename: basename, status: status) }
+  subject(:file) { described_class.call(repository: repository, basename: basename, status: status) }
 
   let(:basename) { "Gemfile" }
   let(:status) { Rfix::File::Base::UNTRACKED }

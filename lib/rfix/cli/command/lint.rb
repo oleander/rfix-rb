@@ -9,7 +9,7 @@ module Rfix
       class Lint < Base
         option :formatters, type: :array, default: ["Rfix::Formatter"]
         option :auto_correct, type: :boolean, default: true
-        option :auto_correct_all, type: :boolean, default: true
+        # option :auto_correct_all, type: :boolean, default: true
         option :cache, type: :boolean, default: false
         option :debug, type: :boolean, default: false
         option :branch, type: :string
