@@ -16,7 +16,7 @@ module Rfix
       end
 
       def msg
-        ::CLI::UI.resolve_text("{{italic:#{info}}}", truncate_to: CLI::UI::Terminal.width - 10)
+        ::CLI::UI.resolve_text("{{italic:#{info}}}", truncate_to: ::CLI::UI::Terminal.width - 10)
       end
 
       def code
