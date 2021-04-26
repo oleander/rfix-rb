@@ -10,8 +10,10 @@ module Rfix
         option :formatters, type: :array, default: ["Rfix::Formatter"]
         option :force_exclusion, type: :boolean, default: true
         option :auto_correct, type: :boolean, default: true
+        option :auto_correct_all, type: :boolean, default: true
+        option :cache, type: :boolean, default: false
+        option :debug, type: :boolean, default: true
         option :branch, type: :string
-
 
         def call(args: [], branch: "master", **params)
           options  = RuboCop::Options.new
@@ -35,7 +37,6 @@ module Rfix
 
           new_params, paths = options.parse(handler.paths)
 
-          pp paths
           env = RuboCop::CLI::Environment.new(new_params.merge(params), store, paths)
 
           exit RuboCop::CLI::Command::ExecuteRunner.new(env).run

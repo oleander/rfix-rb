@@ -32,7 +32,12 @@ module Rfix
       DeletedOther = List.constrained(includes: :deleted)
       Deleted = WorkTreeDeleted.or(DeletedOther)
 
-      Ignored = List.constrained(includes: :ignored).and(Deleted.not)
+      module IgnoredType
+        Ignored = List.constrained(includes: :ignored)
+        Unmodified = List.constrained(includes: :unmodified)
+      end
+
+      Ignored = IgnoredType::Ignored.or(IgnoredType::Unmodified).and(Deleted.not)
 
       module Staged
         Tree = List.constrained(includes: :worktree_new)

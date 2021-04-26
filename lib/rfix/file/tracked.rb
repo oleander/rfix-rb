@@ -22,13 +22,17 @@ module Rfix
         true
       end
 
-
-
-
       private
 
       def diff
-        repository.diff_workdir(repository.head.target, **OPTIONS.dup.merge(paths: [basename]))
+        repository.diff_workdir(repository.head.target, **Repository::OPTIONS.dup.merge(paths: [basename])).tap do |diff|
+          diff.find_similar!(
+            renames_from_rewrites: true,
+            renames: true,
+            copies: true
+          )
+        end.tap do |value|
+        end
       end
     end
   end

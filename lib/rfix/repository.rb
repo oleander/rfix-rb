@@ -34,6 +34,10 @@ module Rfix
       super.tap(&:call)
     end
 
+    def origin
+      repository.rev_parse("HEAD~100")
+    end
+
     def status(found = EMPTY_HASH.dup)
       @status ||= begin
         repository.status do |path, statuses|
@@ -46,7 +50,7 @@ module Rfix
           return found
         end
 
-        repository.head.target.diff(**OPTIONS.dup).tap do |diff|
+        origin.diff(**OPTIONS.dup).tap do |diff|
           diff.find_similar!(
             renames_from_rewrites: true,
             renames: true,
