@@ -29,9 +29,15 @@ module Rfix
       private
 
       def diff
-        repository.head.target.diff(**OPTIONS.dup.merge(paths: [basename])).tap do |value|
-          pp value.each_line.to_a
-        end
+
+
+
+
+
+
+
+
+        repository.head.target.diff(**OPTIONS.dup.merge(paths: [basename]))
       end
     end
   end
