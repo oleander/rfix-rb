@@ -58,7 +58,6 @@ module Rfix
       Frame.open("#{offense.icon} #{offense.msg}", color: :reset)
       newline
       block.call
-      newline
       Frame.close("#{offense.clickable_severity} » #{offense.clickable_path}", color: :reset)
       newline
     end
