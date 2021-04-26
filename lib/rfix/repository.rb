@@ -1,4 +1,4 @@
-  # frozen_string_literal: true
+# frozen_string_literal: true
 
 require "active_support/core_ext/module/delegation"
 require "dry/core/constants"
@@ -69,21 +69,22 @@ module Rfix
     end
 
     def path
-      Pathname(repository.path)
+      Pathname(workdir)
     end
 
     # @path [String]
-    def refresh!(path)
-      get(path).refresh!
+    def refresh!(*)
+      # NOP
     end
 
     # @path [String]
     # @line [Integer]
     # @return Bool
     def include?(path, line)
+      puts "PATH: #{path}: #{line}: #{files.keys}" if path.include?("tracked.rb")
       get(path).include?(line)
-    rescue KeyError
-      false
+      # rescue KeyError
+      # false
     end
 
     def skipped
@@ -140,7 +141,7 @@ module Rfix
     end
 
     def lookup
-      permitted.map do |file|
+      files.values.map do |file|
         [file.key, file]
       end.to_h
     end
