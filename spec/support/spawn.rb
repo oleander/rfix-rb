@@ -82,7 +82,7 @@ module Aruba
       def stdout_json?
         return false if stdout.chomp.empty?
 
-        !!JSON.parse(stdout)
+        !JSON.parse(stdout).nil?
       rescue JSON::ParserError
         false
       end

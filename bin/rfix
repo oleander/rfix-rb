@@ -80,6 +80,7 @@ if overlapping_specs.any?
     gem "dry-cli", path: Path::PROJECT.join("vendor/dry-cli"), require: false
     gem "dry-struct", github: "oleander/dry-struct", require: false, branch: "github/feature/module"
     gem "rfix", path: rfix_path
+    gem "pry", require: true
   end
 else
   require "rfix"

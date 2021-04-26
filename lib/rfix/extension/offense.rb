@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "rainbow"
 require "shellwords"
+require "rainbow"
 require "cli/ui"
 
 module Rfix
@@ -40,8 +40,9 @@ module Rfix
       end
 
       def relative_path
-        # TODO: Fix this, do not use Dir.getwd, use git root
-        location.source_buffer.name.sub(::File.join(Dir.getwd, "/"), "")
+        return EMPTY_STRING unless location.respond_to?(:source_buffer)
+
+        location.source_buffer.name.sub(::File.join(Dir.getwd, "/"), EMPTY_STRING)
       end
 
       def clickable_path

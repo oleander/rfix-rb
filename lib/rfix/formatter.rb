@@ -86,6 +86,11 @@ module Rfix
 
     def report_line_with_highlight(offense)
       location = offense.location
+
+      unless location.respond_to?(:source_buffer)
+        return say "Source not found"
+      end
+
       buffer = location.source_buffer
 
       source = buffer.source
