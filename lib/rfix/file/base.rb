@@ -36,7 +36,10 @@ module Rfix
 
       attribute :repository, Types::Rugged
       attribute :basename, Types::String
-      alias key basename
+
+      def key
+        path.to_s
+      end
 
       # @return [Pathnane]
       def path

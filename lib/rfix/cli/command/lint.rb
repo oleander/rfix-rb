@@ -3,14 +3,6 @@
 require "rugged"
 require "rubocop"
 
-module ProcessedSource
-  def comment_config
-    @comment_config ||= Rfix::Extension::CommentConfig.new(self)
-  end
-end
-
-RuboCop::ProcessedSource.include(ProcessedSource)
-
 module Rfix
   module CLI
     module Command
@@ -19,6 +11,21 @@ module Rfix
         option :force_exclusion, type: :boolean, default: true
         option :auto_correct, type: :boolean, default: true
         option :branch, type: :string
+
+        Config = Class.new(RuboCop::CommentConfig) do
+          def initialize(rfix, *rest)
+            super(*rest)
+            @rfix = rfix
+          end
+
+          def cop_enabled_at_line?(_, line)
+             @rfix.include?(processed_source.file_path, line).tap do |value|
+               # pp processed_source.file_path
+             end
+          rescue => e
+            puts e.message
+          end
+        end
 
         def call(args: [], branch: "master", **params)
           # errors = [RuboCop::Runner::InfiniteCorrectionLoop, RuboCop::Error]
@@ -35,6 +42,13 @@ module Rfix
             reference: Branch::Reference.new(branch),
             paths: args
           )
+
+          RuboCop::ProcessedSource.include(Module.new do
+            define_method(:comment_config) do
+              @comment_config ||= Config.new(handler, self)
+            end
+          end)
+
 
           new_params, paths = options.parse(handler.paths)
 

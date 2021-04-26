@@ -64,10 +64,8 @@ module Rfix
     end
 
     def call
-      @call ||= begin
-        status.each do |path, statuses|
-          build(path, statuses)
-        end
+      @call ||= status.each do |path, statuses|
+        build(path, statuses)
       end
     end
 
@@ -81,6 +79,8 @@ module Rfix
     # @return Bool
     def include?(path, line)
       get(path).include?(line: line)
+    rescue KeyError
+      false
     end
 
     # @return [Branch]
@@ -148,9 +148,13 @@ module Rfix
     end
 
     def get(path)
+      lookup.fetch(path)
+    end
+
+    def lookup
       permitted.map do |file|
         [file.key, file]
-      end.to_h.fetch(path)
+      end.to_h
     end
 
     def build(path, status)
