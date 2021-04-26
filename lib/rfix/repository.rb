@@ -35,7 +35,7 @@ module Rfix
     end
 
     def origin
-      repository.rev_parse("HEAD~150")
+      repository.rev_parse("HEAD~80")
     end
 
     def status(found = EMPTY_HASH.dup)
