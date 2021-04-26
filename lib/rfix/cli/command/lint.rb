@@ -22,12 +22,11 @@ module Rfix
           store    = RuboCop::ConfigStore.new
           repository = Rugged::Repository.discover
 
-          config = store.for_dir(repository.workdir)
+          # config = store.for_dir(repository.workdir)
 
           handler = Rfix::Repository.new(
             reference: Branch::Reference.new(branch),
-            repository: repository,
-            paths: args
+            repository: repository
           )
 
           RuboCop::ProcessedSource.include(Module.new do
@@ -36,8 +35,10 @@ module Rfix
             end
           end)
 
+          RuboCop::ResultCache.cleanup(store, true)
+
           # pp new_params.merge!("auto-correct-all": true)
-          env = RuboCop::CLI::Environment.new(params, config, handler.paths)
+          env = RuboCop::CLI::Environment.new(params, store, handler.paths)
 
           exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
           resuce Rfix::Error, TypeError, Psych::SyntaxError => e

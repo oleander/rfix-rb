@@ -63,7 +63,7 @@ module Rfix
     end
 
     def call
-      @call ||= status.each do |path, statuses|
+      status.each do |path, statuses|
         build(path, statuses)
       end
     end
@@ -136,13 +136,7 @@ module Rfix
     end
 
     def get(path)
-      lookup.fetch(path)
-    end
-
-    def lookup
-      files.values.map do |file|
-        [file.key, file]
-      end.to_h
+      files.fetch(path)
     end
 
     def build(path, status)
