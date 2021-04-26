@@ -16,7 +16,6 @@ module Rfix
         option :auto_correct, type: :boolean, default: true
         option :cache, type: :boolean, default: true
         option :debug, type: :boolean, default: false
-        option :branch, type: :string
 
         private
 

@@ -7,6 +7,8 @@ require "cli/ui"
 module Rfix
   module Extension
     module Offense
+      include Dry::Core::Constants
+
       def where
         "#{line}:#{real_column}"
       end
