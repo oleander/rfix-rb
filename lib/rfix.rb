@@ -29,8 +29,5 @@ end
 loader.setup
 
 module Rfix
-  include Interface
-
   mattr_accessor :repo, :test
-  module_function :enabled?, :refresh!, :global_enable?, :test?, :global_enable!
 end
