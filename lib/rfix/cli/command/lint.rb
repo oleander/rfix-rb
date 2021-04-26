@@ -8,10 +8,11 @@ module Rfix
     module Command
       class Lint < Base
         option :formatters, type: :array, default: ["Rfix::Formatter"]
+        option :format, type: :string, default: "Rfix::Formatter"
         # option :auto_correct, type: :boolean, default: true
         # option :auto_correct_all, type: :boolean, default: true
-        option :auto_correct, type: :boolean, default: true
-        option :cache, type: :boolean, default: false
+        option :auto_correct, type: :string, default: "true"
+        option :cache, type: :string, default: "false"
         option :debug, type: :boolean, default: false
 
         option :branch, type: :string
@@ -21,7 +22,7 @@ module Rfix
           store    = RuboCop::ConfigStore.new
           repository = Rugged::Repository.discover
 
-          store.for(repository.workdir)
+          config = store.for_dir(repository.workdir)
 
           handler = Rfix::Repository.new(
             reference: Branch::Reference.new(branch),
@@ -36,7 +37,7 @@ module Rfix
           end)
 
           # pp new_params.merge!("auto-correct-all": true)
-          env = RuboCop::CLI::Environment.new(params, store, handler.paths)
+          env = RuboCop::CLI::Environment.new(params, config, handler.paths)
 
           exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
           resuce Rfix::Error, TypeError, Psych::SyntaxError => e
