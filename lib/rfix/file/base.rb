@@ -37,10 +37,10 @@ module Rfix
       attribute :repository, Types::Rugged
       attribute :basename, Types::String
 
-      TRACKED = [:added]
       UNTRACKED = [:worktree_new, :index_new]
-      IGNORED = [:ignored]
       DELETED = [:deleted, :worktree_deleted]
+      IGNORED = [:ignored].freeze
+      TRACKED = [:added].freeze
 
       def key
         path.to_s

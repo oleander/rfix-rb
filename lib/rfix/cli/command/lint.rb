@@ -21,9 +21,9 @@ module Rfix
           store.for(repository.path)
 
           handler = Rfix::Repository.new(
+            reference: Branch::Reference.new(branch),
             repository: repository,
             load_untracked: true,
-            reference: Branch::Reference.new(branch),
             paths: args
           )
 
@@ -35,6 +35,7 @@ module Rfix
 
           new_params, paths = options.parse(handler.paths)
 
+          pp paths
           env = RuboCop::CLI::Environment.new(new_params.merge(params), store, paths)
 
           exit RuboCop::CLI::Command::ExecuteRunner.new(env).run

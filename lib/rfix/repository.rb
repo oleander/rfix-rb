@@ -78,16 +78,6 @@ module Rfix
       false
     end
 
-    # @return [Branch]
-    def current_branch
-      Branch::Name.new(branches[head.name].name)
-    end
-
-    # @return [Array]
-    def local_branches
-      branches.each_name(:local).to_a
-    end
-
     def skipped
       ignored + deleted
     end
@@ -132,11 +122,6 @@ module Rfix
     end
 
     private
-
-    # @return [Rugged::Commit]
-    def upstream
-      @upstream ||= reference.resolve(with: repository)
-    end
 
     def store(file)
       files.store(file.key, file)
