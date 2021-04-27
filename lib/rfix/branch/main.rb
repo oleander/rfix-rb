@@ -11,9 +11,9 @@ module Rfix
         end
       end
 
-      def self.new(repository:)
-        unless name = repository.config[KEY]
-          raise NoMainBranchSet.new
+      def self.new(repository: Rugged::Repository.discover)
+        unless (name = repository.config[KEY])
+          raise NoMainBranchSet
         end
 
         super(repository: repository, name: name)

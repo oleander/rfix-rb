@@ -5,7 +5,7 @@ require "dry/struct"
 module Rfix
   module Branch
     class Base < Dry::Struct
-      attribute :repository, Types::Rugged
+      attribute? :repository, Types::Rugged.default { Rugged::Repository.discover }
 
       class UnknownBranchError < Error
         def initialize(name)

@@ -6,13 +6,13 @@ module Rfix
       attribute :name, Types::String
 
       def resolve
-        unless branch = repository.branches[name]
-          raise UnknownBranchError.new(branch)
+        unless (branch = repository.branches[name])
+          raise UnknownBranchError, branch
         end
 
         repository.lookup(repository.merge_base(branch.target_id, repository.head.target_id))
       rescue Rugged::ReferenceError
-        raise UnknownBranchError.new(name)
+        raise UnknownBranchError, name
       end
 
       alias to_s name

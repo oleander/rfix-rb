@@ -35,7 +35,7 @@ module Rfix
     end
 
     def origin
-      repository.rev_parse("master")
+      reference.resolve
     end
 
     def status(found = EMPTY_HASH.dup)

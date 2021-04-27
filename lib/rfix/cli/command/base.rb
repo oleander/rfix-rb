@@ -21,12 +21,11 @@ module Rfix
         private
 
         def define(reference, cache:, args: [], **params)
-          repository = Rugged::Repository.discover
           store      = RuboCop::ConfigStore.new
           options    = RuboCop::Options.new
 
           handler = Rfix::Repository.new(
-            repository: repository,
+            repository: reference.repository,
             reference: reference
           )
 

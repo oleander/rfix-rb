@@ -8,7 +8,7 @@ module Rfix
       rescue UnknownBranchError
         repository.rev_parse(name)
       rescue Rugged::InvalidError
-        raise UnknownBranchError.new(name)
+        raise UnknownBranchError, name
       end
     end
   end

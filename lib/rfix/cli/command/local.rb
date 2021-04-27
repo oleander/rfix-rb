@@ -3,7 +3,7 @@ module Rfix
     module Command
       class Local < Base
         def call(**params)
-          define(Rfix::Branch::UPSTREAM, **params)
+          define(Rfix::Branch::Upstream.new, **params)
         end
       end
     end
