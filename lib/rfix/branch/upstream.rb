@@ -3,8 +3,8 @@
 module Rfix
   module Branch
     class Upstream < Base
-      def resolve(with:)
-        with.rev_parse("@{upstream}")
+      def resolve
+        repository.rev_parse("@{upstream}")
       end
 
       def to_s

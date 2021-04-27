@@ -1,20 +1,26 @@
 # frozen_string_literal: true
 
+require "dry/struct"
+
 module Rfix
   module Branch
-    class Base
+    class Base < Dry::Struct
+      attribute :repository, Types::Rugged
+
+      class UnknownBranchError < Error
+        def initialize(name)
+          super("Could not find branch {{error:#{name}}}")
+        end
+      end
+
+      # @abstract
       def resolve(*)
-        raise NotYetImplementedError, "#resolved"
+        raise NotYetImplementedError, self.class.name
       end
 
+      # @abstract
       def to_s
-        raise NotYetImplementedError, "#to_s"
-      end
-
-      def revparse(using:, ref:)
-        using.rev_parse(ref)
-      rescue Rugged::InvalidError
-        raise UnknownBranchError, "Could not find reference {{error:#{ref}}}"
+        raise NotYetImplementedError, self.class.name
       end
     end
   end

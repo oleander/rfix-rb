@@ -2,29 +2,21 @@
 
 module Rfix
   module Branch
-    class Main < Base
+    class Main < Name
       KEY = "rfix.main.branch"
 
-      def resolve(with:)
-        unless name = with.config[KEY]
-          # TODO: Do not do this
-          with.config[KEY] = "master"
-          return resolve(with: with)
+      class NoMainBranchSetError < Error
+        def initialize
+          super("Run {{italic:rfix setup}} to set the main branch")
+        end
+      end
+
+      def self.new(repository:)
+        unless name = repository.config[KEY]
+          raise NoMainBranchSet.new
         end
 
-        Branch::Name.new(name).resolve(with: with)
-      end
-
-      def self.set(branch, at: Dir.pwd)
-        Branch.repo(at: at).config[KEY] = branch
-      end
-
-      def self.get(at: Dir.pwd)
-        Branch.repo(at: at).config[KEY]
-      end
-
-      def to_s
-        "configured main branch"
+        super(repository: repository, name: name)
       end
     end
   end
