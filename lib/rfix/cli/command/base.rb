@@ -29,11 +29,12 @@ module Rfix
             reference: reference
           )
 
-          RuboCop::ProcessedSource.include(Module.new do
-            define_method(:comment_config) do
-              @comment_config ||= Config.new(handler, self)
-            end
-          end)
+          Extension.call(RuboCop::Formatter::SimpleTextFormatter, :repository, handler)
+          Extension.call(RuboCop::ProcessedSource, :repository, handler)
+
+          Extension.call(RuboCop::ProcessedSource, :comment_config) do
+            Config.new(repository, self)
+          end
 
           unless cache
             RuboCop::ResultCache.cleanup(store, true)
@@ -42,7 +43,7 @@ module Rfix
           env = RuboCop::CLI::Environment.new(params, store, EMPTY_ARRAY)
 
           exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
-        resuce Rfix::Error, TypeError, Psych::SyntaxError => e
+          resuce Rfix::Error, TypeError, Psych::SyntaxError => e
           say! e.to_s
         end
       end

@@ -129,6 +129,10 @@ module Rfix
       permitted.map(&:basename)
     end
 
+    def include_file?(path)
+      permitted.include?(files.fetch(path, Undefined))
+    end
+
     private
 
     def store(file)

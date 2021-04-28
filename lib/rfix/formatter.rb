@@ -63,7 +63,11 @@ module Rfix
     end
 
     def report_summary(files)
-      super(*stats.insert(0, files.count).take(arity))
+      files.select do |file|
+        repository.include_file?(file)
+      end.then do |cleaned_files|
+        super(*stats.insert(0, cleaned_files.count).take(arity))
+      end
     end
 
     def arity
