@@ -4,6 +4,7 @@ require "rubocop/formatter/simple_text_formatter"
 require "rubocop/cop/offense"
 require "dry/core/constants"
 require "dry/initializer"
+require "singleton"
 require "cli/ui"
 
 RuboCop::Cop::Offense.prepend(Rfix::Extension::Offense)
@@ -22,6 +23,14 @@ module Rfix
     option :reported_offenses
     option :options
     option :output
+
+    class NullRepository
+      include Singleton
+
+      def include_file?(*)
+        true
+      end
+    end
 
     def initialize(output, options = EMPTY_HASH)
       super(output: output, options: options, reported_offenses: EMPTY_ARRAY.dup)
@@ -132,6 +141,10 @@ module Rfix
 
     def offenses?
       reported_offenses.any?
+    end
+
+    def repository
+      NullRepository.instance
     end
   end
 end

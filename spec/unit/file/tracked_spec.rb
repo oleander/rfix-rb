@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Rfix::File::Tracked, :repo do
-  subject(:file) { described_class.call(repository: repository, basename: basename, status: status) }
+  subject(:file) { described_class.call(repository: rugged, basename: basename, status: status) }
 
   let(:basename) { "Gemfile" }
   let(:status) { [:added] }
@@ -16,12 +16,6 @@ RSpec.describe Rfix::File::Tracked, :repo do
   describe "#include?" do
     it "returns false" do
       expect(file.include?(1)).to eq(false)
-    end
-  end
-
-  describe "#refresh?" do
-    it "does nothing" do
-      expect { file.refresh! }.not_to raise_error
     end
   end
 end
