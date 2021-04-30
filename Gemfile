@@ -7,7 +7,6 @@ group :development, :test do
   gem "rspec-its"
 end
 
-gem "cli-ui", path: "vendor/cli-ui", require: false
 gem "dry-cli", path: "vendor/dry-cli", require: false
 gem "dry-struct", github: "oleander/dry-struct", require: false, branch: "github/feature/module"
 gem "git", require: true

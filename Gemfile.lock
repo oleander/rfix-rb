@@ -30,11 +30,6 @@ PATH
       zeitwerk
 
 PATH
-  remote: vendor/cli-ui
-  specs:
-    cli-ui (1.5.1)
-
-PATH
   remote: vendor/dry-cli
   specs:
     dry-cli (0.6.0)
@@ -257,7 +252,6 @@ PLATFORMS
 
 DEPENDENCIES
   aruba
-  cli-ui!
   colorize
   dry-cli!
   dry-struct!
