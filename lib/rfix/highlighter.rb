@@ -9,14 +9,13 @@ module Rfix
   class Highlighter < Rouge::Formatters::TerminalTruecolor
     tag "highlighter"
 
+    ESC = "\e"
     NEWLINE = "\n"
     SPACE = " "
 
     TEXT = Rouge::Token::Tokens::Text
 
     Error = Class.new(StandardError)
-
-    include ::CLI::UI::ANSI
 
     extend Dry::Initializer
     include Dry::Core::Constants
