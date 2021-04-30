@@ -58,10 +58,13 @@ module Rfix
 
       # @indicator.stop if offenses?
 
-      offenses.each do |offense|
+      length = offenses.length - 1
+      offenses.each_with_index do |offense, _index|
         framed(offense) do
           report_line_with_highlight(offense)
         end
+
+        puts
       end
     end
 
@@ -70,7 +73,7 @@ module Rfix
     def framed(offense, &block)
       title = "#{offense.icon} #{offense.msg}"
       foot = "#{offense.clickable_severity} » #{offense.clickable_path}"
-      say TTY::Box.frame(title: { top_left: title, bottom_right: foot }, &block)
+      say TTY::Box.frame(padding: 1, title: { top_left: title, bottom_right: foot }, &block)
     end
 
     def report_summary(files)
