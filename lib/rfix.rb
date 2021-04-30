@@ -10,22 +10,6 @@ loader.ignore("#{__dir__}/rfix/loader")
 loader.ignore("#{__dir__}/rfix/commands")
 loader.inflector.inflect "cli" => "CLI"
 
-["Rfix::Formatter", "Rfix::Highlighter", "Rfix::Log"].each do |name|
-  loader.on_load(name) do
-    @loaded ||= begin
-      require "cli/ui"
-
-      CLI::UI::StdoutRouter.enable
-
-      # TODO: Handle cases where color can't be resolved by CLI::UI
-      RuboCop::Formatter::SimpleTextFormatter::COLOR_FOR_SEVERITY.each do |severity, color|
-        id = RuboCop::Cop::Severity::CODE_TABLE.invert.fetch(severity)
-        CLI::UI::Glyph.new(id.to_s, 0x25cf, "<G>", CLI::UI.resolve_color(color))
-      end
-    end
-  end
-end
-
 loader.setup
 
 module Rfix
