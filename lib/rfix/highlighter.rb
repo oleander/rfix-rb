@@ -78,10 +78,7 @@ module Rfix
 
       pastel = Pastel.new
 
-      underline = ansi.call(4, 24)
-      boldness = ansi.call(1, 22)
-      yellow = ansi.call(33, 22)
-      dimness = ansi.call(2, 22)
+      underline = pastel.method(:underline)
 
       underscope = lambda do |output|
         (block << underline).call(output)
@@ -113,9 +110,9 @@ module Rfix
                 tail = value.chars.drop_while(&:blank?).join
 
                 super([[TEXT, head]], &block)
-                super([[token, tail]], &underscope)
+                super([[token, tail]], &underline)
               else
-                super([[token, value]], &underscope)
+                super([[token, value]], &underline)
               end
             elsif visible_lines.include?(lineno)
               super([[token, value]], &block)
