@@ -35,6 +35,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "rake"
   spec.add_runtime_dependency "rouge", "~> 3.20"
   spec.add_runtime_dependency "rubocop"
+  spec.add_runtime_dependency "tty-prompt"
   spec.add_runtime_dependency "rugged"
   spec.add_runtime_dependency "strings-ansi"
   spec.add_runtime_dependency "zeitwerk"

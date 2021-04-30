@@ -1,14 +1,19 @@
 # frozen_string_literal: true
 
 require "shellwords"
-require "rainbow"
-require "cli/ui"
+require "tty/prompt"
+require "pry"
 
 module Rfix
   module Extension
     module Offense
+      PROMPT = TTY::Prompt.new(symbols: {marker: ">"})
       ESC = "\e".freeze
       SLASH = "\x07".freeze
+      STAR = "⭑"
+      CROSS = "✗"
+      CHECK = "✓"
+      CIRCLE = "⍟"
 
       include Dry::Core::Constants
 
@@ -21,7 +26,7 @@ module Rfix
       end
 
       def msg
-        ::CLI::UI.resolve_text("{{italic:#{info}}}", truncate_to: ::CLI::UI::Terminal.width - 10)
+        prompt.say(info, color: :italic)
       end
 
       def code
@@ -29,19 +34,19 @@ module Rfix
       end
 
       def star
-        Rainbow("⭑")
+        prompt.say(STAR, color: :yellow)
       end
 
       def cross
-        Rainbow("✗").red
+        prompt.say(CROSS, color: :red)
       end
 
       def check
-        Rainbow("✓").green
+        prompt.say(CHECK, color: :green)
       end
 
       def circle
-        Rainbow("⍟")
+        prompt.say(CIRCLE, color: :blue)
       end
 
       def relative_path
@@ -63,10 +68,11 @@ module Rfix
       end
 
       def icon
-        return check.green if corrected?
-        return star.yellow if correctable?
-
-        cross.red
+        {
+          correctable: star,
+          uncorrected: circle,
+          corrected: check
+        }.fetch(status)
       end
 
       def to_clickable(url, title)
@@ -84,6 +90,12 @@ module Rfix
 
       def escape(str)
         Shellwords.escape(str)
+      end
+
+      private
+
+      def prompt
+        PROMPT
       end
     end
   end
