@@ -7,6 +7,9 @@ require "cli/ui"
 module Rfix
   module Extension
     module Offense
+      ESC = "\e".freeze
+      SLASH = "\x07".freeze
+
       include Dry::Core::Constants
 
       def where
@@ -67,10 +70,8 @@ module Rfix
       end
 
       def to_clickable(url, title)
-        esc = ::CLI::UI::ANSI::ESC
-        cmd = "#{esc}]8;;"
-        slash = "\x07"
-        cmd + "#{escape(url)}#{slash}#{escape(title)}" + cmd + slash
+        cmd = "#{ESC}]8;;"
+        cmd + "#{escape(url)}#{SLASH}#{escape(title)}" + cmd + SLASH
       end
 
       def to_path(path, title)

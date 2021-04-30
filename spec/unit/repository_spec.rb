@@ -118,7 +118,7 @@ RSpec.describe Rfix::Repository do
   subject(:repository) { described_class.call(repository: file.repo, reference: branch) }
 
   let(:file) { Blob.new(name) }
-  let(:branch) { Rfix::Branch::Reference.new("HEAD") }
+  let(:branch) { Rfix::Branch::Reference.new(name: "HEAD") }
 
   after do |example|
     if example.exception
