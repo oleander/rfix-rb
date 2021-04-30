@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-require "pathname"
-require "dry/struct/union"
-
 module Rfix
   module File
-    include Dry::Struct::Union
+    Self = Deleted | Ignored | Tracked | Untracked
+
+    def self.call(input)
+      Self.call(input)
+    end
   end
 end
