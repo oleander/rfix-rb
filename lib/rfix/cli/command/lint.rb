@@ -7,7 +7,7 @@ module Rfix
         argument :branch, type: :string, required: true
 
         def call(branch:, **params)
-          define(Rfix::Branch::Reference.new(branch), **params)
+          define(Rfix::Branch::Reference.new(name: branch), **params)
         end
       end
     end

@@ -51,8 +51,6 @@ def rfix
 end
 
 def rfix_path
-  return Path::DIR.parent if $PROGRAM_NAME.end_with?("bin/rfix")
-
   Pathname(rfix.full_gem_path)
 end
 
@@ -67,17 +65,19 @@ def deactivate_all!
     deactivate(spec)
   end
 end
+require "pry"
+binding.pry
 
 if overlapping_specs.any?
   deactivate_all!
 
-  gemfile(false, ui: Bundler::UI::Silent.new) do
+  gemfile(false) do
     overlapping_specs.each do |spec|
       gem spec.name, spec.version
     end
 
     gem "dry-cli", path: Path::PROJECT.join("vendor/dry-cli"), require: "dry/cli"
-    gem "rfix", path: rfix_path, require: "rfix"
+    gem "rfix", path: rfix.full_gem_path, require: "rfix"
     gem "pry", require: "pry"
   end
 else
