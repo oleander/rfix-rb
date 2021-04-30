@@ -5,6 +5,8 @@ require "rubocop/cop/offense"
 require "dry/core/constants"
 require "dry/initializer"
 require "singleton"
+require "tty/box"
+require "tty/prompt"
 require "cli/ui"
 
 RuboCop::Cop::Offense.prepend(Rfix::Extension::Offense)
@@ -23,6 +25,10 @@ module Rfix
     option :reported_offenses
     option :options
     option :output
+
+    PROMPT = TTY::Prompt.new(symbols: { marker: ">" })
+
+    delegate :say, to: :PROMPT
 
     class NullRepository
       include Singleton
@@ -64,11 +70,9 @@ module Rfix
     private
 
     def framed(offense, &block)
-      Frame.open("#{offense.icon} #{offense.msg}", color: :reset)
-      newline
-      block.call
-      Frame.close("#{offense.clickable_severity} » #{offense.clickable_path}", color: :reset)
-      newline
+      title = "#{offense.icon} #{offense.msg}"
+      foot = "#{offense.clickable_severity} » #{offense.clickable_path}"
+      say TTY::Box.frame(title: { top_left: title, bottom_right: foot }, &block)
     end
 
     def report_summary(files)
@@ -88,7 +92,7 @@ module Rfix
     end
 
     def report(msg, format: true)
-      ::CLI::UI.puts(msg, to: output, format: format)
+      msg
     end
 
     def newline(amount = 1)
@@ -99,7 +103,7 @@ module Rfix
       location = offense.location
 
       unless location.respond_to?(:source_buffer)
-        return say "Source not found"
+        return "Source not found"
       end
 
       buffer = location.source_buffer
