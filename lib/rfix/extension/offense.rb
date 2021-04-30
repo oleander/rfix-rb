@@ -6,8 +6,8 @@ require "rainbow"
 module Rfix
   module Extension
     module Offense
-      ESC = "\e"
-      SLASH = "\x07"
+      # ESC = "\e"
+      # SLASH = "\x07"
 
       STAR = Rainbow("⭑").yellow
       CROSS = Rainbow("✗").red
@@ -60,8 +60,9 @@ module Rfix
       end
 
       def to_clickable(url, title)
-        cmd = "#{ESC}]8;;"
-        cmd + "#{escape(url)}#{SLASH}#{escape(title)}" + cmd + SLASH
+        title
+        # cmd = "#{ESC}]8;;"
+        # cmd + "#{escape(url)}#{SLASH}#{escape(title)}" + cmd + SLASH
       end
 
       def to_path(path, title)

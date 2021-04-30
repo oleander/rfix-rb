@@ -89,7 +89,8 @@ module Rfix
     end
 
     def mark_command_line
-      "#{ESC}]1337;SetMark\a"
+      # "#{ESC}]1337;SetMark\a"
+      "X"
     end
 
     def report(msg, format: true)

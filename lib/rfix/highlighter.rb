@@ -10,7 +10,6 @@ module Rfix
   class Highlighter < Rouge::Formatters::TerminalTruecolor
     tag "highlighter"
 
-    ESC = "\e"
     NEWLINE = "\n"
     SPACE = " "
 
@@ -70,19 +69,9 @@ module Rfix
         end
       end.last
 
-      ansi = lambda do |code, terminated|
-        lambda do |input|
-          [ESC, "[", code.to_s, "m", input, ESC, "[", terminated.to_s, "m"].join
-        end
-      end
-
       pastel = Pastel.new
 
       underline = pastel.method(:underline)
-
-      underscope = lambda do |output|
-        (block << underline).call(output)
-      end
 
       token_lines(tokens).reduce([0, 1]) do |(position, lineno), tokens|
         print_line_number = lambda do
