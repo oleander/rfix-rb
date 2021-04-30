@@ -4,15 +4,14 @@ require "rubocop/formatter/simple_text_formatter"
 require "rubocop/cop/offense"
 require "dry/core/constants"
 require "dry/initializer"
-require "singleton"
 require "tty/box"
+require "tty/screen"
 require "tty/prompt"
 
 RuboCop::Cop::Offense.prepend(Rfix::Extension::Offense)
 
 module Rfix
   class Formatter < RuboCop::Formatter::SimpleTextFormatter
-    ESC = "\e"
     attr_reader :indicator
 
     include Dry::Core::Constants
@@ -73,7 +72,7 @@ module Rfix
     def framed(offense, &block)
       title = "#{offense.icon} #{offense.msg}"
       foot = "#{offense.clickable_severity} » #{offense.clickable_path}"
-      say TTY::Box.frame(padding: 1, title: { top_left: title, bottom_right: foot }, &block)
+      say TTY::Box.frame(padding: 1, title: { top_left: title, bottom_right: foot }, width: TTY::Screen.width, &block)
     end
 
     def report_summary(files)
@@ -90,7 +89,7 @@ module Rfix
 
     def mark_command_line
       # "#{ESC}]1337;SetMark\a"
-      "X"
+      "" # TODO: Activate
     end
 
     def report(msg, format: true)
