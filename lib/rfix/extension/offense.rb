@@ -26,7 +26,7 @@ module Rfix
       end
 
       def msg
-        info
+        Rainbow(info).italic
       end
 
       def code
