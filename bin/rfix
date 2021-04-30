@@ -50,6 +50,10 @@ def rfix
   find("rfix")
 end
 
+def dev?
+  $PROGRAM_NAME.end_with?("bin/rfix")
+end
+
 def rfix_path
   Pathname(rfix.full_gem_path)
 end
@@ -70,21 +74,19 @@ if overlapping_specs.any?
   deactivate_all!
 
   gemfile(false) do
-    overlapping_specs.each do |spec|
-      gem spec.name, spec.version
+    if dev?
+      eval_gemfile Path::PROJECT.join("Gemfile")
+    else
+      overlapping_specs.each do |spec|
+        gem spec.name, spec.version
+      end
+      gem "dry-cli", path: Path::PROJECT.join("vendor/dry-cli"), require: "dry/cli"
+      gem "rfix", path: rfix_path, require: "rfix"
     end
-
-    gem "dry-cli", path: Path::PROJECT.join("vendor/dry-cli"), require: "dry/cli"
-    gem "rfix", path: rfix.full_gem_path, require: "rfix"
-    gem "pry", require: "pry"
   end
 else
   require "rfix"
 end
-
-require "rfix/extension/string"
-
-include Rfix::Log
 
 module Rfix
   Dry::CLI.new(CLI::Command).call
