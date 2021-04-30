@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.homepage              = "https://github.com/oleander/rfix-rb"
   spec.license               = "MIT"
   spec.required_ruby_version = ">= 2.5.0"
-  spec.files                 = Dir["lib/**/*", "bin/rfix"]
+  spec.files                 = Dir["lib/**/*", "bin/rfix", "vendor/**/*"]
   spec.executables           = ["rfix"]
   spec.requirements << "git >= 2"
 
