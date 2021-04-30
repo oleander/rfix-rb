@@ -4,6 +4,7 @@ require "dry/core/constants"
 require "dry/initializer"
 require "dry/types"
 require "rouge"
+require "pastel"
 
 module Rfix
   class Highlighter < Rouge::Formatters::TerminalTruecolor
@@ -75,6 +76,8 @@ module Rfix
         end
       end
 
+      pastel = Pastel.new
+
       underline = ansi.call(4, 24)
       boldness = ansi.call(1, 22)
       yellow = ansi.call(33, 22)
@@ -88,13 +91,8 @@ module Rfix
         print_line_number = lambda do
           block.call(SPACE * 2)
 
-          bold = if is_h[lineno]
-                   yellow
-                 else
-                   dimness
-                 end
-
-          (block << bold).call(lineno.to_s.ljust(4, SPACE) + SPACE)
+          style = is_h[lineno] ? pastel.yellow : pastel.dim
+          (block << style.detach).call(lineno.to_s.ljust(4, SPACE) + SPACE)
         end
 
         tokens.reduce(position) do |index, (token, value)|
