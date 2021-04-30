@@ -47,7 +47,7 @@ module Rfix
       end
 
       def clickable_severity
-        "{{#{severity.code}}} {{italic:#{clickable_plain_severity}}}"
+        "#{severity.code} #{Rainbow(clickable_plain_severity).italic}"
       end
 
       def icon

@@ -71,7 +71,7 @@ module Rfix
 
       pastel = Pastel.new
 
-      underline = pastel.method(:underline)
+      underline = block
 
       token_lines(tokens).reduce([0, 1]) do |(position, lineno), tokens|
         print_line_number = lambda do
