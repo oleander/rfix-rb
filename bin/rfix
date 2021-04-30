@@ -65,8 +65,6 @@ def deactivate_all!
     deactivate(spec)
   end
 end
-require "pry"
-binding.pry
 
 if overlapping_specs.any?
   deactivate_all!
