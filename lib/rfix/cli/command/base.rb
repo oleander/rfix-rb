@@ -20,7 +20,8 @@ module Rfix
 
         private
 
-        def define(reference, cache:, args: [], **params)
+        def define(reference, cache: true, args: [], **params)
+          pp params
           store      = RuboCop::ConfigStore.new
           options    = RuboCop::Options.new
 

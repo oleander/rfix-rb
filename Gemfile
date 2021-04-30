@@ -2,28 +2,29 @@
 
 source "https://rubygems.org"
 
+gemspec
+
 group :development do
   gem "gem-release", require: false
 
-  gem "colorize"
-  gem "jsonpath"
-  gem "faker"
   gem "aruba"
-  gem "guard-rspec", require: false
+  gem "colorize"
+  gem "faker"
   gem "guard", require: false
+  gem "guard-rspec", require: false
+  gem "jsonpath"
 end
 
-gemspec path: __dir__
 
 group :development, :test do
-  gem "pry", require: true
-  gem "rubocop-rspec"
-  gem "rubocop-rake"
-  gem "rspec-its"
-  gem "pry-stack_explorer"
-  gem "pry-rescue"
-  gem "rspec"
   gem "git", require: true
+  gem "pry", require: true
+  gem "pry-rescue"
+  gem "pry-stack_explorer"
+  gem "rspec"
+  gem "rspec-its"
+  gem "rubocop-rake"
+  gem "rubocop-rspec"
 end
 
-gem "dry-cli", path: "vendor/dry-cli", require: false
+gem "dry-cli", github: "dry-rb/dry-cli", require: "dry/cli"

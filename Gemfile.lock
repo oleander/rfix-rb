@@ -1,9 +1,16 @@
+GIT
+  remote: https://github.com/dry-rb/dry-cli.git
+  revision: 505c4f5ef312086ee688f6576a705fab86fb09bf
+  specs:
+    dry-cli (0.6.0)
+
 PATH
   remote: .
   specs:
     rfix (1.4.2)
       activesupport
       bundler
+      dry-cli
       dry-core
       dry-initializer
       dry-struct
@@ -18,11 +25,6 @@ PATH
       tty-prompt
       tty-screen
       zeitwerk
-
-PATH
-  remote: vendor/dry-cli
-  specs:
-    dry-cli (0.6.0)
 
 GEM
   remote: https://rubygems.org/

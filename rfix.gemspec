@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "dry-core"
   spec.add_runtime_dependency "dry-initializer"
   spec.add_runtime_dependency "dry-struct"
+  spec.add_runtime_dependency "dry-cli"
   spec.add_runtime_dependency "dry-types"
   spec.add_runtime_dependency "rainbow", "~> 3.0"
   spec.add_runtime_dependency "rake"

@@ -2,13 +2,12 @@
 
 require "shellwords"
 require "rainbow"
-require "pry"
 
 module Rfix
   module Extension
     module Offense
-      ESC = "\e".freeze
-      SLASH = "\x07".freeze
+      ESC = "\e"
+      SLASH = "\x07"
 
       STAR = Rainbow("⭑").yellow
       CROSS = Rainbow("✗").red

@@ -70,22 +70,17 @@ def deactivate_all!
   end
 end
 
-if overlapping_specs.any?
-  deactivate_all!
+deactivate_all!
 
-  gemfile(false) do
-    if dev?
-      eval_gemfile Path::PROJECT.join("Gemfile")
-    else
-      overlapping_specs.each do |spec|
-        gem spec.name, spec.version
-      end
-      gem "dry-cli", path: Path::PROJECT.join("vendor/dry-cli"), require: "dry/cli"
-      gem "rfix", path: rfix_path, require: "rfix"
-    end
+gemfile(false) do
+  next eval_gemfile "Gemfile" if dev?
+
+  overlapping_specs.each do |spec|
+    gem spec.name, spec.version
   end
-else
-  require "rfix"
+
+  gem "dry-cli", github: "dry-rb/dry-cli", require: "dry/cli"
+  gem "rfix", path: rfix_path, require: "rfix"
 end
 
 module Rfix
