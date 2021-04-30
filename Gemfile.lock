@@ -26,6 +26,7 @@ PATH
       strings-ansi
       tty-box
       tty-prompt
+      tty-screen
       zeitwerk
 
 PATH

@@ -142,19 +142,19 @@ RSpec.shared_context "setup:git", shared_context: :metadata, type: :aruba do
 
   prepend_before(:each, :upstream) do |example|
     upstream = example.metadata.fetch(:upstream)
-    say_debug("Set upstream branch to {{warning:#{upstream}}}")
+    say("Set upstream branch to {{warning:#{upstream}}}")
     cmd "git", "branch", "--set-upstream-to", upstream
   end
 
   prepend_before(:each, :checkout) do |example|
     branch = example.metadata.fetch(:checkout)
-    say_debug("Checkout the {{warning:#{branch}}} branch")
+    say("Checkout the {{warning:#{branch}}} branch")
     git.branch(branch).checkout
   end
 
   append_before(:each, :commits, :git) do |example|
     number_of_times = example.metadata.fetch(:commits)
-    say_debug "Creating {{info:#{number_of_times}}} commits"
+    say "Creating {{info:#{number_of_times}}} commits"
     number_of_times.times do |_n|
       f(:valid).tracked.write!
     end
