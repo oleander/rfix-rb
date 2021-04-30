@@ -7,18 +7,16 @@ require "dry/initializer"
 require "singleton"
 require "tty/box"
 require "tty/prompt"
-require "cli/ui"
 
 RuboCop::Cop::Offense.prepend(Rfix::Extension::Offense)
 
 module Rfix
   class Formatter < RuboCop::Formatter::SimpleTextFormatter
+    ESC = "\e"
     attr_reader :indicator
 
     include Dry::Core::Constants
-    include ::CLI::UI::ANSI
     extend Dry::Initializer
-    include ::CLI::UI
     include Log
 
     option :indicator, default: -> { Indicator.new }
