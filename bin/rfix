@@ -86,10 +86,8 @@ else
   require "rfix"
 end
 
-require "rfix/commands/helper/loader"
 require "rfix/extension/string"
 
-include Rfix::Loader
 include Rfix::Log
 
 module Rfix
