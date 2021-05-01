@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 require "dry/core/constants"
+require "active_support/all"
 require "rubocop"
+require "rainbow"
 require "rugged"
 
 module Rfix
@@ -21,27 +23,24 @@ module Rfix
 
         private
 
-        def define(reference, cache:, args: [], **params)
-          store      = RuboCop::ConfigStore.new
-          options    = RuboCop::Options.new
-
+        def define(reference, args: Undefined, **params)
           handler = Rfix::Repository.new(
             repository: reference.repository,
             reference: reference
           )
 
-          Extension.call(RuboCop::Cop::Base, :enabled_line?) do |line|
-            super && handler.include?(processed_source.file_path, line)
+          RuboCop::Cop::Base.redefine_method(:enabled_line?) do |line|
+            handler.include?(processed_source.file_path, line)
+          rescue StandardError => e
+            abort e.full_message(highlight: true)
           end
 
-          unless cache
-            RuboCop::ResultCache.cleanup(store, true)
+          Undefined.default(args, handler.paths).then do |paths|
+            RuboCop::CLI::Environment.new(params, RuboCop::ConfigStore.new, paths)
+          end.then do |env|
+            exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
           end
-
-          env = RuboCop::CLI::Environment.new(params, store, handler.paths)
-
-          exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
-          resuce Rfix::Error, TypeError, Psych::SyntaxError => e
+        rescue Rfix::Error, TypeError, Psych::SyntaxError => e
           say! e.message
         end
       end

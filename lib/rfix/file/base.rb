@@ -51,7 +51,7 @@ module Rfix
         repository.path.join(basename)
       end
 
-      def include?(**)
+      def include?(*, **)
         raise NotImplementedError, self.class.name
       end
 
