@@ -72,7 +72,7 @@ module Rfix
     def framed(offense, &block)
       title = "#{offense.icon} #{offense.msg}"
       foot = "#{offense.clickable_severity} » #{offense.clickable_path}"
-      say TTY::Box.frame(padding: 1, title: { top_left: title, bottom_right: foot }, width: TTY::Screen.width, &block)
+      say TTY::Box.frame(padding: 1, title: { top_left: title, bottom_right: foot }, width: TTY::Screen.width - 1, &block)
     end
 
     def report_summary(files)
