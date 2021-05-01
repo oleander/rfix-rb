@@ -16,7 +16,8 @@ module Rfix
         option :auto_correct, type: :boolean, default: true
         option :cache, type: :boolean, default: true
         option :debug, type: :boolean, default: false
-        # option :config, type: :string, default: "/Users/loleander/Code/rfix-rb/.rubocop.yml"
+        option :only_recognized_file_types, type: :boolean, default: true
+        option :force_exclusion, type: :boolean, default: true
 
         private
 
@@ -40,11 +41,11 @@ module Rfix
             RuboCop::ResultCache.cleanup(store, true)
           end
 
-          env = RuboCop::CLI::Environment.new(params, store, EMPTY_ARRAY)
+          env = RuboCop::CLI::Environment.new(params, store, handler.paths)
 
           exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
-          resuce Rfix::Error, TypeError, Psych::SyntaxError => e
-          say! e.to_s
+        resuce Rfix::Error, TypeError, Psych::SyntaxError => e
+          say! e.message
         end
       end
     end
