@@ -15,7 +15,6 @@ group :development do
   gem "jsonpath"
 end
 
-
 group :development, :test do
   gem "git", require: true
   gem "pry", require: true
