@@ -7,8 +7,8 @@ module Rfix
 
       def resolve
         repository.lookup(repository.rev_parse(name).oid)
-      rescue Rugged::InvalidError
-        raise UnknownBranchError, name
+      rescue Rugged::Error
+        raise Error, name
       end
     end
   end

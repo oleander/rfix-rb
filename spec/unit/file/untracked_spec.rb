@@ -18,10 +18,4 @@ RSpec.describe Rfix::File::Untracked, :repo do
       expect(file.include?(1)).to eq(true)
     end
   end
-
-  describe "#refresh?" do
-    it "does nothing" do
-      expect { file.refresh! }.not_to raise_error
-    end
-  end
 end
