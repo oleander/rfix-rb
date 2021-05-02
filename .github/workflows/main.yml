@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        gemfile: [0.80, 0.81]
+        gemfile: [0.80, 0.81, 0.82, 0.83, 0.84, 0.85]
     env:
       BUNDLE_GEMFILE: gemfiles/Gemfile.rubocop-${{ matrix.gemfile }}
     steps:
