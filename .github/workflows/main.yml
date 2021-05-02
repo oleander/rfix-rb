@@ -12,12 +12,15 @@ jobs:
       - uses: actions/checkout@v2
 
       - run: apt-get update -y
-      - run: apt-get install -y bash git libffi-dev build-essential wget cmake git
+      - run: apt-get install -y bash git libffi-dev build-essential wget cmake
+      - run: gem install bundler rake rspec colorize git rainbow
 
-      - run: gem install bundler
       - run: git submodule update --init --recursive
+
       - run: bundle config build.rugged --use-system-libraries
       - run: bundle config build.ffi --use-system-libraries
       - run: bundle config path vendor/bundle
-      - run: gem install rake rspec colorize git rainbow
+
+      - run: bundle install
+      
       - run: bundle exec rspec
