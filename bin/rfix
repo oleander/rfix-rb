@@ -83,18 +83,16 @@ else
       gem spec.name, spec.version
     end
 
-    path rfix_path.join("vendor") do
-      gem "dry-cli", require: "dry/cli"
-      gem "strings-ansi"
-    end
+    path rfix_path do
+      gem "rfix"
 
-    gem "rfix", path: rfix_path, require: "rfix"
+      path "vendor" do
+        gem "dry-cli", require: "dry/cli"
+        gem "strings-ansi"
+      end
+    end
   end
 end
-
-require "rfix/extension/strings"
-require "rfix/extension/pastel"
-require "dry/cli"
 
 module Rfix
   Dry::CLI.new(CLI::Command).call
