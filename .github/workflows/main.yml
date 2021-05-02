@@ -17,7 +17,8 @@ jobs:
       - run: gem install bundler
       - run: bundle config build.rugged --use-system-libraries
       - run: bundle config build.ffi --use-system-libraries
+      - run: bundle config set --local vendor/bundle
       - run: gem install rake rspec colorize git rainbow
-      - run: rake libgit2:install setup
-      - run: bundle install --path vendor/bundle
+      - run: rake libgit2:install
+      - run: rake setup
       - run: bundle exec rspec
