@@ -1,15 +1,20 @@
 # frozen_string_literal: true
 
+require "rfix/rake/paths"
+require "fileutils"
 require "pathname"
 require "faker"
-require "fileutils"
-require "rfix/rake/paths"
 
 SetupGit = Struct.new(:root_path, :id) do
   include Rfix::Log
 
   def self.setup!
-    tmp_dir     = File.join(__dir__, "../../tmp")
+    root_path = Pathname(__dir__).join("../../")
+
+    tmp_dir     = root_path.join("tmp").tap do |path|
+      FileUtils.mkdir_p(path.to_s)
+    end
+
     id          = Faker::Code.asin
     root_path   = Dir.mktmpdir(id, tmp_dir)
     new(root_path, id)
