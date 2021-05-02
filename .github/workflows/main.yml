@@ -12,10 +12,10 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
-          bundler-cache: true
 
+      - run: gem install bundler
+      - run: bundle install --jobs 4 --retry 3
       - run: git submodule update --init --recursive
-
       - run: bundle exec rake bundle:simple:build
       - run: bundle exec rake bundle:complex:build
 
