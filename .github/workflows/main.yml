@@ -10,6 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
 
       - run: apt-get update -y
       - run: apt-get install -y bash git libffi-dev build-essential wget cmake pkg-config
@@ -20,8 +26,8 @@ jobs:
       - run: bundle config build.ffi --use-system-libraries
       - run: bundle config path vendor/bundle
 
-      - run: bundle install
-      
+      - run: bundle install --jobs 4 --retry 3
+
       - run: bundle exec rake bundle:simple:build
 
       - run: bundle exec rspec
