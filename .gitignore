@@ -12,7 +12,6 @@ tags
 
 .rubocop-*
 doc
-vendor/*
 tmp/*
 .rspec_status
 pkg/*.gem

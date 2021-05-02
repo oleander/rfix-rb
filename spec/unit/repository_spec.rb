@@ -83,9 +83,7 @@ class Blob < Struct.new(:name)
   alias_method :track, :commit
 
   def ignore
-    tap do
-      path.join(".gitignore").write(name, mode: "a")
-    end
+    tap { path.join(".gitignore").write(name, mode: "a") }
   end
 
   def path
@@ -109,7 +107,12 @@ class Blob < Struct.new(:name)
   end
 
   def git
-    @git ||= Git.init(path.to_s)
+    @git ||= Git.init(path.to_s).tap do |git|
+      git.chdir do
+        system "git", "config", "user.name", "Linus Oleander"
+        system "git", "config", "user.email", "linus@oleander.nu"
+      end
+    end
   end
   alias_method :init, :git
 end

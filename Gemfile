@@ -26,5 +26,7 @@ group :development, :test do
   gem "rubocop-rspec"
 end
 
-gem "dry-cli", path: "vendor/dry-cli", require: "dry/cli"
-gem "strings-ansi", github: "piotrmurach/strings-ansi"
+path "vendor" do
+  gem "dry-cli", require: "dry/cli"
+  gem "strings-ansi"
+end

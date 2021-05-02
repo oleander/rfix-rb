@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby -W0 --disable-all
 # frozen_string_literal: true
 
-require "bundler/inline"
 require "rubygems"
 require "pathname"
 require "bundler"
@@ -55,6 +54,8 @@ def dev?
 end
 
 def rfix_path
+  return Pathname(__dir__).parent if dev?
+
   Pathname(rfix.full_gem_path)
 end
 
@@ -72,22 +73,28 @@ end
 
 deactivate_all!
 
-if dev?
+if dev? && false
   require "bundler/setup"
   Bundler.require
 else
+  require "bundler/inline"
   gemfile(false) do
     overlapping_specs.each do |spec|
       gem spec.name, spec.version
     end
 
-    gem "dry-cli", path: rfix_path.join("vendor/dry-cli"), require: "dry/cli"
+    path rfix_path.join("vendor") do
+      gem "dry-cli", require: "dry/cli"
+      gem "strings-ansi"
+    end
+
     gem "rfix", path: rfix_path, require: "rfix"
   end
 end
 
 require "rfix/extension/strings"
 require "rfix/extension/pastel"
+require "dry/cli"
 
 module Rfix
   Dry::CLI.new(CLI::Command).call

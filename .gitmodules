@@ -1,0 +1,6 @@
+[submodule "vendor/strings-ansi"]
+	path = vendor/strings-ansi
+	url = https://github.com/piotrmurach/strings-ansi.git
+[submodule "vendor/dry-cli"]
+	path = vendor/dry-cli
+	url = https://github.com/dry-rb/dry-cli.git

@@ -82,7 +82,7 @@ module Rfix
     def framed(offense, &block)
       puts TTY::Box.frame({
         width: TTY::Screen.width,
-        padding: [1,1,0,1],
+        padding: [1, 1, 0, 1],
         title: {
           top_left: "#{offense.icon} #{offense.msg}".surround(SPACE),
           bottom_left: offense.clickable_severity&.surround(SPACE),

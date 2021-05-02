@@ -4,7 +4,6 @@ require "active_support/core_ext/string/inflections"
 require "shellwords"
 require "tty-link"
 require "rainbow"
-require "pry"
 
 module Rfix
   module Extension
