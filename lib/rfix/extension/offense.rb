@@ -34,7 +34,7 @@ module Rfix
       def relative_path
         return EMPTY_STRING unless location.respond_to?(:source_buffer)
 
-        location.source_buffer.name.sub(::File.join(Dir.getwd, "/"), EMPTY_STRING)
+        Pathname(location.source_buffer.name).relative_path_from(Dir.pwd)
       end
 
       def clickable_path
@@ -58,24 +58,10 @@ module Rfix
       def icon
         {
           uncorrected: CIRCLE,
-          unsupported: CROSS, # TODO: Use a better one
+          unsupported: CROSS,
           correctable: STAR,
           corrected: CHECK
         }.fetch(status)
-      end
-
-      def to_clickable(url, title)
-        title
-        # cmd = "#{ESC}]8;;"
-        # cmd + "#{escape(url)}#{SLASH}#{escape(title)}" + cmd + SLASH
-      end
-
-      def to_path(path, title)
-        to_clickable("file://#{path}", title)
-      end
-
-      def to_url(url, title)
-        to_clickable(url, title)
       end
 
       def escape(str)
