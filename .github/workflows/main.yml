@@ -21,5 +21,7 @@ jobs:
       - run: bundle config path vendor/bundle
 
       - run: bundle install
+      
+      - run: bundle exec rake bundle:simple:build
 
       - run: bundle exec rspec
