@@ -1,5 +1,5 @@
 ---
-name: pre-release
+implame: pre-release
 on: [push]
 env:
   RUBYGEMS_API_KEY: ${{secrets.RUBYGEMS_API_KEY}}
@@ -19,4 +19,4 @@ jobs:
       - run: bundle exec rake bundle:simple:build
       - run: bundle exec rake bundle:complex:build
 
-      - run: bundle exec rspec
+      - run: bundle exec rspec --force-color
