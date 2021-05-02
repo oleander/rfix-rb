@@ -18,9 +18,6 @@ jobs:
       - run: bundle config build.rugged --use-system-libraries
       - run: bundle config build.ffi --use-system-libraries
       - run: gem install rake rspec colorize
-      - run: rake libgit2:install
-
+      - run: rake libgit2:install setup
       - run: bundle install --path vendor/bundle
-      - run: bundle exec rake travis:setup
-      - run: bundle exec rake travis:spec
-      - run: bundle exec rake travis:verify
+      - run: bundle exec rspec

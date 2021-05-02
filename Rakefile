@@ -175,3 +175,7 @@ namespace :testing do
     rm_rf test_path
   end
 end
+
+task :setup do
+  system "git pull --recurse-submodules"
+end
