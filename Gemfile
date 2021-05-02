@@ -27,3 +27,4 @@ group :development, :test do
 end
 
 gem "dry-cli", path: "vendor/dry-cli", require: "dry/cli"
+gem "strings-ansi", github: "piotrmurach/strings-ansi"

@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/piotrmurach/strings-ansi.git
+  revision: 35d0c9430cf0a8022dc12bdab005bce296cb9f00
+  specs:
+    strings-ansi (0.2.0)
+
 PATH
   remote: .
   specs:
@@ -219,7 +225,6 @@ GEM
       strings-ansi (~> 0.2)
       unicode-display_width (>= 1.5, < 3.0)
       unicode_utils (~> 1.4)
-    strings-ansi (0.2.0)
     sys-uname (1.2.2)
       ffi (~> 1.1)
     thor (1.1.0)
@@ -267,6 +272,7 @@ DEPENDENCIES
   rspec-its
   rubocop-rake
   rubocop-rspec
+  strings-ansi!
 
 BUNDLED WITH
    2.2.16
