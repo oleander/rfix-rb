@@ -18,10 +18,4 @@ RSpec.describe Rfix::File::Ignored, :repo do
       expect(file.include?(10)).to eq(false)
     end
   end
-
-  describe "#refresh?" do
-    it "does nothing" do
-      expect { file.refresh! }.not_to raise_error
-    end
-  end
 end
