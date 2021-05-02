@@ -9,11 +9,13 @@ PATH
       dry-initializer
       dry-struct
       dry-types
+      pastel
       rainbow (~> 3.0)
       rake
       rouge (~> 3.20)
       rubocop
       rugged
+      strings
       strings-ansi
       tty-box
       tty-link

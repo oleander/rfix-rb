@@ -39,8 +39,10 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "tty-box"
   spec.add_runtime_dependency "tty-prompt"
   spec.add_runtime_dependency "rugged"
-  spec.add_runtime_dependency "strings-ansi"
   spec.add_runtime_dependency "tty-screen"
+  spec.add_runtime_dependency "strings-ansi"
   spec.add_runtime_dependency "zeitwerk"
   spec.add_runtime_dependency "tty-link"
+  spec.add_runtime_dependency "strings"
+  spec.add_runtime_dependency "pastel"
 end

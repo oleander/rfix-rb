@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+require "active_support/core_ext/module/delegation"
 require "rubocop/formatter/simple_text_formatter"
 require "rubocop/cop/offense"
 require "dry/core/constants"
 require "dry/initializer"
-require "tty/box"
 require "tty/screen"
 require "tty/prompt"
+require "tty/box"
 
 RuboCop::Cop::Offense.prepend(Rfix::Extension::Offense)
 
@@ -84,9 +85,9 @@ module Rfix
         padding: [1,1,0,1],
         title: {
           top_left: "#{offense.icon} #{offense.msg}".surround(SPACE),
-          bottom_left: offense.clickable_severity.surround(SPACE),
-          bottom_right: offense.clickable_path.surround(SPACE)
-        }
+          bottom_left: offense.clickable_severity&.surround(SPACE),
+          bottom_right: offense.clickable_path&.surround(SPACE)
+        }.compact
       }, &block)
     end
 

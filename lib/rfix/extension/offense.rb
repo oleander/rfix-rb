@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
-require "active_support/core_ext/object/to_param"
+require "active_support/core_ext/string/inflections"
 require "shellwords"
 require "tty-link"
 require "rainbow"
+require "pry"
 
 module Rfix
   module Extension
@@ -35,6 +36,8 @@ module Rfix
         return EMPTY_STRING unless location.respond_to?(:source_buffer)
 
         Pathname(location.source_buffer.name).relative_path_from(Dir.pwd)
+      rescue ArgumentError
+        nil
       end
 
       def clickable_path
@@ -43,16 +46,18 @@ module Rfix
 
       def clickable_plain_severity
         cop_name.split("/", 2).then do |department, cop|
+          return nil if [cop, department].any?(&:nil?)
+
           { type: department.parameterize, cop: cop.parameterize }
         end.then do |options|
           "https://docs.rubocop.org/rubocop/cops_%<type>s.html#%<type>s%<cop>s" % options
         end.then do |url|
-          TTY::Link.link_to(code, url)
+          TTY::Link.link_to(cop_name, url)
         end
       end
 
       def clickable_severity
-        Rainbow(clickable_plain_severity).italic
+        clickable_plain_severity && Rainbow(clickable_plain_severity).italic
       end
 
       def icon

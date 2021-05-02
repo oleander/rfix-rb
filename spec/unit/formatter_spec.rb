@@ -8,19 +8,20 @@ RSpec.describe Rfix::Formatter do
   subject(:formatter) { described_class.new(io, {}) }
 
   let(:io) { StringIO.new }
-  let(:file) { Faker::File.file_name(dir: ENV["HOME"]) }
+  let(:file) { Faker::File.file_name(dir: Dir.pwd, ext: "rb") }
   let(:ruby) do
     <<~RUBY
-      def hell(*args)
+      def hello(*args)
         puts "OK"
       end
     RUBY
   end
-  let(:buffer) { Parser::Source::Buffer.new("(string)", source: ruby) }
+  let(:buffer) { Parser::Source::Buffer.new(file, source: ruby) }
   let(:location) { Parser::Source::Range.new(buffer, 21, 35) }
+  let(:message) { "Favor `format` over `String#%`" }
   let(:severity) { RuboCop::Cop::Severity.name_from_code("E") }
   let(:offense) do
-    RuboCop::Cop::Offense.new(severity, location, "message", "Cop")
+    RuboCop::Cop::Offense.new(severity, location, message, "Style/FormatString")
   end
 
   let(:offenses) { [offense] }

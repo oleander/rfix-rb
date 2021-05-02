@@ -5,15 +5,9 @@ require "active_support/all"
 require "rubocop"
 require "rainbow"
 require "rugged"
-require "strings"
 
-module Strings
-  module Wrap
-    def self.wrap(line, *, **)
-      line
-    end
-  end
-end
+require "rfix/extension/pastel"
+require "rfix/extension/strings"
 
 module Rfix
   module CLI

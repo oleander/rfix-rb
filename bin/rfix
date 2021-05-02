@@ -86,6 +86,9 @@ else
   end
 end
 
+require "rfix/extension/strings"
+require "rfix/extension/pastel"
+
 module Rfix
   Dry::CLI.new(CLI::Command).call
 end
