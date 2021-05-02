@@ -177,5 +177,5 @@ namespace :testing do
 end
 
 task :setup do
-  sh "git", "pull", "--recurse-submodules"
+  sh "git", "submodule", "update", "--init", "--recursive"
 end
