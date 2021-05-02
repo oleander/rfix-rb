@@ -39,7 +39,7 @@ module Rfix
       end
 
       def clickable_path
-        "{{italic:#{relative_path}:#{where}}}"
+        Rainbow("#{relative_path}:#{where}").italic
       end
 
       def clickable_plain_severity

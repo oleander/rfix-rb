@@ -6,11 +6,20 @@ require "rubocop"
 require "rainbow"
 require "rugged"
 
+require "strings"
+module Strings
+  module Wrap
+    def self.wrap(line, *, **)
+      line
+    end
+  end
+end
+
 module Rfix
   module CLI
     module Command
       class Base < Dry::CLI::Command
-        include Dry::Core::Constants
+        include Dry::Core::Constants, Log
 
         option :formatters, type: :array, default: ["Rfix::Formatter"]
         option :format, type: :string, default: "Rfix::Formatter"

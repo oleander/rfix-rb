@@ -73,6 +73,7 @@ module Rfix
       title = "#{offense.icon} #{offense.msg}"
       foot = "#{offense.clickable_severity} » #{offense.clickable_path}"
       puts TTY::Box.frame({
+        enable_color: true, # force to always color output
         title: { top_left: title, bottom_left: foot },
         width: TTY::Screen.width,
         padding: 1

@@ -69,7 +69,7 @@ module Rfix
         end
       end.last
 
-      pastel = Pastel.new
+      # pastel = Pastel.new
 
       underline = block
 
@@ -77,8 +77,8 @@ module Rfix
         print_line_number = lambda do
           block.call(SPACE * 2)
 
-          style = is_h[lineno] ? pastel.yellow : pastel.dim
-          (block << style.detach).call(lineno.to_s.ljust(4, SPACE) + SPACE)
+          # style = is_h[lineno] ? pastel.yellow : pastel.dim
+          (block).call(lineno.to_s.ljust(4, SPACE) + SPACE)
         end
 
         tokens.reduce(position) do |index, (token, value)|
