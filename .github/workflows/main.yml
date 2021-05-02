@@ -11,7 +11,6 @@ jobs:
       fail-fast: false
       matrix:
         gemfile: [0.80, 0.81]
-    runs-on: ubuntu-latest
     env:
       BUNDLE_GEMFILE: gemfiles/Gemfile.rubocop-${{ matrix.gemfile }}
     steps:
