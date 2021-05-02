@@ -16,9 +16,7 @@ jobs:
       - run: gem install bundler rake rspec colorize git rainbow
 
       - run: git submodule update --init --recursive
-      - run: rake libgit2:install
-
-      - run: bundle config build.rugged --use-system-libraries
+      
       - run: bundle config build.ffi --use-system-libraries
       - run: bundle config path vendor/bundle
 
