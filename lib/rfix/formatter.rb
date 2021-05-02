@@ -24,6 +24,7 @@ module Rfix
     option :output
 
     PROMPT = TTY::Prompt.new(symbols: { marker: ">" })
+    SPACE = " "
 
     delegate :say, to: :PROMPT
 
@@ -69,13 +70,23 @@ module Rfix
 
     private
 
+    using(Module.new do
+      refine String do
+        def surround(value)
+          value + self + value
+        end
+      end
+    end)
+
     def framed(offense, &block)
-      title = "#{offense.icon} #{offense.msg}"
-      foot = "#{offense.clickable_severity} » #{offense.clickable_path}"
       puts TTY::Box.frame({
-        title: { top_left: title, bottom_left: foot },
         width: TTY::Screen.width,
-        padding: [1,1,0,1]
+        padding: [1,1,0,1],
+        title: {
+          top_left: "#{offense.icon} #{offense.msg}".surround(SPACE),
+          bottom_left: offense.clickable_severity.surround(SPACE),
+          bottom_right: offense.clickable_path.surround(SPACE)
+        }
       }, &block)
     end
 
