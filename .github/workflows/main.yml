@@ -24,8 +24,6 @@ jobs:
       - run: bundle config build.ffi --use-system-libraries
       - run: bundle config path vendor/bundle
 
-      - run: bundle install --jobs 4 --retry 3
-
       - run: bundle exec rake bundle:simple:build
       - run: bundle exec rake bundle:complex:build
 
