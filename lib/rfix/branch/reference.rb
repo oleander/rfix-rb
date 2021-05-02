@@ -2,17 +2,11 @@
 
 module Rfix
   module Branch
-    class Reference < Name
+    class Reference < Base
+      attribute :name, Types::String
+
       def resolve
-        super
-      rescue UnknownBranchError
-        begin
-          repository.rev_parse(name)
-        rescue Rugged::OdbError
-          repository.lookup(name)
-        rescue Rugged::InvalidError
-          raise UnknownBranchError, name
-        end
+        repository.lookup(repository.rev_parse(name).oid)
       rescue Rugged::InvalidError
         raise UnknownBranchError, name
       end
