@@ -72,15 +72,18 @@ end
 
 deactivate_all!
 
-gemfile(false) do
-  next eval_gemfile "Gemfile" if dev?
+if dev?
+  require "bundler/setup"
+  Bundler.require
+else
+  gemfile(false) do
+    overlapping_specs.each do |spec|
+      gem spec.name, spec.version
+    end
 
-  overlapping_specs.each do |spec|
-    gem spec.name, spec.version
+    gem "dry-cli", path: rfix_path.join("vendor/dry-cli"), require: "dry/cli"
+    gem "rfix", path: rfix_path, require: "rfix"
   end
-
-  gem "dry-cli", path: rfix_path.join("vendor/dry-cli"), require: "dry/cli"
-  gem "rfix", path: rfix_path, require: "rfix"
 end
 
 module Rfix
