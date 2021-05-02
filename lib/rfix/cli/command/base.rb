@@ -5,8 +5,8 @@ require "active_support/all"
 require "rubocop"
 require "rainbow"
 require "rugged"
-
 require "strings"
+
 module Strings
   module Wrap
     def self.wrap(line, *, **)

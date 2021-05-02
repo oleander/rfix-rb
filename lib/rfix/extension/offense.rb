@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
+require "active_support/core_ext/object/to_param"
 require "shellwords"
+require "tty-link"
 require "rainbow"
 
 module Rfix
   module Extension
     module Offense
-      # ESC = "\e"
-      # SLASH = "\x07"
-
       STAR = Rainbow("⭑").yellow
       CROSS = Rainbow("✗").red
       CHECK = Rainbow("✓").green
@@ -43,7 +42,13 @@ module Rfix
       end
 
       def clickable_plain_severity
-        to_url("https://www.rubydoc.info/gems/rubocop/RuboCop/Cop/#{code}", code)
+        cop_name.split("/", 2).then do |department, cop|
+          { type: department.parameterize, cop: cop.parameterize }
+        end.then do |options|
+          "https://docs.rubocop.org/rubocop/cops_%<type>s.html#%<type>s%<cop>s" % options
+        end.then do |url|
+          TTY::Link.link_to(code, url)
+        end
       end
 
       def clickable_severity

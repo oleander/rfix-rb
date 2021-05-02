@@ -26,4 +26,4 @@ group :development, :test do
   gem "rubocop-rspec"
 end
 
-gem "dry-cli", github: "dry-rb/dry-cli", require: "dry/cli"
+gem "dry-cli", path: "vendor/dry-cli", require: "dry/cli"

@@ -79,7 +79,7 @@ gemfile(false) do
     gem spec.name, spec.version
   end
 
-  gem "dry-cli", github: "dry-rb/dry-cli", require: "dry/cli"
+  gem "dry-cli", path: rfix_path.join("vendor/dry-cli"), require: "dry/cli"
   gem "rfix", path: rfix_path, require: "rfix"
 end
 
