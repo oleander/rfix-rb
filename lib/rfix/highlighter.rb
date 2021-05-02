@@ -10,25 +10,22 @@ module Rfix
   class Highlighter < Rouge::Formatters::TerminalTruecolor
     tag "highlighter"
 
+    TEXT = Rouge::Token::Tokens::Text
     NEWLINE = "\n"
     SPACE = " "
 
-    TEXT = Rouge::Token::Tokens::Text
-
-    Error = Class.new(StandardError)
-
-    extend Dry::Initializer
     include Dry::Core::Constants
+    extend Dry::Initializer
 
     module Types
       include Dry::Types()
     end
 
-    option :visible, type: Types::Range
-    option :highlight, type: Types::Range
-    option :visible_lines, type: Types::Range
     param :theme, default: -> { Rouge::Themes::Gruvbox.new }
     param :lexer, default: -> { Rouge::Lexers::Ruby.new }
+    option :visible_lines, type: Types::Range
+    option :highlight, type: Types::Range
+    option :visible, type: Types::Range
 
     def call(source)
       unless source.is_a?(String)
@@ -43,23 +40,10 @@ module Rfix
     end
 
     def stream(tokens, &block)
-      prefix_spaces = 2
       max_with = TTY::Screen.width
-
       lines = token_lines(tokens)
-      # .reduce([0, 1, EMPTY_ARRAY]) do |(_position, lineno, result), tokens|
-      #   tokens.reduce([0, lineno, EMPTY_ARRAY]) do |(index, lineno, result), (token, value)|
-      #     (index + value.length).then do |current_index|
-      #       if current_index <= max_with
-      #         [current_index, lineno, result + [[token, value]]]
-      #       else
-      #         [current_index, lineno, result]
-      #       end
-      #     end
-      #   end.then do |index, lineno, outer|
-      #     [index.succ, lineno.succ, result + [outer]]
-      #   end
-      # end.last
+      pastel = Pastel.new
+      prefix_spaces = 2
 
       indentation = lines.map.with_index(1) do |tokens, lineno|
         next unless visible_lines.include?(lineno)
@@ -73,9 +57,9 @@ module Rfix
         end.length
       end.compact.min || 0
 
-      is_h = lines.reduce([0, 1, {}]) do |(position, lineno, lookup), tokens|
-        tokens.reduce([position, lineno, lookup]) do |(index, lineno, lookup), (_, value)|
-          [index + value.length, lineno, lookup].tap do |_next_index, _, _|
+      is_h = lines.reduce([0, 1, EMPTY_HASH]) do |(position, lineno, lookup), tokens|
+        tokens.reduce([position, lineno, lookup.dup]) do |(index, lineno, lookup), (_, value)|
+          [index + value.length, lineno, lookup].tap do
             if highlight.include?(index)
               lookup[lineno] = true
             end
@@ -84,10 +68,6 @@ module Rfix
           [index.succ, lineno.succ, lookup]
         end
       end.last
-
-      pastel = Pastel.new
-
-      underline = block
 
       lines.reduce([0, 1]) do |(position, lineno), tokens|
         print_line_number = lambda do
@@ -113,9 +93,9 @@ module Rfix
                 tail = value.chars.drop_while(&:blank?).join
 
                 super([[TEXT, head]], &block)
-                super([[token, tail]], &underline)
+                super([[token, tail]], &block)
               else
-                super([[token, value]], &underline)
+                super([[token, value]], &block)
               end
             elsif visible_lines.include?(lineno)
               super([[token, value]], &block)
