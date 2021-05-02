@@ -6,9 +6,13 @@ module Rfix
       def resolve
         super
       rescue UnknownBranchError
-        repository.rev_parse(name)
-      rescue Rugged::OdbError
-        repository.lookup(name)
+        begin
+          repository.rev_parse(name)
+        rescue Rugged::OdbError
+          repository.lookup(name)
+        rescue Rugged::InvalidError
+          raise UnknownBranchError, name
+        end
       rescue Rugged::InvalidError
         raise UnknownBranchError, name
       end
