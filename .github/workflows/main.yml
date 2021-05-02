@@ -12,9 +12,9 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
-      - run: bundle install
 
       - run: git submodule update --init --recursive
+      - run: bundle install
       - run: bundle exec rake bundle:simple:build
       - run: bundle exec rake bundle:complex:build
 
