@@ -9,13 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: git submodule update --init --recursive
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
-          bundler-cache: false
+          bundler-cache: true
 
-      - run: git submodule update --init --recursive
-      - run: bundle install
       - run: bundle exec rake bundle:simple:build
       - run: bundle exec rake bundle:complex:build
 
