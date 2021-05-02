@@ -17,6 +17,7 @@ jobs:
       - run: apt-get update -y
       - run: apt-get install -y bash git libffi-dev build-essential wget cmake pkg-config
       - run: gem install bundler rake rspec colorize git rainbow
+      - run: bundle config unset deployment
 
       - run: git submodule update --init --recursive
 
