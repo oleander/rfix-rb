@@ -22,7 +22,6 @@ module Rfix
       ignore_whitespace_change: false,
       recurse_untracked_dirs: true,
       ignore_whitespace_eol: false,
-      include_unmodified: false,
       include_unmodified: true,
       include_untracked: true,
       ignore_submodules: true,
