@@ -16,6 +16,7 @@ group :development do
 end
 
 group :development, :test do
+  gem "rake"
   gem "git", require: true
   gem "pry", require: true
   gem "pry-rescue"

@@ -262,6 +262,7 @@ DEPENDENCIES
   pry
   pry-rescue
   pry-stack_explorer
+  rake
   rfix!
   rspec
   rspec-its
