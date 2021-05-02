@@ -12,6 +12,7 @@ module Rfix
     include Log
 
     attribute :repository, Types.Instance(Rugged::Repository)
+
     attribute :reference, Types.Instance(Branch::Base)
 
     delegate :head, :branches, :workdir, :rev_parse, :diff_workdir, to: :repository

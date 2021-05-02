@@ -44,8 +44,24 @@ module Rfix
 
     def stream(tokens, &block)
       prefix_spaces = 2
+      max_with = TTY::Screen.width
 
-      indentation = token_lines(tokens).map.with_index(1) do |tokens, lineno|
+      lines = token_lines(tokens)
+      # .reduce([0, 1, EMPTY_ARRAY]) do |(_position, lineno, result), tokens|
+      #   tokens.reduce([0, lineno, EMPTY_ARRAY]) do |(index, lineno, result), (token, value)|
+      #     (index + value.length).then do |current_index|
+      #       if current_index <= max_with
+      #         [current_index, lineno, result + [[token, value]]]
+      #       else
+      #         [current_index, lineno, result]
+      #       end
+      #     end
+      #   end.then do |index, lineno, outer|
+      #     [index.succ, lineno.succ, result + [outer]]
+      #   end
+      # end.last
+
+      indentation = lines.map.with_index(1) do |tokens, lineno|
         next unless visible_lines.include?(lineno)
 
         text = tokens.map(&:last).join
@@ -57,7 +73,7 @@ module Rfix
         end.length
       end.compact.min || 0
 
-      is_h = token_lines(tokens).reduce([0, 1, {}]) do |(position, lineno, lookup), tokens|
+      is_h = lines.reduce([0, 1, {}]) do |(position, lineno, lookup), tokens|
         tokens.reduce([position, lineno, lookup]) do |(index, lineno, lookup), (_, value)|
           [index + value.length, lineno, lookup].tap do |_next_index, _, _|
             if highlight.include?(index)
@@ -69,22 +85,20 @@ module Rfix
         end
       end.last
 
-      # pastel = Pastel.new
+      pastel = Pastel.new
 
       underline = block
 
-      token_lines(tokens).reduce([0, 1]) do |(position, lineno), tokens|
+      lines.reduce([0, 1]) do |(position, lineno), tokens|
         print_line_number = lambda do
           block.call(SPACE * 2)
 
-          # style = is_h[lineno] ? pastel.yellow : pastel.dim
-          (block).call(lineno.to_s.ljust(4, SPACE) + SPACE)
+          style = is_h[lineno] ? pastel.yellow.detach : pastel.dim.detach
+          (block << style).call(lineno.to_s.ljust(4, SPACE) + SPACE)
         end
 
         tokens.reduce(position) do |index, (token, value)|
           (index + value.length).tap do
-            tokens = []
-
             if index == position
               value = value.chars.drop(indentation).join
 
@@ -93,7 +107,7 @@ module Rfix
               end
             end
 
-            if highlight.include?(index)
+            if highlight.include?(index) && visible_lines.include?(lineno)
               if index == position
                 head = value.chars.take_while(&:blank?).join
                 tail = value.chars.drop_while(&:blank?).join
@@ -113,7 +127,7 @@ module Rfix
               print_line_number.call
             end
 
-            block.call(NEWLINE)
+            super([[TEXT, NEWLINE]], &block)
           end
         end.then do |position|
           [position.succ, lineno.succ]
