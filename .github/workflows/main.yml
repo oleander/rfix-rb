@@ -13,8 +13,6 @@ jobs:
         with:
           ruby-version: 2.7
 
-      - run: gem install bundler
-      - run: bundle install --jobs 4 --retry 3
       - run: git submodule update --init --recursive
       - run: bundle exec rake bundle:simple:build
       - run: bundle exec rake bundle:complex:build
