@@ -14,15 +14,7 @@ jobs:
           ruby-version: 2.7
           bundler-cache: true
 
-      - run: apt-get update -y
-      - run: apt-get install -y bash git libffi-dev build-essential wget cmake pkg-config
-      - run: gem install bundler rake rspec colorize git rainbow
-      - run: bundle config unset deployment
-
       - run: git submodule update --init --recursive
-
-      - run: bundle config build.ffi --use-system-libraries
-      - run: bundle config path vendor/bundle
 
       - run: bundle exec rake bundle:simple:build
       - run: bundle exec rake bundle:complex:build
