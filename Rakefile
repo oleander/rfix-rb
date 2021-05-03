@@ -191,16 +191,33 @@ end
 
 require "dry/types"
 require "dry/struct"
+require "dry/logic"
+
+Dry::Types.define_builder(:not) do |type|
+  Dry::Types::Constrained.new(type.lax, rule: Dry::Logic::Operations::Negation.new(type.rule))
+end
 
 class Gemfile < Dry::Struct
   include Dry::Core::Constants, FileUtils
 
   module Types
     include Dry::Types()
+
+    module Version
+      AST = Types::String.enum("0.84")
+    end
   end
 
   attribute :root_path, Types::Instance(Pathname)
-  attribute :version, Types::String
+  attribute :version, Types::Version::AST.not
+
+  class AST < self
+    attribute :version, Types::Version::AST
+
+    def content
+      [super, 'gem "rubocop-ast", "< 0.7"', '\n'].join
+    end
+  end
 
   FORMAT = "Gemfile.rubocop-%s%s"
   VERSIONS = [
@@ -224,6 +241,10 @@ class Gemfile < Dry::Struct
     '1.12.1',
     '1.13.0'
   ]
+
+  def self.call(*args, **kwargs, &block)
+    (self | AST).call(*args, **kwargs, &block)
+  end
 
   def self.files(root_path)
     VERSIONS.map do |version|

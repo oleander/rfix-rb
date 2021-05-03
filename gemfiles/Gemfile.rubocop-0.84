@@ -1,2 +1,4 @@
 eval_gemfile("../Gemfile")
 gem "rubocop", "0.84"
+
+gem "rubocop-ast", "< 0.7"
