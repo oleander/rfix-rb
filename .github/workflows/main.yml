@@ -37,5 +37,8 @@ jobs:
       - run: bundle exec rake build
       - run: mkdir -p tmp/bin
       - run: gem install pkg/*.gem --bindir tmp/bin
-      - run: export PATH=$PWD/tmp/bin/rfix:$PATH
-      - run: cd tmp/complex && rfix lint 28e229
+      - name: Runner
+        run: cd tmp/complex && rfix lint 28e229
+        env:
+          BUNDLE_GEMFILE: ""
+          PATH: $PWD/tmp/bin/rfix:$PATH
