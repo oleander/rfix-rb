@@ -4,6 +4,7 @@ $LOAD_PATH.push Pathname(__dir__).join("../vendor/strings-ansi/lib")
 $LOAD_PATH.push Pathname(__dir__).join("../vendor/dry-cli/lib")
 
 require "active_support/core_ext/module/attribute_accessors"
+require "rubocop-ast"
 require "zeitwerk"
 require "rubocop"
 
