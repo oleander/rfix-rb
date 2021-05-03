@@ -189,10 +189,50 @@ def lockfile(version)
   Pathname(gemfile(version).to_s + ".lock")
 end
 
-class Gemfile < Struct.new(:root, :version)
+require "dry/types"
+require "dry/struct"
+
+class Gemfile < Dry::Struct
   include Dry::Core::Constants, FileUtils
 
+  module Types
+    include Dry::Types()
+  end
+
+  attribute :root_path, Types::Instance(Pathname)
+  attribute :version, Types::String
+
   FORMAT = "Gemfile.rubocop-%s%s"
+  VERSIONS = [
+    '0.8',
+    '0.81',
+    '0.82',
+    '0.83',
+    '0.84',
+    '0.85',
+    '0.92',
+    '0.93',
+    '1.0.0',
+    '1.7.0',
+    '1.5.0',
+    '1.5.1',
+    '1.5.2',
+    '1.6.1',
+    '1.8.1',
+    '1.8.0',
+    '1.9.0',
+    '1.10.0',
+    '1.11.0',
+    '1.12.0',
+    '1.12.1',
+    '1.13.0'
+  ]
+
+  def self.files(root_path)
+    VERSIONS.map do |version|
+      Gemfile.call(root_path: root_path, version: version)
+    end
+  end
 
   def call
     puts "Working with #{version}"
@@ -207,12 +247,14 @@ class Gemfile < Struct.new(:root, :version)
     puts "Finished with #{version}"
   end
 
+  private
+  
   def gemfile
-    root.join(FORMAT % [version, EMPTY_STRING])
+    root_path.join(FORMAT % [version, EMPTY_STRING])
   end
 
   def lockfile
-    root.join(FORMAT % [version, ".lock"])
+    root_path.join(FORMAT % [version, ".lock"])
   end
 
   def content
@@ -224,24 +266,15 @@ class Gemfile < Struct.new(:root, :version)
 end
 
 namespace :bundle do
-  task :gemfile do
+  task :install do
     Pathname(__dir__).join("gemfiles").then do |root_path|
-      ['0.84', '0.92', '0.93', '1.0.0', '1.10.0', '1.13.0'].map do |version|
-        Thread.new do
-          Gemfile.new(root_path, version).call
-        end
-      end.each(&:join)
-    end
-  end
-
-  task :lock do
-    gemfiles_path.then do |gemfiles_path|
-      gemfiles_path.glob("*.lock").each(&:delete)
-      gemfiles_path.glob("*[!lock]").map do |path|
-        Thread.new do
-          sh "bundle", "lock", "--gemfile", path.to_s
-        end
-      end.each(&:join)
+      Gemfile.files(root_path).each_slice(5) do |gemfiles|
+        gemfiles.map do |gemfile|
+          Thread.new do
+            gemfile.call
+          end
+        end.each(&:join)
+      end
     end
   end
 end

@@ -14,7 +14,7 @@ PATH
       rake
       rouge (~> 3.20)
       rubocop (!= 0.85.0)
-      rubocop-ast (< 0.7)
+      rubocop-ast
       rugged
       strings
       tty-box
@@ -203,8 +203,8 @@ GEM
       rexml
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 2.0)
-    rubocop-ast (0.6.0)
-      parser (>= 2.7.1.5)
+    rubocop-ast (1.5.0)
+      parser (>= 3.0.1.1)
     rubocop-rake (0.5.1)
       rubocop
     rubocop-rspec (1.41.0)

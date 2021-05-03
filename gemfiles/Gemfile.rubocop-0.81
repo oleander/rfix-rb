@@ -1,2 +1,2 @@
-eval_gemfile(File.join(__dir__, "../Gemfile"))
+eval_gemfile("../Gemfile")
 gem "rubocop", "0.81"
