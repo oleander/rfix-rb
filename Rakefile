@@ -204,12 +204,9 @@ class Gemfile < Dry::Struct
 
   FORMAT = "Gemfile.rubocop-%s%s"
   VERSIONS = [
-    '0.8',
-    '0.81',
     '0.82',
     '0.83',
     '0.84',
-    '0.85',
     '0.92',
     '0.93',
     '1.0.0',

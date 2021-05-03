@@ -11,12 +11,9 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         gemfile:
-          - 0.80
-          - 0.81
           - 0.82
           - 0.83
           - 0.84
-          - 0.85
           - 0.92
           - 0.93
           - 0.94
