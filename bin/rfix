@@ -74,18 +74,18 @@ end
 deactivate_all!
 
 require "bundler/inline"
-gemfile(false) do
+gemfile(true) do
   overlapping_specs.each do |spec|
     gem spec.name, spec.version
   end
 
   path rfix_path do
     gem "rfix"
+  end
 
-    path "vendor" do
-      gem "dry-cli", require: "dry/cli"
-      gem "strings-ansi"
-    end
+  path rfix_path.join("vendor") do
+    gem "dry-cli", require: "dry/cli"
+    gem "strings-ansi"
   end
 end
 

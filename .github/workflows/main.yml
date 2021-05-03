@@ -43,3 +43,5 @@ jobs:
       - run: bundle exec rake bundle:complex:build
 
       - run: bundle exec rspec --force-color
+      - run: bundle exec rake install
+      - run: cd tmp/complex && rfix lint 28e229
