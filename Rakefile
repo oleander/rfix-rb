@@ -4,6 +4,7 @@ require "git"
 require "logger"
 require "bundler/gem_tasks"
 require "rspec/core/rake_task"
+require "dry/core/constants"
 require_relative "lib/rfix/rake/paths"
 require_relative "lib/rfix/rake/support"
 
@@ -176,9 +177,65 @@ namespace :testing do
   end
 end
 
+def gemfile(version)
+
+end
+
+def gemfile(version)
+  Pathname("Gemfile.rubocop-#{version}")
+end
+
+def lockfile(version)
+  Pathname(gemfile(version).to_s + ".lock")
+end
+
+class Gemfile < Struct.new(:root, :version)
+  include Dry::Core::Constants, FileUtils
+
+  FORMAT = "Gemfile.rubocop-%s%s"
+
+  def call
+    puts "Working with #{version}"
+
+    gemfile.write(content)
+
+    if lockfile.exist?
+      lockfile.delete
+    end
+
+    sh "bundle", "lock", "--gemfile", gemfile.to_path
+    puts "Finished with #{version}"
+  end
+
+  def gemfile
+    root.join(FORMAT % [version, EMPTY_STRING])
+  end
+
+  def lockfile
+    root.join(FORMAT % [version, ".lock"])
+  end
+
+  def content
+    <<~GEMFILE
+      eval_gemfile("../Gemfile")
+      gem "rubocop", "#{version}"
+    GEMFILE
+  end
+end
+
 namespace :bundle do
+  task :gemfile do
+    Pathname(__dir__).join("gemfiles").then do |root_path|
+      ['0.84', '0.92', '0.93', '1.0.0', '1.10.0', '1.13.0'].map do |version|
+        Thread.new do
+          Gemfile.new(root_path, version).call
+        end
+      end.each(&:join)
+    end
+  end
+
   task :lock do
-    Pathname(__dir__).join("gemfiles").then do |gemfiles_path|
+    gemfiles_path.then do |gemfiles_path|
       gemfiles_path.glob("*.lock").each(&:delete)
       gemfiles_path.glob("*[!lock]").map do |path|
         Thread.new do

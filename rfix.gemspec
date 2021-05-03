@@ -38,7 +38,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "rouge", "~> 3.20"
   spec.add_runtime_dependency "rubocop", "!= 0.85.0"
   spec.add_runtime_dependency "rugged"
-  spec.add_runtime_dependency "rubocop-ast"
+  spec.add_runtime_dependency "rubocop-ast"#, "< 0.7"
   spec.add_runtime_dependency "strings"
   spec.add_runtime_dependency "tty-box"
   spec.add_runtime_dependency "tty-link"

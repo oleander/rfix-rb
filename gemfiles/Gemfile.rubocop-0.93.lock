@@ -1,5 +1,5 @@
 PATH
-  remote: .
+  remote: ..
   specs:
     rfix (1.4.2)
       activesupport
@@ -24,7 +24,7 @@ PATH
       zeitwerk
 
 PATH
-  remote: vendor
+  remote: ../vendor
   specs:
     dry-cli (0.6.0)
     strings-ansi (0.2.0)
@@ -197,7 +197,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
-    rubocop (0.93.1)
+    rubocop (0.93.0)
       parallel (~> 1.10)
       parser (>= 2.7.1.5)
       rainbow (>= 2.2.2, < 4.0)
@@ -206,12 +206,13 @@ GEM
       rubocop-ast (>= 0.6.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 2.0)
-    rubocop-ast (0.6.0)
-      parser (>= 2.7.1.5)
+    rubocop-ast (1.5.0)
+      parser (>= 3.0.1.1)
     rubocop-rake (0.5.1)
       rubocop
-    rubocop-rspec (1.43.2)
+    rubocop-rspec (1.44.1)
       rubocop (~> 0.87)
+      rubocop-ast (>= 0.7.1)
     ruby-progressbar (1.11.0)
     rugged (1.1.0)
     shellany (0.0.1)
@@ -265,6 +266,7 @@ DEPENDENCIES
   rfix!
   rspec
   rspec-its
+  rubocop (= 0.93)
   rubocop-rake
   rubocop-rspec
   strings-ansi!
