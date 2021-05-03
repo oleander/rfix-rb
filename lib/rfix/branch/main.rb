@@ -29,7 +29,6 @@ module Rfix
         retry
       end
 
-
       class << self
         if respond_to?(:ruby2_keywords, true)
           ruby2_keywords(:new)

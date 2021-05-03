@@ -27,16 +27,7 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-
       - run: gem env
       - run: bundle exec rake bundle:simple:build
       - run: bundle exec rake bundle:complex:build
-
       - run: bundle exec rspec --force-color
-
-      - run: bundle exec rake install:local
-      - name: Runner
-        run: cd tmp/complex && rfix lint 28e229
-        env:
-          BUNDLE_GEMFILE: ""
-          PATH: /opt/hostedtoolcache/Ruby/2.6.7/x64/bin

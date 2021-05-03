@@ -2,6 +2,7 @@
 
 require "active_support/core_ext/string/inflections"
 require "shellwords"
+require "pathname"
 require "tty-link"
 require "rainbow"
 
@@ -34,7 +35,7 @@ module Rfix
       def relative_path
         return EMPTY_STRING unless location.respond_to?(:source_buffer)
 
-        location.source_buffer.name.sub(Dir.pwd, EMPTY_STRING)
+        location.source_buffer.name.sub(Pathname.pwd.join("/").to_s, EMPTY_STRING)
       rescue ArgumentError
         nil
       end
