@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "pry"
-
 module Rfix
   module Branch
     class Reference < Base
@@ -10,7 +8,6 @@ module Rfix
       def resolve
         repository.lookup(repository.rev_parse(name).oid)
       rescue Rugged::Error, Rugged::InvalidError
-        binding.pry
         raise Error, name
       end
     end
