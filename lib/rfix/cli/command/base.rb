@@ -13,7 +13,8 @@ module Rfix
   module CLI
     module Command
       class Base < Dry::CLI::Command
-        include Dry::Core::Constants, Log
+        include Log
+        include Dry::Core::Constants
 
         option :formatters, type: :array, default: ["Rfix::Formatter"]
         option :format, type: :string, default: "Rfix::Formatter"
@@ -32,11 +33,17 @@ module Rfix
             reference: reference
           )
 
-          RuboCop::Cop::Base.redefine_method(:enabled_line?) do |line|
-            handler.include?(processed_source.file_path, line)
-          rescue StandardError => e
-            abort e.full_message(highlight: true)
-          end
+          RuboCop::CommentConfig.prepend(Module.new do
+            define_singleton_method(:prepended) do |base|
+              super(base)
+
+              base.define_singleton_method(:cop_enabled_at_line?) do |cop, line|
+                super(cop, line) && handler.include?(processed_source.file_path, line)
+              rescue StandardError => e
+                abort e.full_message(highlight: true)
+              end
+            end
+          end)
 
           Undefined.default(args, handler.paths).then do |paths|
             RuboCop::CLI::Environment.new(params, RuboCop::ConfigStore.new, paths)
