@@ -11,7 +11,7 @@ module Rfix
         end
       end
 
-      def self.new(repository: Rugged::Repository.discover)
+      def self.call(repository: Rugged::Repository.discover)
         unless (name = repository.config[KEY])
           raise NoMainBranchSetError
         end
@@ -27,12 +27,6 @@ module Rfix
         end
 
         retry
-      end
-
-      class << self
-        if respond_to?(:ruby2_keywords, true)
-          ruby2_keywords(:new)
-        end
       end
     end
   end
