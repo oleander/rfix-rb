@@ -34,9 +34,7 @@ jobs:
 
       - run: bundle exec rspec --force-color
 
-      - run: bundle exec rake build
-      - run: mkdir -p tmp/bin
-      - run: gem install pkg/*.gem --bindir tmp/bin
+      - run: bundle exec rake install:local
       - name: Runner
         run: cd tmp/complex && rfix lint 28e229
         env:
