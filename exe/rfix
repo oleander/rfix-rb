@@ -74,7 +74,7 @@ end
 deactivate_all!
 
 require "bundler/inline"
-gemfile(true) do
+gemfile(false, ui: Bundler::UI::Silent.new) do
   overlapping_specs.each do |spec|
     gem spec.name, spec.version
   end
