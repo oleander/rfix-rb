@@ -50,9 +50,7 @@ module Rfix
           end
 
           config = RuboCop::ConfigStore.new.tap do |config|
-            if handler.rubocop_config_path.exist?
-              config.options_config = handler.rubocop_config_path
-            end
+            config.options_config = RuboCop::ConfigLoader.configuration_file_for(handler.workdir)
           end
 
           Undefined.default(args, handler.paths).then do |paths|
