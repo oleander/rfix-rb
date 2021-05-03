@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+require "active_support/core_ext/module/concerning"
 require "dry/core/constants"
-require "active_support/all"
 require "rubocop"
 require "rainbow"
 require "rugged"
@@ -33,25 +33,21 @@ module Rfix
             reference: reference
           )
 
-          RuboCop::CommentConfig.prepend(Module.new do
-            define_singleton_method(:prepended) do |base|
-              super(base)
-
-              base.define_singleton_method(:cop_enabled_at_line?) do |cop, line|
+          RuboCop::CommentConfig.class_eval do
+            concerning :Verification, prepend: true do
+              define_method(:cop_enabled_at_line?) do |cop, line|
                 super(cop, line) && handler.include?(processed_source.file_path, line)
-              rescue StandardError => e
-                abort e.full_message(highlight: true)
               end
             end
-          end)
-
+          end
+          
           Undefined.default(args, handler.paths).then do |paths|
             RuboCop::CLI::Environment.new(params, RuboCop::ConfigStore.new, paths)
           end.then do |env|
             exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
           end
         rescue Rfix::Error, TypeError, Psych::SyntaxError => e
-          say! e.message
+          abort Rainbow(e.message).red
         end
       end
     end

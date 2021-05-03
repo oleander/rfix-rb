@@ -43,14 +43,9 @@ namespace :bundle do
     file Bundle::Complex::REPO do
       sh "git clone", Bundle::Complex::GITHUB, Bundle::Complex::REPO, "--branch", "master"
 
-      cd Bundle::Complex::REPO do
-        sh "git", "reset --hard 27fec8"
-
-        sh "git config user.email 'not-my@real-email.com'"
-        sh "git config user.name 'John Doe'"
-
-        sh "git tag", Bundle::Complex::TAG
-      end
+      # cd Bundle::Complex::REPO do
+      #   sh "git tag", Bundle::Complex::TAG, '27fec8'
+      # end
     end
   end
 end
