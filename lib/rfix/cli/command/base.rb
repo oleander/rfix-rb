@@ -37,10 +37,12 @@ module Rfix
             concerning :Verification, prepend: true do
               define_method(:cop_enabled_at_line?) do |cop, line|
                 super(cop, line) && handler.include?(processed_source.file_path, line)
+              rescue StandardError => e
+                abort e.full_message(highlight: true)
               end
             end
           end
-          
+
           Undefined.default(args, handler.paths).then do |paths|
             RuboCop::CLI::Environment.new(params, RuboCop::ConfigStore.new, paths)
           end.then do |env|

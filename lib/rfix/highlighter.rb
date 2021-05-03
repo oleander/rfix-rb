@@ -32,10 +32,6 @@ module Rfix
         raise Error, "Source must be a string"
       end
 
-      unless source.end_with?(NEWLINE)
-        raise Error, "Document must end with newline"
-      end
-
       format(lexer.lex(source))
     end
 
