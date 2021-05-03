@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby -W0 --disable-all
+#!/usr/bin/env -S ruby -W0 --disable-all
 # frozen_string_literal: true
 
 require "rubygems"
