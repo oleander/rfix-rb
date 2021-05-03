@@ -38,7 +38,6 @@ jobs:
       - run: mkdir -p tmp/bin
       - run: gem install pkg/*.gem --bindir tmp/bin
       - name: Runner
-        run: cd tmp/complex && rfix lint 28e229
+        run: cd tmp/complex && ../../tmp/bin/rfix lint 28e229
         env:
           BUNDLE_GEMFILE: ""
-          PATH: $PWD/tmp/bin/rfix:$PATH
