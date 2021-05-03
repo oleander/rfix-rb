@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rfix (2.0.0)
+    rfix (2.0.1)
       activesupport
       bundler
       dry-cli

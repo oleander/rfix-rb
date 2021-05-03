@@ -49,8 +49,12 @@ module Rfix
             end
           end
 
+          config = RuboCop::ConfigStore.new.tap do |config|
+            config.for_dir(handler.path)
+          end
+
           Undefined.default(args, handler.paths).then do |paths|
-            RuboCop::CLI::Environment.new(params, RuboCop::ConfigStore.new, paths)
+            RuboCop::CLI::Environment.new(params, config, paths)
           end.then do |env|
             RuboCop::CLI::Command::ExecuteRunner.new(env).run
           end

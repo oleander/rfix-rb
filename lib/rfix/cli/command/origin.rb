@@ -3,7 +3,7 @@ module Rfix
     module Command
       class Origin < Base
         def call(**params)
-          define(Rfix::Branch::Main.new, **params)
+          define(Rfix::Branch::Main.call, **params)
         end
       end
     end
