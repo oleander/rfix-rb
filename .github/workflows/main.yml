@@ -34,6 +34,8 @@ jobs:
 
       - run: bundle exec rspec --force-color
 
-      - run: bundle exec rake install:local
-      - run: export PATH=$(compgen -G $(/opt/hostedtoolcache/Ruby/*/*/bin)):$PATH
+      - run: bundle exec rake build
+      - run: mkdir -p tmp/bin
+      - run: gem install pkg/*.gem --bindir tmp/bin
+      - run: export PATH=$PWD:tmp/bin/rfix:$PATH
       - run: cd tmp/complex && rfix lint 28e229
