@@ -247,8 +247,12 @@ class Gemfile < Dry::Struct
     puts "Finished with #{version}"
   end
 
+  def to_s
+    gemfile.to_s
+  end
+
   private
-  
+
   def gemfile
     root_path.join(FORMAT % [version, EMPTY_STRING])
   end
@@ -266,6 +270,18 @@ class Gemfile < Dry::Struct
 end
 
 namespace :bundle do
+  task :rspec do
+    Pathname(__dir__).join("gemfiles").then do |root_path|
+      Gemfile.files(root_path).each_slice(5) do |gemfiles|
+        gemfiles.map do |gemfile|
+          Thread.new do
+            sh "bundle", "exec", "--gemfile", gemfile.to_s, "rspec"
+          end
+        end.each(&:join)
+      end
+    end
+  end
+
   task :install do
     Pathname(__dir__).join("gemfiles").then do |root_path|
       Gemfile.files(root_path).each_slice(5) do |gemfiles|
