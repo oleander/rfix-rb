@@ -48,5 +48,8 @@ jobs:
       - run: bundle exec rake bundle:complex:build
 
       - run: bundle exec rspec --force-color
-      - run: bundle exec rake install:local
+
+      - run: bundle exec rake build
+      - run: gem install pkg/*.gem --bindir tmp
+      - run: export PATH=$(realpath tmp):$PATH
       - run: cd tmp/complex && rfix lint 28e229
