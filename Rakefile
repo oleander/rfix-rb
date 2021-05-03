@@ -240,8 +240,18 @@ class Gemfile < Dry::Struct
       lockfile.delete
     end
 
-    sh "bundle", "lock", "--gemfile", gemfile.to_path
+    bundle_lock
     puts "Finished with #{version}"
+  end
+
+  def bundle_lock
+    sh *lock_args
+  rescue RuntimeError
+    sh *lock_args.drop(-1)
+  end
+
+  def lock_args
+    sh "bundle", "lock", "--gemfile", gemfile.to_path, "--local"
   end
 
   def to_s
