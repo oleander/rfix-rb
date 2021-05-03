@@ -251,7 +251,7 @@ class Gemfile < Dry::Struct
   end
 
   def lock_args
-    sh "bundle", "lock", "--gemfile", gemfile.to_path, "--local"
+    ["bundle", "lock", "--gemfile", gemfile.to_path, "--local"]
   end
 
   def to_s
