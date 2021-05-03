@@ -177,5 +177,13 @@ namespace :testing do
 end
 
 task :setup do
-  sh "git", "submodule", "update", "--init", "--recursive"
+  # sh "git", "submodule", "update", "--init", "--recursive"
+  Pathname(__dir__).glob("gemfiles/*.lock").each(&:delete)
+
+  Pathname(__dir__).glob("gemfiles/*[!lock]").map do |path|
+    Thread.new do
+      puts "Running against #{path}"
+      sh "bundle", "lock", "--gemfile", path.to_s
+    end
+  end.each(&:join)
 end

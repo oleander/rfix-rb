@@ -1,10 +1,4 @@
 PATH
-  remote: ../vendor
-  specs:
-    dry-cli (0.6.0)
-    strings-ansi (0.2.0)
-
-PATH
   remote: ..
   specs:
     rfix (1.4.2)
@@ -27,6 +21,12 @@ PATH
       tty-prompt
       tty-screen
       zeitwerk
+
+PATH
+  remote: ../vendor
+  specs:
+    dry-cli (0.6.0)
+    strings-ansi (0.2.0)
 
 GEM
   remote: https://rubygems.org/
