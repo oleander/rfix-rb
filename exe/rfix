@@ -50,7 +50,8 @@ def rfix
 end
 
 def dev?
-  $PROGRAM_NAME.end_with?("exe/rfix")
+  #$PROGRAM_NAME.end_with?("exe/rfix")
+  false
 end
 
 def rfix_path
