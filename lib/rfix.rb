@@ -9,7 +9,8 @@ require "zeitwerk"
 require "rubocop"
 
 loader = Zeitwerk::Loader.for_gem
-loader.ignore("#{__dir__}/rfix/rake")
+loader.ignore("#{__dir__}/rfix/rake/paths")
+loader.ignore("#{__dir__}/rfix/rake/support")
 loader.ignore("#{__dir__}/rfix/loader")
 loader.ignore("#{__dir__}/rfix/commands")
 loader.ignore("#{__dir__}/rfix/extension/strings")

@@ -26,7 +26,7 @@ module Rfix
         attribute :version, Types::Version::AST
 
         def content
-          [super, 'gem "rubocop-ast", "< 0.7"', '\n'].join
+          [super, 'gem "rubocop-ast", "< 0.7"'].join("\n")
         end
       end
 

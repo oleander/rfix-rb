@@ -74,7 +74,7 @@ module Rfix
       private
 
       def current_path
-        File.join(Dir.getwd, "/")
+        ::File.join(Dir.getwd, "/")
       end
 
       def to_relative(path)

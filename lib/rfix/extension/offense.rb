@@ -34,7 +34,7 @@ module Rfix
       def relative_path
         return EMPTY_STRING unless location.respond_to?(:source_buffer)
 
-        Pathname(location.source_buffer.name).relative_path_from(Dir.pwd)
+        location.source_buffer.name.sub(Dir.pwd, EMPTY_STRING)
       rescue ArgumentError
         nil
       end
