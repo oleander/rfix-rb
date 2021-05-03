@@ -176,14 +176,15 @@ namespace :testing do
   end
 end
 
-task :setup do
-  # sh "git", "submodule", "update", "--init", "--recursive"
-  Pathname(__dir__).glob("gemfiles/*.lock").each(&:delete)
-
-  Pathname(__dir__).glob("gemfiles/*[!lock]").map do |path|
-    Thread.new do
-      puts "Running against #{path}"
-      sh "bundle", "lock", "--gemfile", path.to_s
+namespace :bundle do
+  task :lock do
+    Pathname(__dir__).join("gemfiles").then do |gemfiles_path|
+      gemfiles_path.glob("*.lock").each(&:delete)
+      gemfiles_path.glob("*[!lock]").map do |path|
+        Thread.new do
+          sh "bundle", "lock", "--gemfile", path.to_s
+        end
+      end.each(&:join)
     end
-  end.each(&:join)
+  end
 end
