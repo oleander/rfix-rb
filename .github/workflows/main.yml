@@ -39,6 +39,7 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
 
+      - run: gem env
       - run: bundle exec rake bundle:simple:build
       - run: bundle exec rake bundle:complex:build
 
