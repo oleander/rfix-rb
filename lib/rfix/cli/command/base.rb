@@ -18,8 +18,8 @@ module Rfix
 
         class RuboCop::CommentConfig
           concerning :Verification, prepend: true do
-            def cop_enabled_at_line?(cop, line)
-              repository.include?(processed_source.file_path, line) && super(cop, line)
+            def cop_enabled_at_line?(_, line)
+              repository.include?(processed_source.file_path, line)
             rescue StandardError => e
               abort e.full_message(highlight: true)
             end
