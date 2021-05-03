@@ -20,8 +20,8 @@ Gem::Specification.new do |spec|
   spec.license               = "MIT"
   spec.required_ruby_version = ">= 2.6"
   spec.files                 = Dir["lib/**/*", "exe/rfix", "vendor/**/*", "rfix.gemspec"]
-  spec.executables           << "rfix"
-  spec.bindir = 'exe'
+  spec.executables << "rfix"
+  spec.bindir = "exe"
   spec.requirements << "git >= 2"
 
   spec.metadata["homepage_uri"] = spec.homepage
@@ -38,8 +38,8 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "rake"
   spec.add_runtime_dependency "rouge", "~> 3.20"
   spec.add_runtime_dependency "rubocop", ">= 0.82.0", "!= 0.85.0"
-  spec.add_runtime_dependency "rugged"
   spec.add_runtime_dependency "rubocop-ast"
+  spec.add_runtime_dependency "rugged"
   spec.add_runtime_dependency "strings"
   spec.add_runtime_dependency "tty-box"
   spec.add_runtime_dependency "tty-link"

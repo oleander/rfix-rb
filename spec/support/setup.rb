@@ -11,7 +11,7 @@ SetupGit = Struct.new(:root_path, :id) do
   def self.setup!
     root_path = Pathname(__dir__).join("../../")
 
-    tmp_dir     = root_path.join("tmp").tap do |path|
+    tmp_dir = root_path.join("tmp").tap do |path|
       FileUtils.mkdir_p(path.to_s)
     end
 

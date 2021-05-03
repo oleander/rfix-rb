@@ -50,7 +50,7 @@ def rfix
 end
 
 def dev?
-  #$PROGRAM_NAME.end_with?("exe/rfix")
+  # $PROGRAM_NAME.end_with?("exe/rfix")
   false
 end
 
@@ -91,5 +91,5 @@ gemfile(false, ui: Bundler::UI::Silent.new) do
 end
 
 module Rfix
-  exit Dry::CLI.new(CLI::Command).call
+  Dry::CLI.new(CLI::Command).call
 end
