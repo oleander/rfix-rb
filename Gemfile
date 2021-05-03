@@ -16,11 +16,11 @@ group :development do
 end
 
 group :development, :test do
-  gem "rake"
   gem "git", require: true
   gem "pry", require: true
   gem "pry-rescue"
   gem "pry-stack_explorer"
+  gem "rake"
   gem "rspec"
   gem "rspec-its"
   gem "rubocop-rake"
