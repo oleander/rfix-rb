@@ -24,7 +24,7 @@ RSpec.describe Rfix::CLI::Command::Branch do
 
       it 'corrects files' do
         Dir.chdir(repo_path) do
-          expect(command.call(branch: "master~15", **params)).to be_a(Integer)
+          expect(command.call(branch: "master~1", **params)).to be_a(Integer)
         end
       end
     end
