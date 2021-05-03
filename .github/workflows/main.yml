@@ -15,8 +15,24 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         gemfile:
+          - 0.82
+          - 0.83
+          - 0.84
+          - 0.92
+          - 0.93
+          - '1.0.0'
+          - '1.5.0'
+          - '1.5.1'
+          - '1.5.2'
+          - '1.6.1'
+          - '1.7.0'
+          - '1.8.0'
+          - '1.10.0'
+          - '1.11.0'
+          - '1.12.0'
           - '1.13.0'
         ruby: [2.6, 2.7, '3.0']
+
     env:
       BUNDLE_GEMFILE: gemfiles/Gemfile.rubocop-${{ matrix.gemfile }}
     runs-on: ${{ matrix.os }}
