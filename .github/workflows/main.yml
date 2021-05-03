@@ -35,5 +35,5 @@ jobs:
       - run: bundle exec rspec --force-color
 
       - run: bundle exec rake install:local
-      - run: for i in "${{ runner.tool_cache }}/Ruby/*/*/bin)"; export PATH=$i:$PATH do
+      - run: for i in "${{ runner.tool_cache }}/Ruby/*/*/bin)"; do; export PATH=$i:$PATH; done
       - run: cd tmp/complex && rfix lint 28e229
