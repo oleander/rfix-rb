@@ -14,7 +14,7 @@ PATH
       rake
       rouge (~> 3.20)
       rubocop (!= 0.85.0)
-      rubocop-ast
+      rubocop-ast (< 0.7)
       rugged
       strings
       tty-box
@@ -154,7 +154,7 @@ GEM
       nenv (~> 0.1)
       shellany (~> 0.0)
     parallel (1.20.1)
-    parser (3.0.1.0)
+    parser (3.0.1.1)
       ast (~> 2.4.1)
     pastel (0.8.0)
       tty-color (~> 0.5)
@@ -197,22 +197,21 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
-    rubocop (1.13.0)
+    rubocop (0.93.1)
       parallel (~> 1.10)
-      parser (>= 3.0.0.0)
+      parser (>= 2.7.1.5)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 1.8, < 3.0)
+      regexp_parser (>= 1.8)
       rexml
-      rubocop-ast (>= 1.2.0, < 2.0)
+      rubocop-ast (>= 0.6.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.4.1)
+      unicode-display_width (>= 1.4.0, < 2.0)
+    rubocop-ast (0.6.0)
       parser (>= 2.7.1.5)
     rubocop-rake (0.5.1)
       rubocop
-    rubocop-rspec (2.2.0)
-      rubocop (~> 1.0)
-      rubocop-ast (>= 1.1.0)
+    rubocop-rspec (1.43.2)
+      rubocop (~> 0.87)
     ruby-progressbar (1.11.0)
     rugged (1.1.0)
     shellany (0.0.1)
@@ -241,14 +240,13 @@ GEM
     tty-screen (0.8.1)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (2.0.0)
+    unicode-display_width (1.7.0)
     unicode_utils (1.4.0)
     wisper (2.0.1)
     zeitwerk (2.4.2)
 
 PLATFORMS
   ruby
-  x86_64-darwin-20
 
 DEPENDENCIES
   aruba
@@ -272,4 +270,4 @@ DEPENDENCIES
   strings-ansi!
 
 BUNDLED WITH
-   2.2.16
+   2.1.2
