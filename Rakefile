@@ -247,7 +247,7 @@ class Gemfile < Dry::Struct
   def bundle_lock
     sh *lock_args
   rescue RuntimeError
-    sh *lock_args.drop(-1)
+    sh *lock_args[0..-2]
   end
 
   def lock_args
