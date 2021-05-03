@@ -16,6 +16,16 @@ module Rfix
         include Log
         include Dry::Core::Constants
 
+        class RuboCop::CommentConfig
+          concerning :Verification, prepend: true do
+            def cop_enabled_at_line?(cop, line)
+              repository.include?(processed_source.file_path, line) && super(cop, line)
+            rescue StandardError => e
+              abort e.full_message(highlight: true)
+            end
+          end
+        end
+
         option :formatters, type: :array, default: ["Rfix::Formatter"]
         option :format, type: :string, default: "Rfix::Formatter"
         option :auto_correct_all, type: :boolean, default: true
@@ -34,22 +44,16 @@ module Rfix
           )
 
           RuboCop::CommentConfig.class_eval do
-            concerning :Verification, prepend: true do
-              define_method(:cop_enabled_at_line?) do |cop, line|
-                super(cop, line) && handler.include?(processed_source.file_path, line)
-              rescue StandardError => e
-                abort e.full_message(highlight: true)
-              end
+            concerning :Repository do
+              define_method(:repository, &handler.method(:itself))
             end
           end
 
           Undefined.default(args, handler.paths).then do |paths|
             RuboCop::CLI::Environment.new(params, RuboCop::ConfigStore.new, paths)
           end.then do |env|
-            exit RuboCop::CLI::Command::ExecuteRunner.new(env).run
+            RuboCop::CLI::Command::ExecuteRunner.new(env).run
           end
-        rescue Rfix::Error, TypeError, Psych::SyntaxError => e
-          abort Rainbow(e.message).red
         end
       end
     end

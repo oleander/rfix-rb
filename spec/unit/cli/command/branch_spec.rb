@@ -1,13 +1,15 @@
 RSpec.describe Rfix::CLI::Command::Branch do
   let(:bundle_path) { Pathname.pwd.join("spec/fixtures/complex.bundle") }
   let(:tmp_path) { Pathname(Dir.mktmpdir) }
+  let(:repo_path) { tmp_path.join("repo") }
   let(:params) { described_class.default_params }
   let(:command) { described_class.new }
 
   describe '::call' do
     context 'when branch is HEAD' do
       before do
-        system "git", "clone", bundle_path.to_s, tmp_path.to_s, "--branch", "master"
+        system "mkdir", repo_path.to_s
+        system "git", "clone", bundle_path.to_s, repo_path.to_s, "--branch", "master"
       end
 
       after do
@@ -15,18 +17,14 @@ RSpec.describe Rfix::CLI::Command::Branch do
       end
 
       it 'does not correct any files' do
-        Dir.chdir(tmp_path) do
-          expect { command.call(branch: "HEAD", **params) }.to raise_error(SystemExit) do |error|
-            expect(error.status).to eq(0)
-          end
+        Dir.chdir(repo_path) do
+          expect(command.call(branch: "master", **params)).to eq(0)
         end
       end
 
       it 'corrects files' do
-        Dir.chdir(tmp_path) do
-          expect { command.call(branch: "HEAD~10", **params) }.to raise_error(SystemExit) do |error|
-            expect(error.status).to eq(1)
-          end
+        Dir.chdir(repo_path) do
+          expect(command.call(branch: "master~15", **params)).to eq(1)
         end
       end
     end

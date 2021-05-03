@@ -32,6 +32,10 @@ module Rfix
         raise Error, "Source must be a string"
       end
 
+      unless source.end_with?(NEWLINE)
+        return call(source + NEWLINE)
+      end
+
       format(lexer.lex(source))
     end
 
