@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   spec.license               = "MIT"
   spec.required_ruby_version = ">= 2.6"
   spec.files                 = Dir["lib/**/*", "exe/rfix", "vendor/**/*", "rfix.gemspec"]
-  spec.executables           = ["rfix"]
+  spec.executables           << "rfix"
   spec.requirements << "git >= 2"
 
   spec.metadata["homepage_uri"] = spec.homepage
