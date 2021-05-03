@@ -6,9 +6,6 @@ env:
   GITHUB_API_TOKEN: ${{secrets.API_KEY}}
 jobs:
   build:
-    concurrency:
-      group: rfix-test-group
-      cancel-in-progress: true
     continue-on-error: false
     strategy:
       fail-fast: true
