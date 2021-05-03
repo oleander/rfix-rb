@@ -110,6 +110,10 @@ module Rfix
       untracked + tracked
     end
 
+    def rubocop_config_path
+      path.join(RuboCop::ConfigLoader::DOTFILE)
+    end
+
     def to_s
       options = {
         untracked: untracked.map(&:basename).join(", "),
