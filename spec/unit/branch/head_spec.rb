@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe Rfix::Branch::Head, :repo do
+RSpec.describe Rfix::Branch::Head, repository: "master" do
   context "when branch exists" do
-    subject { described_class.new(repository: rugged) }
-
+    subject { branch }
+    
     its(:resolve) { is_expected.to be_a(Rugged::Commit) }
   end
 end

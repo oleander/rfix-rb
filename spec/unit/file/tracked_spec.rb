@@ -1,21 +1,27 @@
 # frozen_string_literal: true
 
-RSpec.describe Rfix::File::Tracked, :repo do
-  subject(:file) { described_class.call(repository: repository, basename: basename, status: status) }
+RSpec.describe Rfix::File::Tracked do
+  it_behaves_like "a file", :tracked? do
+    its(:lines) { is_expected.not_to be_empty }
 
-  let(:basename) { "Gemfile" }
-  let(:status) { [:added] }
+    context "when not within line range" do
+      let(:excluded) { (1..Float::INFINITY).lazy }
 
-  describe "#path" do
-    subject { file.path }
+      context "when before" do
+        let(:line) { excluded.drop_while(&lines.min.method(:>=)).first }
 
-    its(:basename) { is_expected.to eq(Pathname(basename)) }
-    its(:dirname) { is_expected.to eq(Pathname(dirname)) }
-  end
+        it "yields false" do
+          expect(file.include?(line)).to eq(false), "exclude line #{line} for #{file}"
+        end
+      end
 
-  describe "#include?" do
-    it "returns false" do
-      expect(file.include?(1)).to eq(false)
+      context "when after" do
+        let(:line) { excluded.drop_while(&lines.max.method(:>=)).first }
+
+        it "yields false" do
+          expect(file.include?(line)).to eq(false), "exclude line #{line} for #{file}"
+        end
+      end
     end
   end
 end

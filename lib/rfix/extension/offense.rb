@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "active_support/core_ext/string/inflections"
+require "dry/core/constants"
 require "shellwords"
 require "pathname"
 require "tty-link"

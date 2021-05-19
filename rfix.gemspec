@@ -2,6 +2,8 @@
 
 require_relative "lib/rfix/version"
 
+$LOAD_PATH.unshift Pathname(__dir__).join("vendor").to_s
+
 Gem::Specification.new do |spec|
   spec.name          = "rfix"
   spec.version       = Rfix::VERSION
@@ -20,14 +22,14 @@ Gem::Specification.new do |spec|
   spec.license               = "MIT"
   spec.required_ruby_version = ">= 2.6"
   spec.files                 = Dir["lib/**/*", "exe/rfix", "vendor/**/*", "rfix.gemspec"]
-  spec.executables << "rfix"
   spec.bindir = "exe"
-  spec.requirements << "git >= 2"
 
   spec.metadata["homepage_uri"] = spec.homepage
+  spec.executables << "rfix"
 
   spec.add_runtime_dependency "activesupport"
   spec.add_runtime_dependency "bundler"
+  spec.add_runtime_dependency "concurrent-ruby"
   spec.add_runtime_dependency "dry-cli"
   spec.add_runtime_dependency "dry-core"
   spec.add_runtime_dependency "dry-initializer"
@@ -38,12 +40,15 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "rake"
   spec.add_runtime_dependency "rouge", "~> 3.20"
   spec.add_runtime_dependency "rubocop", ">= 0.82.0", "!= 0.85.0"
-  spec.add_runtime_dependency "rubocop-ast"
   spec.add_runtime_dependency "rugged"
   spec.add_runtime_dependency "strings"
+  spec.add_runtime_dependency "strings-ansi"
   spec.add_runtime_dependency "tty-box"
   spec.add_runtime_dependency "tty-link"
+  spec.add_runtime_dependency "tty-logger"
+  spec.add_runtime_dependency "tty-progressbar"
   spec.add_runtime_dependency "tty-prompt"
   spec.add_runtime_dependency "tty-screen"
+  spec.add_runtime_dependency "tty-table"
   spec.add_runtime_dependency "zeitwerk"
 end

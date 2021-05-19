@@ -4,6 +4,9 @@ require:
 AllCops:
   TargetRubyVersion: 3.0
   AutoCorrect: true
+  Exclude:
+    - 'spec/fixtures/repository/**/*'
+    - 'vendor/**/*'
 
 Layout/LineLength:
    Max: 120

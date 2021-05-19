@@ -14,6 +14,17 @@ module Rfix
       register "lint", Lint
       register "info", Info
       register "help", Help
+
+
+      def setup
+        Dry::CLI.new(self).call
+      rescue Error => e
+        abort e.message
+      else
+        exit 0
+      end
+
+      module_function :setup
     end
   end
 end

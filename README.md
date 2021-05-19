@@ -47,6 +47,7 @@ $ rfix                 # Displays this list of supported commands
 git clone https://github.com/oleander/rfix-rb
 cd rfix-rb
 bundle install
+git submodule update --init --recursive
 ```
 
 ### Run tests

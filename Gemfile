@@ -7,7 +7,6 @@ gemspec
 group :development do
   gem "gem-release", require: false
 
-  gem "aruba"
   gem "colorize"
   gem "faker"
   gem "guard", require: false
@@ -16,16 +15,22 @@ group :development do
 end
 
 group :development, :test do
-  gem "git", require: true
   gem "pry", require: true
   gem "rake"
-  gem "rspec"
-  gem "rspec-its"
+  gem "pry-theme"
+  gem "listen"
   gem "rubocop-rake"
   gem "rubocop-rspec"
 end
 
+group :test do
+  gem "aruba"
+  gem "factory_bot"
+  gem "git", require: true
+  gem "rspec"
+  gem "rspec-its"
+end
+
 path "vendor" do
-  gem "dry-cli", require: "dry/cli"
-  gem "strings-ansi"
+  gem "strings-ansi", require: true
 end

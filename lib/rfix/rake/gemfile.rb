@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 require "dry/types"
 require "dry/struct"
 require "dry/logic"
+
 
 module Rfix
   module Rake
@@ -9,7 +12,8 @@ module Rfix
     end
 
     class Gemfile < Dry::Struct
-      include Dry::Core::Constants, FileUtils
+      include FileUtils
+      include Dry::Core::Constants
 
       module Types
         include Dry::Types()
@@ -32,26 +36,26 @@ module Rfix
 
       FORMAT = "Gemfile.rubocop-%s%s"
       VERSIONS = [
-        '0.82',
-        '0.83',
-        '0.84',
-        '0.92',
-        '0.93',
-        '1.0.0',
-        '1.7.0',
-        '1.5.0',
-        '1.5.1',
-        '1.5.2',
-        '1.6.1',
-        '1.8.1',
-        '1.8.0',
-        '1.9.0',
-        '1.10.0',
-        '1.11.0',
-        '1.12.0',
-        '1.12.1',
-        '1.13.0'
-      ]
+        "0.82",
+        "0.83",
+        "0.84",
+        "0.92",
+        "0.93",
+        "1.0.0",
+        "1.7.0",
+        "1.5.0",
+        "1.5.1",
+        "1.5.2",
+        "1.6.1",
+        "1.8.1",
+        "1.8.0",
+        "1.9.0",
+        "1.10.0",
+        "1.11.0",
+        "1.12.0",
+        "1.12.1",
+        "1.13.0"
+      ].freeze
 
       def self.call(*args, **kwargs, &block)
         (self | AST).call(*args, **kwargs, &block)
@@ -77,9 +81,9 @@ module Rfix
       end
 
       def bundle_lock
-        sh *lock_args
+        sh(*lock_args)
       rescue RuntimeError
-        sh *lock_args[0..-2]
+        sh(*lock_args[0..-2])
       end
 
       def lock_args
@@ -93,11 +97,11 @@ module Rfix
       private
 
       def gemfile
-        root_path.join(FORMAT % [version, EMPTY_STRING])
+        root_path.join(format(FORMAT, version, EMPTY_STRING))
       end
 
       def lockfile
-        root_path.join(FORMAT % [version, ".lock"])
+        root_path.join(format(FORMAT, version, ".lock"))
       end
 
       def content

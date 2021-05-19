@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe Rfix::File, :repo do
-  let(:basename) { "Gemfile" }
+RSpec.describe Rfix::File, repository: "HEAD~10" do
+  let(:basename) { files.detect(&:tracked?).basename }
 
   def build(status)
     described_class.call(repository: repository, basename: basename, status: [status])

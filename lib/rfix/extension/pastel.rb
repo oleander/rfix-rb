@@ -1,4 +1,3 @@
-require "strings-ansi"
 require "pastel"
 
 module Pastel

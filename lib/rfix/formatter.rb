@@ -1,28 +1,36 @@
 # frozen_string_literal: true
 
+require "active_support/core_ext/module/concerning"
 require "active_support/core_ext/module/delegation"
 require "rubocop/formatter/simple_text_formatter"
 require "rubocop/cop/offense"
 require "dry/core/constants"
 require "dry/initializer"
+require "tty/progressbar"
 require "tty/screen"
 require "tty/prompt"
+require "tty/table"
 require "tty/box"
-
-RuboCop::Cop::Offense.prepend(Rfix::Extension::Offense)
 
 module Rfix
   class Formatter < RuboCop::Formatter::SimpleTextFormatter
-    attr_reader :indicator
-
     include Dry::Core::Constants
     extend Dry::Initializer
     include Log
 
-    option :indicator, default: -> { Indicator.new }
     option :reported_offenses
     option :options
     option :output
+
+    class TTY::ProgressBar
+      concerning :Log, prepend: true do
+        def log(input)
+          input.each_line do |line|
+            super(line.strip)
+          end
+        end
+      end
+    end
 
     PROMPT = TTY::Prompt.new(symbols: { marker: ">" })
     SPACE = " "
@@ -30,10 +38,15 @@ module Rfix
     delegate :say, to: :PROMPT
 
     class NullRepository
+      include Dry::Core::Constants
       include Singleton
 
       def include_file?(*)
         true
+      end
+
+      %i[tracked untracked ignored deleted].each do |s|
+        define_method(s, &EMPTY_ARRAY.method(:itself))
       end
     end
 
@@ -42,14 +55,18 @@ module Rfix
     end
 
     def started(files)
-      # indicator.start("{{italic:rfix}} is linting {{bold:#{files.count}}} files, hold on ...")
+      title = "Loading #{files.count} file(s) [:bar]"
+      @progress = TTY::ProgressBar.new(title, total: files.count, width: TTY::Screen.width - 10, bar_format: :block)
+      trap(:WINCH) { @progress.resize }
+
+      debug(repository.tracked, ["Tracked file", "Line range"])
+      debug(repository.ignored, ["Ignored file"])
+      debug(repository.untracked, ["Untracked file"])
+      debug(repository.deleted, ["Deleted file"])
     end
 
-    # @files [Array<File>]
-    def finished(files)
-      # @indicator.stop
-      mark_command_line
-      report_summary(files)
+    def progress
+      @progress ||= TTY::ProgressBar.new("Loading file(s)")
     end
 
     # @file [File]
@@ -57,7 +74,7 @@ module Rfix
     def file_finished(*, offenses)
       @reported_offenses += offenses
 
-      # @indicator.stop if offenses?
+      progress.advance
 
       length = offenses.length - 1
       offenses.each_with_index do |offense, _index|
@@ -65,8 +82,15 @@ module Rfix
           report_line_with_highlight(offense)
         end
 
-        puts
+        progress.log("\n")
       end
+    end
+
+    # @files [Array<File>]
+    def finished(files)
+      progress&.finish
+      mark_command_line
+      report_summary(files)
     end
 
     private
@@ -80,7 +104,7 @@ module Rfix
     end)
 
     def framed(offense, &block)
-      puts TTY::Box.frame({
+      progress.log TTY::Box.frame({
         width: TTY::Screen.width,
         padding: [1, 1, 0, 1],
         title: {
@@ -100,8 +124,7 @@ module Rfix
     end
 
     def mark_command_line
-      # "#{ESC}]1337;SetMark\a"
-      "" # TODO: Activate
+      progress.log "\e]1337;SetMark\a"
     end
 
     def report(msg, format: true)
@@ -162,6 +185,12 @@ module Rfix
 
     def repository
       NullRepository.instance
+    end
+
+    def debug(files, header)
+      if files.any? && debug?
+        progress.log TTY::Table.new(header, files.map(&:to_table).to_a, width: TTY::Screen.width - 10, padding: 1).render(:unicode)
+      end
     end
   end
 end

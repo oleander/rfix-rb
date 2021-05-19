@@ -16,12 +16,14 @@ module Rfix
         include Log
         include Dry::Core::Constants
 
-        class RuboCop::CommentConfig
-          concerning :Verification, prepend: true do
-            def cop_enabled_at_line?(_, line)
-              repository.include?(processed_source.file_path, line)
-            rescue StandardError => e
-              abort e.full_message(highlight: true)
+        module ::RuboCop
+          class CommentConfig
+            concerning :Verification, prepend: true do
+              def cop_enabled_at_line?(_, line)
+                super && repository.include?(processed_source.file_path, line)
+              rescue StandardError => e
+                abort e.full_message(highlight: true)
+              end
             end
           end
         end
@@ -33,6 +35,7 @@ module Rfix
         option :cache, type: :boolean, default: true
         option :debug, type: :boolean, default: false
         option :only_recognized_file_types, type: :boolean, default: true
+        option :no_cache, type: :boolean, default: false
         option :force_exclusion, type: :boolean, default: true
 
         private
@@ -43,20 +46,29 @@ module Rfix
             reference: reference
           )
 
-          RuboCop::CommentConfig.class_eval do
+          ::RuboCop::CommentConfig.class_eval do
             concerning :Repository do
               define_method(:repository, &handler.method(:itself))
             end
           end
 
-          config = RuboCop::ConfigStore.new.tap do |config|
-            config.options_config = RuboCop::ConfigLoader.configuration_file_for(handler.workdir)
+          Formatter.class_eval do
+            define_method(:repository, &handler.method(:itself))
+            define_method(:debug?) { params.fetch(:debug, false) }
+          end
+
+          config = ::RuboCop::ConfigStore.new.tap do |config|
+            ::RuboCop::ConfigLoader.configuration_file_for(handler.workdir).then do |loader|
+              config.options_config = loader
+            rescue ::RuboCop::Cop::AmbiguousCopName => e
+              abort e.message
+            end
           end
 
           Undefined.default(args, handler.paths).then do |paths|
-            RuboCop::CLI::Environment.new(params, config, paths)
+            ::RuboCop::CLI::Environment.new(params, config, paths)
           end.then do |env|
-            RuboCop::CLI::Command::ExecuteRunner.new(env).run
+            ::RuboCop::CLI::Command::ExecuteRunner.new(env).run
           end
         end
       end

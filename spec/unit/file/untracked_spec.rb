@@ -1,21 +1,28 @@
 # frozen_string_literal: true
 
-RSpec.describe Rfix::File::Untracked, :repo do
-  subject(:file) { described_class.call(repository: repository, basename: basename, status: status) }
+RSpec.describe Rfix::File::Untracked do
+  context "when file is located in root folder" do
+    it_behaves_like "a file", :untracked? do
+      before do
+        example_file.write("# a comment\n")
+      end
 
-  let(:basename) { "Gemfile" }
-  let(:status) { Rfix::File::Base::UNTRACKED }
+      let(:example_file) { repository.path.join("example.rb") }
 
-  describe "#path" do
-    subject { file.path }
-
-    its(:basename) { is_expected.to eq(Pathname(basename)) }
-    its(:dirname) { is_expected.to eq(Pathname(dirname)) }
+      its(:lines) { is_expected.to be_empty }
+    end
   end
 
-  describe "#include?" do
-    it "returns true" do
-      expect(file.include?(1)).to eq(true)
+  context "when file is located in sub folder" do
+    it_behaves_like "a file", :untracked? do
+      before do
+        example_file.dirname.mkpath
+        example_file.write("# a comment\n")
+      end
+
+      let(:example_file) { repository.path.join("sub1/sub2/example.rb") }
+
+      its(:lines) { is_expected.to be_empty }
     end
   end
 end
