@@ -14,7 +14,6 @@ module Rfix
       def include?(*)
         true
       end
-
     end
   end
 end

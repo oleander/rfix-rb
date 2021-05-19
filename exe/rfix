@@ -2,94 +2,21 @@
 # frozen_string_literal: true
 
 require "rubygems"
-require "pathname"
 require "bundler"
 
-module Path
-  HOME = Pathname("~").expand_path
-  DIR = Pathname(__dir__)
-  LOCK = "Gemfile.lock"
-  PWD = Pathname.getwd
-  PROJECT = DIR.join("..").expand_path
-end
-
-def lock_path
-  Path::PWD.ascend.find do |path|
-    return if (path <=> Path::HOME) == -1
-
-    path.join(Path::LOCK).file?
-  end.join(Path::LOCK)
-end
-
-def find(name, env: Bundler.rubygems)
-  env.loaded_specs(name) || env.find_name(name).max_by(&:version)
-end
-
-def deactivate(spec)
-  Gem.loaded_specs.delete(spec.name)
-
-  $LOAD_PATH.reject! do |path|
-    spec.load_paths.include?(path)
+unless defined?(Rfix)
+  if $PROGRAM_NAME.end_with?("exe/rfix")
+    require "bundler/setup"
+    Bundler.require(:test, :default)
+  else
+    lockfile = Bundler::LockfileParser.new(Bundler.default_lockfile.read)
+    if (rfix = lockfile.specs.detect { |spec| spec.name == "rfix" })
+      Gem.use_paths Gem.dir, Bundler.bundle_path.to_s, *Gem.path
+      gem "rfix", rfix.version
+    end
   end
 end
 
-def specs
-  return [] unless (path = lock_path)
+require "rfix"
 
-  Bundler::LockfileParser.new(path.read).specs
-end
-
-def overlapping_specs
-  specs.select do |spec|
-    spec.name.start_with?("rubocop")
-  end
-end
-
-def rfix
-  find("rfix")
-end
-
-def dev?
-  # $PROGRAM_NAME.end_with?("exe/rfix")
-  false
-end
-
-def rfix_path
-  return Pathname(__dir__).parent if dev?
-
-  Pathname(rfix.full_gem_path)
-end
-
-def commands
-  rfix_path.glob("lib/rfix/commands/*.rb").map do |command|
-    Cri::Command.load_file(command.to_path, infer_name: true)
-  end
-end
-
-def deactivate_all!
-  Gem.loaded_specs.each do |_name, spec|
-    deactivate(spec)
-  end
-end
-
-deactivate_all!
-
-require "bundler/inline"
-gemfile(false, ui: Bundler::UI::Silent.new) do
-  overlapping_specs.each do |spec|
-    gem spec.name, spec.version
-  end
-
-  path rfix_path do
-    gem "rfix"
-  end
-
-  path rfix_path.join("vendor") do
-    gem "dry-cli", require: "dry/cli"
-    gem "strings-ansi"
-  end
-end
-
-module Rfix
-  Dry::CLI.new(CLI::Command).call
-end
+Rfix::CLI::Command.setup

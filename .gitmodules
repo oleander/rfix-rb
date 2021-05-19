@@ -4,3 +4,6 @@
 [submodule "vendor/dry-cli"]
 	path = vendor/dry-cli
 	url = https://github.com/dry-rb/dry-cli.git
+[submodule "spec/fixtures/repository"]
+	path = spec/fixtures/repository
+	url = https://github.com/fazibear/colorize.git

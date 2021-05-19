@@ -3,10 +3,8 @@
 module Rfix
   module Branch
     class Upstream < Base
-      def resolve
-        repository.rev_parse("@{upstream}")
-      rescue Rugged::ConfigError
-        raise Error, "No upstream branch defined"
+      def name
+        "@{upstream}"
       end
 
       def to_s

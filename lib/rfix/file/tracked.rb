@@ -3,38 +3,47 @@
 module Rfix
   module File
     class Tracked < Base
-      attribute :status, Types::Status::Tracked
+      attribute :status, Types::Status::Tracked.default(TRACKED)
+      attribute :cache, Types.Instance(Concurrent::Map).default { Concurrent::Map.new }
 
-      OPTIONS = {
-        include_untracked_content: true,
-        recurse_untracked_dirs: true,
-        include_untracked: true,
-        ignore_submodules: true,
-        include_ignored: false,
-        context_lines: 0
-      }.freeze
-
-      def include?(line)
-        diff.each_line.map(&:new_lineno).select(&:positive?).to_set.include?(line)
-      end
+      delegate :include?, to: :lines
 
       def tracked?
         true
       end
 
+      def to_s
+        [basename.to_path, to_str_range].join(":")
+      end
+
+      def to_str_range
+        lines
+          .select(&:positive?)
+          .sort
+          .chunk_while { |i, j| i + 1 == j }
+          .map { |a| a.length < 3 ? a : "#{a.first}-#{a.last}" }
+          .to_a
+          .join(",")
+          .then { |res| res.empty? ? "-" : res }
+      end
+
+      def to_table
+        [basename, to_str_range]
+      end
+
+      def lines
+        diff.each_line.lazy.map(&:new_lineno)
+      end
+
       private
 
       def options
-        OPTIONS.dup.merge(paths: [basename])
+        Collector::OPTIONS.merge(paths: [basename.to_path])
       end
 
       def diff
         repository.origin.diff_workdir(**options).tap do |diff|
-          diff.find_similar!(
-            renames_from_rewrites: true,
-            renames: true,
-            copies: true
-          )
+          diff.merge!(repository.index.diff(**options))
         end
       end
     end

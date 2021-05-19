@@ -7,8 +7,8 @@ module Rfix
 
       def resolve
         repository.lookup(repository.rev_parse(name).oid)
-      rescue Rugged::Error, Rugged::InvalidError
-        raise Error, name
+      rescue Rugged::Error, Rugged::InvalidError, Rugged::ReferenceError
+        raise Error, "Reference #{name.inspect} not found"
       end
     end
   end

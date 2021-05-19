@@ -2,10 +2,12 @@
 
 module Rfix
   module File
-    Self = Deleted | Ignored | Tracked | Untracked
+    def self.sum
+      Deleted | Ignored | Tracked | Untracked
+    end
 
-    def self.call(input)
-      Self.call(input)
+    class << self
+      delegate :call, to: :sum
     end
   end
 end

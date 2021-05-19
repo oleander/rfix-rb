@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "active_support/core_ext/string/inflections"
 require "rugged"
 require "pathname"
 require "dry/struct"
@@ -35,15 +36,26 @@ module Rfix
       abstract_class self
 
       attribute :repository, Repository
-      attribute :basename, Types::String
+      attribute :basename, Types::Path::Relative
 
-      UNTRACKED = [:worktree_new, :index_new]
-      DELETED = [:deleted, :worktree_deleted]
-      IGNORED = [:ignored, :unmodified].freeze
+      UNTRACKED = %i[worktree_new index_new].freeze
+      DELETED = %i[deleted worktree_deleted].freeze
+      IGNORED = %i[ignored unmodified].freeze
       TRACKED = [:added].freeze
+
+      delegate :delete, to: :path
+      delegate :to_s, to: :basename
+
+      def to_table
+        [basename]
+      end
 
       def key
         path.to_s
+      end
+
+      def lines
+        EMPTY_ARRAY
       end
 
       # @return [Pathnane]
@@ -55,12 +67,12 @@ module Rfix
         raise NotImplementedError, self.class.name
       end
 
-      def refresh!(*)
-        # NOP
+      def contains?(file)
+        path == file
       end
 
       def inspect
-        "<#{self.class.name}(#{status.join(', ')}:#{basename})>"
+        "<#{self.class.name.demodulize}(#{status.join(', ')}:#{self})>"
       end
 
       %i[untracked? tracked? ignored? deleted?].each do |name|

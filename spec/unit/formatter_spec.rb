@@ -4,11 +4,11 @@ require "stringio"
 require "tempfile"
 require "parser/current"
 
-RSpec.describe Rfix::Formatter do
+RSpec.describe Rfix::Formatter, repository: "HEAD" do
   subject(:formatter) { described_class.new(io, {}) }
 
   let(:io) { StringIO.new }
-  let(:file) { Faker::File.file_name(dir: Dir.pwd, ext: "rb") }
+  let(:file) { Blob.new(name: "example.rb", path: expand_path("repository")) }
   let(:ruby) do
     <<~RUBY
       def hello(*args)
@@ -16,7 +16,7 @@ RSpec.describe Rfix::Formatter do
       end
     RUBY
   end
-  let(:buffer) { Parser::Source::Buffer.new(file, source: ruby) }
+  let(:buffer) { Parser::Source::Buffer.new(file.absolute_path.to_s, source: ruby) }
   let(:location) { Parser::Source::Range.new(buffer, 21, 35) }
   let(:message) { "Favor `format` over `String#%`" }
   let(:severity) { RuboCop::Cop::Severity.name_from_code("E") }

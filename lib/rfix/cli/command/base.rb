@@ -9,22 +9,24 @@ require "rugged"
 require "rfix/extension/pastel"
 require "rfix/extension/strings"
 
+module RuboCop
+  class CommentConfig
+    concerning :Verification, prepend: true do
+      def cop_enabled_at_line?(_, line)
+        super && repository.include?(processed_source.file_path, line)
+      rescue StandardError => e
+        abort e.full_message(highlight: true)
+      end
+    end
+  end
+end
+
 module Rfix
   module CLI
     module Command
       class Base < Dry::CLI::Command
         include Log
         include Dry::Core::Constants
-
-        class RuboCop::CommentConfig
-          concerning :Verification, prepend: true do
-            def cop_enabled_at_line?(_, line)
-              repository.include?(processed_source.file_path, line)
-            rescue StandardError => e
-              abort e.full_message(highlight: true)
-            end
-          end
-        end
 
         option :formatters, type: :array, default: ["Rfix::Formatter"]
         option :format, type: :string, default: "Rfix::Formatter"
@@ -33,6 +35,7 @@ module Rfix
         option :cache, type: :boolean, default: true
         option :debug, type: :boolean, default: false
         option :only_recognized_file_types, type: :boolean, default: true
+        option :no_cache, type: :boolean, default: false
         option :force_exclusion, type: :boolean, default: true
 
         private
@@ -49,15 +52,33 @@ module Rfix
             end
           end
 
-          config = RuboCop::ConfigStore.new.tap do |config|
-            config.options_config = RuboCop::ConfigLoader.configuration_file_for(handler.workdir)
+          Formatter.class_eval do
+            define_method(:repository, &handler.method(:itself))
+            define_method(:debug?) { params.fetch(:debug, false) }
           end
 
-          Undefined.default(args, handler.paths).then do |paths|
-            RuboCop::CLI::Environment.new(params, config, paths)
-          end.then do |env|
-            RuboCop::CLI::Command::ExecuteRunner.new(env).run
+          paths = handler.paths
+
+          unless args == Undefined
+            RuboCop::Options.new.parse(args).then do |user_defined_options, user_defined_paths|
+              params.merge!(user_defined_options)
+
+              unless user_defined_paths.empty?
+                paths.replace(user_defined_paths)
+              end
+            end
           end
+
+          config = RuboCop::ConfigStore.new.tap do |config_store|
+            RuboCop::ConfigLoader.configuration_file_for(handler.workdir).then do |loader|
+              config_store.options_config = loader
+            rescue RuboCop::Cop::AmbiguousCopName => e
+              abort e.message
+            end
+          end
+
+          env = RuboCop::CLI::Environment.new(params, config, paths)
+          RuboCop::CLI::Command::ExecuteRunner.new(env).run
         end
       end
     end

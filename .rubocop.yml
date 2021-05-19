@@ -4,6 +4,9 @@ require:
 AllCops:
   TargetRubyVersion: 3.0
   AutoCorrect: true
+  Exclude:
+    - 'spec/fixtures/repository/**/*'
+    - 'vendor/**/*'
 
 Layout/LineLength:
    Max: 120
@@ -84,3 +87,17 @@ Lint/AmbiguousBlockAssociation:
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
+
+Style/DoubleNegation:
+  Enabled: false
+Lint/ShadowedException:
+  Enabled: false
+
+Style/FormatString:
+  EnforcedStyle: percent
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+RSpec/FilePath:
+  IgnoreMethods: true
+  SpecSuffixOnly: true

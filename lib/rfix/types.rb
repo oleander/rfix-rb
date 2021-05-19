@@ -2,6 +2,7 @@
 
 require "dry/types"
 require "dry/logic"
+require "rugged"
 
 module Rfix
   module Types
@@ -12,7 +13,7 @@ module Rfix
     Constrained = Dry::Types::Constrained
 
     Dry::Types.define_builder(:not) do |type|
-      Constrained.new(type.lax, rule: Operations::Negation.new(type.rule))
+      Constrained.new(Types::Any, rule: Operations::Negation.new(type.rule))
     end
 
     Dry::Types.define_builder(:and) do |left, right|
@@ -41,12 +42,26 @@ module Rfix
 
       module Staged
         Tree = List.constrained(includes: :worktree_new)
+        Untracked = List.constrained(includes: :untracked)
         Index = List.constrained(includes: :index_new)
       end
 
-      Untracked = Staged::Tree.or(Staged::Index).and(Ignored.not)
+      Untracked = Staged::Tree.or(Staged::Index).or(Staged::Untracked).and(Ignored.not)
       Tracked = Untracked.not
+    end
 
+    Dry::Logic::Predicates.predicate(:truthy?) do |attribute, input|
+      !!input.public_send(attribute)
+    rescue NoMethodError
+      false
+    end
+
+    module Path
+      include Dry::Types()
+
+      Pathname = Constructor(Pathname) << (String | Instance(Pathname))
+      Absolute = Pathname.constrained(truthy: :absolute?)
+      Relative = Pathname.constrained(truthy: :relative?)
     end
   end
 end
