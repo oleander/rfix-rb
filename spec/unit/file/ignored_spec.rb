@@ -1,5 +1,0 @@
-# frozen_string_literal: true
-
-RSpec.describe Rfix::File::Ignored do
-  it_behaves_like "a skipped file", :ignored?
-end

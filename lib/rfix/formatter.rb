@@ -78,10 +78,11 @@ module Rfix
 
       progress.advance
 
-      length = offenses.length - 1
-      offenses.each_with_index do |offense, _index|
-        framed(offense) do
-          report_line_with_highlight(offense)
+      offenses.each do |offense|
+        if offense.location.respond_to?(:source_buffer)
+          framed(offense) do
+            report_line_with_highlight(offense)
+          end
         end
 
         progress.log("\n")

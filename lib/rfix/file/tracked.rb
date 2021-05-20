@@ -22,6 +22,7 @@ module Rfix
 
       def to_str_range
         lines
+          .to_a
           .sort
           .chunk_while { |i, j| i + 1 == j }
           .map { |a| a.length < 3 ? a : "#{a.first}-#{a.last}" }

@@ -3,6 +3,7 @@
 
 require "bootsnap"
 require "xdg"
+require "rainbow"
 
 Bootsnap.setup(
   cache_dir: XDG::Cache.new.home.join("rfix").to_s,
@@ -33,6 +34,11 @@ unless defined?(Rfix)
   require "rfix"
   require "dry/cli"
 end
+
 require "rfix"
 
-Rfix::CLI::Command.setup
+begin
+  exit Rfix::CLI::Command.setup
+rescue Errno::ENOENT, RuboCop::Error => e
+  abort [Rainbow("\n==>").red, e.message].join(" ")
+end
