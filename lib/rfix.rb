@@ -7,6 +7,7 @@ require "rubocop"
 require "pastel"
 
 require "rfix/extension/strings"
+require "rfix/extension/pastel"
 
 loader = Zeitwerk::Loader.for_gem
 loader.ignore("#{__dir__}/rfix/rake/paths")
@@ -14,6 +15,7 @@ loader.ignore("#{__dir__}/rfix/rake/support")
 loader.ignore("#{__dir__}/rfix/loader")
 loader.ignore("#{__dir__}/rfix/rake")
 loader.ignore("#{__dir__}/rfix/extension/strings")
+loader.ignore("#{__dir__}/rfix/extension/pastel")
 loader.ignore("#{__dir__}/rfix/commands")
 loader.inflector.inflect "cli" => "CLI"
 loader.setup
@@ -24,4 +26,3 @@ end
 
 RuboCop::CommentConfig.prepend(Rfix::Extension::CommentConfig)
 RuboCop::Cop::Offense.prepend(Rfix::Extension::Offense)
-Pastel::Color.include(Rfix::Extension::Pastel)

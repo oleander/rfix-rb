@@ -3,12 +3,11 @@
 require "pastel"
 require "strings"
 
-module Rfix
-  module Extension
-    module Pastel
+module Pastel
+  class Color
+    concerning :Fallback, prepend: true do
       def strip(*strings)
-        modified = strings.map(&::Strings::ANSI.method(:sanitize))
-        modified.size == 1 ? modified[0] : modified
+        super(*strings.map(&Strings::ANSI.method(:sanitize)))
       end
     end
   end
