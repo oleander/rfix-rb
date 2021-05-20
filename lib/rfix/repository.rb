@@ -65,7 +65,30 @@ module Rfix
     end
 
     def files
-      collector.to_a
+      options = {
+        context_lines: 1,
+        ignore_whitespace: true,
+        ignore_whitespace_change: true,
+        ignore_whitespace_eol: true,
+        disable_pathspec_match: true,
+        ignore_submodules: true,
+        include_ignored: false,
+        include_unmodified: false,
+        include_untracked_content: false,
+        include_typechange: false
+      }
+
+      diff = origin.diff(repository.index, **options)
+      diff.merge!(repository.index.diff(**options))
+      diff.find_similar!(all: true, ignore_whitespace: true)
+
+      diff.deltas.map do |delta|
+        File::Tracked.call(
+          repository: self,
+          status: [:tracked],
+          basename: delta.new_file.fetch(:path)
+        )
+      end
     end
 
     def permitted
@@ -103,7 +126,7 @@ module Rfix
     def origin
       repository.lookup(repository.rev_parse(reference.name).oid)
     rescue Rugged::Error, Rugged::InvalidError, Rugged::ReferenceError
-      raise Error, "Reference #{name.inspect} not found"
+      raise Error, "Reference #{reference.name.inspect} not found"
     end
 
     def collector

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "pry-rescue/rspec"
+# require "pry-rescue/rspec"
 
 require "rspec/expectations"
 require "aruba/rspec"
