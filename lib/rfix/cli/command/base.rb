@@ -48,7 +48,8 @@ module Rfix
 
           paths = handler.paths
 
-          RuboCop::Options.new.parse(ARGV).then do |user_defined_options, user_defined_paths|
+          variadic_args = Undefined.default(args, EMPTY_ARRAY)
+          RuboCop::Options.new.parse(variadic_args).then do |user_defined_options, user_defined_paths|
             params.merge!(user_defined_options)
 
             unless user_defined_paths.empty?
@@ -67,7 +68,7 @@ module Rfix
           if params[:no_cache]
             RuboCop::ResultCache.cleanup(config, true)
             XDG::Config.new.home.then do |cache_path|
-              cache_path.delete if cache_path.exist?
+              cache_path.rmtree if cache_path.exist?
             end
           end
 
