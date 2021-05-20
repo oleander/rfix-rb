@@ -9,17 +9,6 @@ require "rugged"
 require "rfix/extension/pastel"
 require "rfix/extension/strings"
 
-module RuboCop
-  class CommentConfig
-    concerning :Verification, prepend: true do
-      def cop_enabled_at_line?(_, line)
-        super && repository.include?(processed_source.file_path, line)
-      rescue StandardError => e
-        abort e.full_message(highlight: true)
-      end
-    end
-  end
-end
 
 module Rfix
   module CLI

@@ -28,6 +28,7 @@ Gem::Specification.new do |spec|
   spec.executables << "rfix"
 
   spec.add_runtime_dependency "activesupport"
+  spec.add_runtime_dependency "bootsnap"
   spec.add_runtime_dependency "bundler"
   spec.add_runtime_dependency "concurrent-ruby"
   spec.add_runtime_dependency "dry-cli"

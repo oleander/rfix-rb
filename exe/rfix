@@ -2,7 +2,16 @@
 # frozen_string_literal: true
 
 require "rubygems"
+# require 'bootsnap'
 require "bundler"
+
+# Bootsnap.setup(
+#   cache_dir:            'tmp/cache',          # Path to your cache
+#   development_mode:     'development', # Current working environment, e.g. RACK_ENV, RAILS_ENV, etc
+#   load_path_cache:      true,                 # Optimize the LOAD_PATH with a cache
+#   compile_cache_iseq:   true,                 # Compile Ruby code into ISeq cache, breaks coverage reporting.
+#   compile_cache_yaml:   true                  # Compile YAML into a cache
+# )
 
 unless defined?(Rfix)
   if $PROGRAM_NAME.end_with?("exe/rfix")
