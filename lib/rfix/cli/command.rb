@@ -15,6 +15,7 @@ module Rfix
       register "info", Info
       register "help", Help
       register "all", All
+      register "status", Status
 
       def setup
         Dry::CLI.new(self).call
