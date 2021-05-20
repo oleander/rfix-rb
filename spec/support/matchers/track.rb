@@ -2,15 +2,11 @@
 
 RSpec::Matchers.define :track do |file|
   match do |repository|
-    repository.include_file?(file.absolute_path).tap do |value|
-      binding.pry unless value
-    end
+    repository.include_file?(file.name)
   end
 
   match_when_negated do |repository|
-    repository.untracked.any? do |path|
-      path.basename == file.name
-    end
+    !repository.include_file?(file.name)
   end
 
   failure_message do |repository|

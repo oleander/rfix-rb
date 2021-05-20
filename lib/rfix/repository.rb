@@ -66,11 +66,7 @@ module Rfix
 
     def files
       Diff.new(repository: self).deltas.map do |delta|
-        File::Tracked.call(
-          repository: self,
-          status: [:tracked],
-          basename: delta.new_file.fetch(:path)
-        )
+        File::Tracked.call(**delta.new_file, repository: self, status: delta.status)
       end
     end
 
@@ -98,9 +94,7 @@ module Rfix
     end
 
     def include_file?(path)
-      Types::Path::Absolute.call(path).then do |absolute_path|
-        cache[absolute_path.to_s].class.in?(INCLUDED)
-      end
+      Types::Path::Relative.call(path) && cache[path.to_s]
     end
 
     # TODO: Refactor

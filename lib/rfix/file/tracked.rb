@@ -4,20 +4,25 @@ require "rainbow/ext/string"
 
 module Rfix
   module File
-    class Tracked < Base
+    class Tracked < Dry::Struct
       ID = "[T]".color(:lightseagreen).freeze
 
-      attribute :status, Types::Status::Tracked.default(TRACKED)
-      attribute :cache, Types.Instance(Concurrent::Map).default { Concurrent::Map.new }
+      attribute :status, Types::Symbol
+      attribute :path, Types::Path::Relative
+      attribute :repository, Repository
 
       delegate :include?, to: :lines
+
+      def key
+        path.to_s
+      end
 
       def tracked?
         true
       end
 
       def to_s
-        "%s:%s" % [basename, to_str_range]
+        "%s:%s" % [path, to_str_range]
       end
 
       def to_str_range
@@ -32,12 +37,12 @@ module Rfix
       end
 
       def to_table
-        [basename, to_str_range]
+        [path, to_str_range]
       end
 
       def lines
         Diff.new(repository: repository, options: {
-          paths: [basename.to_path]
+          paths: [path.to_path]
         }).lines.lazy.map(&:new_lineno).select(&:positive?)
       end
     end

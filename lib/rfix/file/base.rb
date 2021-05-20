@@ -58,15 +58,6 @@ module Rfix
         EMPTY_ARRAY
       end
 
-      # @return [Pathnane]
-      def path
-        repository.path.join(basename)
-      end
-
-      def include?(*, **)
-        raise NotImplementedError, self.class.name
-      end
-
       def contains?(file)
         path == file
       end

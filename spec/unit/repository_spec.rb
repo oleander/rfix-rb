@@ -62,7 +62,7 @@ RSpec.describe Rfix::Repository do
           context "then staged" do
             let(:file) { super().stage }
 
-            it { is_expected.not_to track(file) }
+            it { is_expected.to track(file) }
           end
 
           context "then deleted" do
