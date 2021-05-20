@@ -48,13 +48,11 @@ module Rfix
 
           paths = handler.paths
 
-          unless args == Undefined
-            RuboCop::Options.new.parse(args).then do |user_defined_options, user_defined_paths|
-              params.merge!(user_defined_options)
+          RuboCop::Options.new.parse(ARGV).then do |user_defined_options, user_defined_paths|
+            params.merge!(user_defined_options)
 
-              unless user_defined_paths.empty?
-                paths.replace(user_defined_paths)
-              end
+            unless user_defined_paths.empty?
+              paths.replace(user_defined_paths)
             end
           end
 
@@ -66,7 +64,12 @@ module Rfix
             end
           end
 
-          # params.merge!(cache_root: handler.workdir)
+          if params[:no_cache]
+            RuboCop::ResultCache.cleanup(config, true)
+            XDG::Config.new.home.then do |cache_path|
+              cache_path.delete if cache_path.exist?
+            end
+          end
 
           env = RuboCop::CLI::Environment.new(params, config, paths)
           RuboCop::CLI::Command::ExecuteRunner.new(env).run
