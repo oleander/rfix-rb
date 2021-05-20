@@ -9,7 +9,6 @@ require "rugged"
 require "rfix/extension/pastel"
 require "rfix/extension/strings"
 
-
 module Rfix
   module CLI
     module Command
