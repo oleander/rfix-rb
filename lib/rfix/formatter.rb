@@ -59,12 +59,7 @@ module Rfix
     def started(files)
       title = "Loading #{files.count} file(s) [:bar]"
       @progress = TTY::ProgressBar.new(title, total: files.count, width: TTY::Screen.width - 10, bar_format: :block)
-      trap(:WINCH) { @progress.resize }
-
-      debug(repository.tracked, ["Tracked file", "Line range"])
-      debug(repository.ignored, ["Ignored file"])
-      debug(repository.untracked, ["Untracked file"])
-      debug(repository.deleted, ["Deleted file"])
+      # trap(:WINCH) { @progress.resize }
     end
 
     def progress
