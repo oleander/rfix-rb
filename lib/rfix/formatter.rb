@@ -56,8 +56,8 @@ module Rfix
       progress.configure do |config|
         config.bar_format = :block
         config.total = files.count
-        config.clear_head = false
-        config.clear = false
+        config.clear_head = true
+        config.clear = true
         config.width = width
       end
     end
@@ -65,12 +65,17 @@ module Rfix
 
     # @file [File]
     # @offenses [Array<Offence>]
-    def file_finished(*, offenses)
+    def file_finished(file, offenses)
       @reported_offenses += offenses
 
       progress.advance
+    end
 
-      offenses.each do |offense|
+    # @files [Array<File>]
+    def finished(files)
+      progress.finish
+      mark_command_line
+      reported_offenses.each do |offense|
         progress.log(NEWLINE)
 
         framed(offense) do
@@ -79,12 +84,6 @@ module Rfix
       rescue NoSuchFileError
         # NOP
       end
-    end
-
-    # @files [Array<File>]
-    def finished(files)
-      progress.finish
-      mark_command_line
       report_summary(files)
     end
 
