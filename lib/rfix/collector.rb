@@ -31,11 +31,17 @@ module Rfix
         File.call(basename: path, status: statuses, repository: repository)
       end
 
-      repository.status do |path, statuses|
-        (block << construct).call(path, statuses)
+      statuses = Hash.new(EMPTY_ARRAY).tap do |statuses|
+        repository.status do |path, status|
+          statuses[path] = status
+        end
       end
 
-      unless repository.head_unborn?
+      if repository.head_unborn?
+        statuses.each do |path, status|
+          (block << construct).call(path, status)
+        end
+      else
         origin.diff_workdir(**OPTIONS.dup).tap do |diff|
           diff.find_similar!(
             renames_from_rewrites: true,
@@ -43,7 +49,9 @@ module Rfix
             copies: true
           )
         end.each_delta do |delta|
-          (block << construct).call(delta.new_file[:path], [delta.status])
+          delta.new_file.fetch(:path).then do |file_path|
+            (block << construct).call(file_path, statuses[file_path] + [delta.status])
+          end
         end
       end
     end
