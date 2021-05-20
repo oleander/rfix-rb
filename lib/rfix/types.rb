@@ -13,7 +13,7 @@ module Rfix
     Constrained = Dry::Types::Constrained
 
     Dry::Types.define_builder(:not) do |type|
-      Constrained.new(Types::Any, rule: Operations::Negation.new(type.rule))
+      Constrained.new(type.lax, rule: Operations::Negation.new(type.rule))
     end
 
     Dry::Types.define_builder(:and) do |left, right|

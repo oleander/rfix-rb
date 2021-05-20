@@ -32,10 +32,22 @@ RSpec.describe Rfix::Types::Status do
   end
 
   describe described_class::Tracked do
+    context "when non-sense" do
+      let(:status) { "<string>" }
+
+      it { is_expected.to eq(false) }
+    end
+
     context "when tracked" do
       let(:status) { :tracked }
 
       it { is_expected.to eq(true) }
+    end
+
+        context "when untracked" do
+      let(:status) { :untracked }
+
+      it { is_expected.to eq(false) }
     end
 
     context "when ignored" do

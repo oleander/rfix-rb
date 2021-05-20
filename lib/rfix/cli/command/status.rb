@@ -8,7 +8,7 @@ module Rfix
   module CLI
     module Command
       class Status < Base
-        def call(**params)
+        def call(**_params)
           walker = Rugged::Walker.new(Rugged::Repository.discover)
           walker.sorting(Rugged::SORT_TOPO | Rugged::SORT_REVERSE)
           walker.push("HEAD")
