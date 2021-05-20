@@ -70,8 +70,8 @@ module Rfix
 
       progress.advance
 
-      offenses.each_with_index do |offense, index|
-        progress.log(NEWLINE) unless index.zero?
+      offenses.each do |offense|
+        progress.log(NEWLINE)
 
         framed(offense) do
           report_line_with_highlight(offense)
@@ -79,10 +79,6 @@ module Rfix
       rescue NoSuchFileError
         # NOP
       end
-    end
-
-    def file_started(file, options)
-      progress.log "FILE: #{file}"
     end
 
     # @files [Array<File>]
@@ -99,7 +95,6 @@ module Rfix
     end
 
     def framed(offense, &block)
-      puts block.call
       progress.log TTY::Box.frame({
         width: width,
         padding: [PADDING, PADDING, 0, PADDING],
@@ -141,14 +136,11 @@ module Rfix
       visible = begin_index...end_index
       highlight = location.to_range
 
-      highlighter = Highlighter.new(
+      Highlighter.new(
         visible_lines: (min_line..max_line),
         highlight: highlight,
         visible: visible
-      )
-
-      progress.log("Okokokokokok")
-      (method(:report) << highlighter).call(source)
+      ).call(source)
     end
 
     def corrected
