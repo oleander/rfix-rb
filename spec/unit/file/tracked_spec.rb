@@ -10,7 +10,7 @@ RSpec.describe Rfix::File::Tracked, repository: "HEAD" do
       context "when before" do
         let(:line) { excluded.drop_while(&lines.min.method(:>=)).first }
 
-        xit "yields false" do
+        it "yields false" do
           expect(file.include?(line)).to eq(false), "exclude line #{line} for #{file}"
         end
       end

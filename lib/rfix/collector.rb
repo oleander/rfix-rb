@@ -27,8 +27,8 @@ module Rfix
     include Enumerable
 
     def each(&block)
-      construct = lambda do |path, status|
-        File.call(basename: path, status: [status], repository: repository)
+      construct = lambda do |path, statuses|
+        File.call(basename: path, status: statuses, repository: repository)
       end
 
       repository.status do |path, statuses|
@@ -43,7 +43,7 @@ module Rfix
             copies: true
           )
         end.each_delta do |delta|
-          (block << construct).call(delta.new_file[:path], delta.status)
+          (block << construct).call(delta.new_file[:path], [delta.status])
         end
       end
     end

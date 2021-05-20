@@ -1,23 +1,23 @@
 #!/usr/bin/env -S ruby -W0
 # frozen_string_literal: true
 
-require "bootsnap"
+# require "bootsnap"
 require "xdg"
 
-Bootsnap.setup(
-  cache_dir: XDG::Cache.new.home.join("rfix").to_s,
-  development_mode: "development",
-  load_path_cache: true,
-  compile_cache_iseq: true,
-  compile_cache_yaml: true
-)
+# Bootsnap.setup(
+#   cache_dir: XDG::Cache.new.home.join("rfix").to_s,
+#   development_mode: "development",
+#   load_path_cache: true,
+#   compile_cache_iseq: true,
+#   compile_cache_yaml: true
+# )
 
-require "rfix"
+# require "rfix"
 
 unless defined?(Rfix)
   require "bundler"
   require "rubygems"
-  if $PROGRAM_NAME.end_with?("exe/rfix") && false
+  if $PROGRAM_NAME.end_with?("exe/rfix")
     require "bundler/setup"
     Bundler.require(:test, :default)
   else
@@ -31,6 +31,8 @@ unless defined?(Rfix)
   end
 
   require "rfix"
+  require "dry/cli"
 end
+require "rfix"
 
 Rfix::CLI::Command.setup

@@ -29,25 +29,19 @@ module Rfix
 
       List = Array(Symbol)
 
-      WorkTreeDeleted = List.constrained(includes: :worktree_deleted)
-      DeletedOther = List.constrained(includes: :deleted)
-      Deleted = WorkTreeDeleted.or(DeletedOther)
+      Deleted = %i[deleted worktree_deleted].map do |status|
+        List.constrained(includes: status)
+      end.reduce(:|)
 
-      module IgnoredType
-        Ignored = List.constrained(includes: :ignored)
-        Unmodified = List.constrained(includes: :unmodified)
-      end
+      Ignored = %i[ignored unmodified].map do |status|
+        List.constrained(includes: status)
+      end.reduce(:|)
 
-      Ignored = IgnoredType::Ignored.or(IgnoredType::Unmodified).and(Deleted.not)
+      Untracked = %i[untracked index_new worktree_new].map do |status|
+        List.constrained(includes: status)
+      end.reduce(:|)
 
-      module Staged
-        Tree = List.constrained(includes: :worktree_new)
-        Untracked = List.constrained(includes: :untracked)
-        Index = List.constrained(includes: :index_new)
-      end
-
-      Untracked = Staged::Tree.or(Staged::Index).or(Staged::Untracked).and(Ignored.not)
-      Tracked = Untracked.not
+      Tracked = List << (Deleted | Ignored | Untracked).not
     end
 
     Dry::Logic::Predicates.predicate(:truthy?) do |attribute, input|

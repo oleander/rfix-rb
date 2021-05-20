@@ -3,6 +3,8 @@
 module Rfix
   module File
     class Ignored < Base
+      ID = "[I]".color(:blue).freeze
+
       attribute :status, Types::Status::Ignored
 
       def include?(*)

@@ -11,10 +11,14 @@ group :development do
   gem "faker"
   gem "guard", require: false
   gem "guard-rspec", require: false
+
   gem "jsonpath"
 end
 
 group :development, :test do
+  gem "pry-rescue"
+  gem "pry-stack_explorer"
+
   gem "listen"
   gem "pry", require: true
   gem "pry-theme"

@@ -3,6 +3,8 @@
 module Rfix
   module File
     class Undefined < Base
+      ID = "[U]".color(:orange).freeze
+
       def include?(*)
         false
       end

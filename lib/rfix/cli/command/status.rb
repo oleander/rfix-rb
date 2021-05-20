@@ -21,13 +21,17 @@ module Rfix
           repo = Repository.new(repository: Rugged::Repository.discover, reference: ref)
           files = repo.permitted
 
+          pp files.map(&:status).uniq
+
           result = files.map do |file|
             file.to_s.split("/").reverse.reduce({}) do |acc, part|
+              next { "#{part} (#{file.class}:#{file.status.join(', ')})" => {} } if acc.empty?
+
               { part.to_s => acc }
             end
           end.reduce(EMPTY_HASH, :deep_merge)
 
-          puts TTY::Tree.new({ root: result}).render
+          puts TTY::Tree.new({ root: result }).render
         end
       end
     end

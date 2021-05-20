@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "pry-rescue/rspec"
+
 require "rspec/expectations"
 require "aruba/rspec"
 require "factory_bot"

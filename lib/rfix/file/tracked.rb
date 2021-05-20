@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
+require "rainbow/ext/string"
+
 module Rfix
   module File
     class Tracked < Base
+      ID = "[T]".color(:lightseagreen).freeze
+
       attribute :status, Types::Status::Tracked.default(TRACKED)
       attribute :cache, Types.Instance(Concurrent::Map).default { Concurrent::Map.new }
 
@@ -13,12 +17,11 @@ module Rfix
       end
 
       def to_s
-        [basename.to_path, to_str_range].join(":")
+        "%s:%s" % [basename, to_str_range]
       end
 
       def to_str_range
         lines
-          .select(&:positive?)
           .sort
           .chunk_while { |i, j| i + 1 == j }
           .map { |a| a.length < 3 ? a : "#{a.first}-#{a.last}" }
@@ -32,7 +35,7 @@ module Rfix
       end
 
       def lines
-        diff.each_line.lazy.map(&:new_lineno)
+        diff.each_line.lazy.map(&:new_lineno).select(&:positive?)
       end
 
       private

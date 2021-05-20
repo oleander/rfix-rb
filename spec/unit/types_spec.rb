@@ -1,5 +1,51 @@
 # frozen_string_literal: true
 
+RSpec.describe Rfix::Types::Status do
+  subject { described_class.valid?([status]) }
+
+  describe described_class::Ignored do
+    context "when ignored" do
+      let(:status) { :ignored }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context "when tracked" do
+      let(:status) { :tracked }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe described_class::Untracked do
+    context "when ignored" do
+      let(:status) { :ignored }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context "when untracked" do
+      let(:status) { :untracked }
+
+      it { is_expected.to eq(true) }
+    end
+  end
+
+  describe described_class::Tracked do
+    context "when tracked" do
+      let(:status) { :tracked }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context "when ignored" do
+      let(:status) { :ignored }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+end
+
 RSpec.describe Rfix::Types::Path do
   let(:absolute) { "/a/b/c" }
   let(:relative) { absolute[1..] }
