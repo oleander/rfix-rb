@@ -35,7 +35,10 @@ module Rfix
     end
     # rubocop:enable Style/ClassAndModuleChildren
 
+    SURROUNDING_LINES = 2
+    NEWLINE = "\n"
     SPACE = " "
+    PADDING = 1
 
     def initialize(output, options = EMPTY_HASH)
       super(
@@ -48,11 +51,11 @@ module Rfix
 
     def started(files)
       progress.configure do |config|
-        config.width = TTY::Screen.width
         config.bar_format = :block
         config.total = files.count
         config.clear_head = true
         config.clear = true
+        config.width = width
       end
     end
 
@@ -63,20 +66,20 @@ module Rfix
 
       progress.advance
 
-      offenses.each do |offense|
-        if offense.location.respond_to?(:source_buffer)
-          framed(offense) do
-            report_line_with_highlight(offense)
-          end
-        end
+      offenses.each_with_index do |offense, index|
+        next unless offense.location.respond_to?(:source_buffer)
 
-        progress.log("\n")
+        progress.log(NEWLINE) unless index.zero?
+
+        framed(offense) do
+          report_line_with_highlight(offense)
+        end
       end
     end
 
     # @files [Array<File>]
     def finished(files)
-      progress&.finish
+      progress.finish
       mark_command_line
       report_summary(files)
     end
@@ -91,10 +94,14 @@ module Rfix
       end
     end)
 
+    def width
+      TTY::Screen.width
+    end
+
     def framed(offense, &block)
       progress.log TTY::Box.frame({
-        width: TTY::Screen.width,
-        padding: [1, 1, 0, 1],
+        width: width,
+        padding: [PADDING, PADDING, 0, PADDING],
         title: {
           top_left: "#{offense.icon} #{offense.msg}".surround(SPACE),
           bottom_left: offense.clickable_severity&.surround(SPACE),
@@ -123,10 +130,9 @@ module Rfix
       source = buffer.source
       line = location.line
       last_line = buffer.last_line
-      surrounding_lines = 2
 
-      min_line = [line - surrounding_lines * 2, 1].max
-      max_line = [line + surrounding_lines * 2, last_line].min
+      min_line = [line - SURROUNDING_LINES * 2, 1].max
+      max_line = [line + SURROUNDING_LINES * 2, last_line].min
 
       begin_index = buffer.line_range(min_line).begin_pos
       end_index = buffer.line_range(max_line).end_pos
@@ -163,8 +169,8 @@ module Rfix
       return if files.none? || !debug?
 
       progress.log TTY::Table.new(header, files.map(&:to_table).to_a, {
-        width: TTY::Screen.width,
-        padding: 1
+        padding: PADDING,
+        width: width
       }).render(:unicode)
     end
   end
