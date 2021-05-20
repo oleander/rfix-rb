@@ -46,7 +46,7 @@ module Rfix
 
       def diff
         repository.origin.diff_workdir(**options).tap do |diff|
-          diff.merge!(repository.index.diff(**options))
+          # diff.merge!(repository.index.diff(**options))
         end
       end
     end

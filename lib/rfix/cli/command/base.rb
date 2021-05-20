@@ -20,7 +20,7 @@ module Rfix
         option :format, type: :string, default: "Rfix::Formatter"
         option :auto_correct_all, type: :boolean, default: true
         option :auto_correct, type: :boolean, default: true
-        option :parallel, type: :boolean, default: true
+        option :parallel, type: :boolean, default: false
         option :cache, type: :boolean, default: true
         option :debug, type: :boolean, default: false
         option :only_recognized_file_types, type: :boolean, default: true
