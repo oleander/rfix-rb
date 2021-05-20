@@ -2,11 +2,15 @@
 
 require "strings"
 
-module Rfix
-  module Extension
-    module Strings
-      def self.wrap(line, *, **)
-        line
+module Strings
+  module Wrap
+    concerning :Fallback, prepend: true do
+      class_methods do
+        def wrap(line, *, **)
+          super
+        rescue IndexError
+          line
+        end
       end
     end
   end

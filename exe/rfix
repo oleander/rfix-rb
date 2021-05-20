@@ -1,21 +1,23 @@
-#!/usr/bin/env -S ruby -W0 --disable-all
+#!/usr/bin/env -S ruby -W0
 # frozen_string_literal: true
 
-require "rubygems"
-require "bootsnap"
-require "bundler"
-require "xdg"
+# require "bootsnap"
+# require "xdg"
 
-Bootsnap.setup(
-  cache_dir: XDG::Cache.new.home.join("rfix").to_s,
-  development_mode: "development",
-  load_path_cache: true,
-  compile_cache_iseq: true,
-  compile_cache_yaml: true
-)
+# Bootsnap.setup(
+#   cache_dir: XDG::Cache.new.home.join("rfix").to_s,
+#   development_mode: "development",
+#   load_path_cache: true,
+#   compile_cache_iseq: true,
+#   compile_cache_yaml: true
+# )
+
+require "rfix"
 
 unless defined?(Rfix)
-  if $PROGRAM_NAME.end_with?("exe/rfix")
+  require "bundler"
+  require "rubygems"
+  if $PROGRAM_NAME.end_with?("exe/rfix") && false
     require "bundler/setup"
     Bundler.require(:test, :default)
   else
@@ -23,6 +25,8 @@ unless defined?(Rfix)
     if (rfix = lockfile.specs.detect { |spec| spec.name == "rfix" })
       Gem.use_paths Gem.dir, Bundler.bundle_path.to_s, *Gem.path
       gem "rfix", rfix.version
+    else
+      abort "No rfix"
     end
   end
 
