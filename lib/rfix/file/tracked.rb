@@ -35,19 +35,9 @@ module Rfix
       end
 
       def lines
-        diff.each_line.lazy.map(&:new_lineno).select(&:positive?)
-      end
-
-      private
-
-      def options
-        Collector::OPTIONS.merge(paths: [basename.to_path])
-      end
-
-      def diff
-        repository.origin.diff_workdir(**options).tap do |diff|
-          # diff.merge!(repository.index.diff(**options))
-        end
+        Diff.new(repository: repository, options: {
+          paths: [basename.to_path]
+        }).lines.lazy.map(&:new_lineno).select(&:positive?)
       end
     end
   end

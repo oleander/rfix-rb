@@ -65,24 +65,7 @@ module Rfix
     end
 
     def files
-      options = {
-        context_lines: 1,
-        ignore_whitespace: true,
-        ignore_whitespace_change: true,
-        ignore_whitespace_eol: true,
-        disable_pathspec_match: true,
-        ignore_submodules: true,
-        include_ignored: false,
-        include_unmodified: false,
-        include_untracked_content: false,
-        include_typechange: false
-      }
-
-      diff = origin.diff(repository.index, **options)
-      diff.merge!(repository.index.diff(**options))
-      diff.find_similar!(all: true, ignore_whitespace: true)
-
-      diff.deltas.map do |delta|
+      Diff.new(repository: self).deltas.map do |delta|
         File::Tracked.call(
           repository: self,
           status: [:tracked],
@@ -92,9 +75,7 @@ module Rfix
     end
 
     def permitted
-      files.select do |file|
-        file.class.in?(INCLUDED)
-      end
+      files
     end
 
     def to_s
