@@ -27,13 +27,13 @@ module Rfix
     private
 
     def diff
-      origin.diff(index, **options).tap do |diff|
-        diff.merge!(index.diff(**options))
+      origin.diff(index, **extended_options).tap do |diff|
+        diff.merge!(index.diff(**extended_options))
         diff.find_similar!(all: true, ignore_whitespace: true)
       end
     end
 
-    def options
+    def extended_options
       OPTIONS.merge(**options)
     end
   end
