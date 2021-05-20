@@ -19,6 +19,7 @@ module Rfix
     include Log
 
     option :reported_offenses
+    option :progress
     option :options
     option :output
 
@@ -34,36 +35,25 @@ module Rfix
     end
     # rubocop:enable Style/ClassAndModuleChildren
 
-    PROMPT = TTY::Prompt.new(symbols: { marker: ">" })
     SPACE = " "
 
-    delegate :say, to: :PROMPT
-
-    class NullRepository
-      include Dry::Core::Constants
-      include Singleton
-
-      def include_file?(*)
-        true
-      end
-
-      %i[tracked untracked ignored deleted].each do |s|
-        define_method(s, &EMPTY_ARRAY.method(:itself))
-      end
-    end
-
     def initialize(output, options = EMPTY_HASH)
-      super(output: output, options: options, reported_offenses: EMPTY_ARRAY.dup)
+      super(
+        progress: TTY::ProgressBar.new("[:bar]"),
+        reported_offenses: EMPTY_ARRAY.dup,
+        options: options,
+        output: output
+      )
     end
 
     def started(files)
-      title = "Loading #{files.count} file(s) [:bar]"
-      @progress = TTY::ProgressBar.new(title, total: files.count, width: TTY::Screen.width - 10, bar_format: :block)
-      # trap(:WINCH) { @progress.resize }
-    end
-
-    def progress
-      @progress ||= TTY::ProgressBar.new("Loading file(s)")
+      progress.configure do |config|
+        config.width = TTY::Screen.width
+        config.bar_format = :block
+        config.total = files.count
+        config.clear_head = true
+        config.clear = true
+      end
     end
 
     # @file [File]
@@ -122,23 +112,11 @@ module Rfix
     end
 
     def mark_command_line
-      progress.log "\e]1337;SetMark\a"
-    end
-
-    def report(msg, format: true)
-      msg
-    end
-
-    def newline(amount = 1)
-      report("\n" * amount)
+      # progress.log "\e]1337;SetMark\a"
     end
 
     def report_line_with_highlight(offense)
       location = offense.location
-
-      unless location.respond_to?(:source_buffer)
-        return "Source not found"
-      end
 
       buffer = location.source_buffer
 
@@ -162,7 +140,7 @@ module Rfix
         visible: visible
       )
 
-      (method(:report) << highlighter).call(source)
+      (progress.method(:log) << highlighter).call(source)
     end
 
     def corrected
@@ -181,15 +159,13 @@ module Rfix
       reported_offenses.any?
     end
 
-    def repository
-      NullRepository.instance
-    end
-
     def debug(files, header)
-      if files.any? && debug?
-        progress.log TTY::Table.new(header, files.map(&:to_table).to_a, width: TTY::Screen.width - 10,
-                                                                        padding: 1).render(:unicode)
-      end
+      return if files.none? || !debug?
+
+      progress.log TTY::Table.new(header, files.map(&:to_table).to_a, {
+        width: TTY::Screen.width,
+        padding: 1
+      }).render(:unicode)
     end
   end
 end
