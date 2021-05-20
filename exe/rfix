@@ -41,4 +41,6 @@ begin
   exit Rfix::CLI::Command.setup
 rescue Errno::ENOENT, RuboCop::Error => e
   abort [Rainbow("\n==>").red, e.message].join(" ")
+rescue Interrupt
+  exit 1
 end
