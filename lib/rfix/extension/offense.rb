@@ -6,10 +6,13 @@ require "shellwords"
 require "pathname"
 require "tty-link"
 require "rainbow"
+require "rubocop"
+require "rubocop/cop/offense"
 
-module Rfix
-  module Extension
-    module Offense
+module RuboCop
+  module Cop
+    class Offense
+      # concerning :Features do
       STAR = Rainbow("⭑").yellow
       CROSS = Rainbow("✗").red
       CHECK = Rainbow("✓").green
@@ -75,6 +78,7 @@ module Rfix
       def escape(str)
         Shellwords.escape(str)
       end
+      # end
     end
   end
 end
