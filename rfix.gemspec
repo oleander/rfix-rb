@@ -51,5 +51,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "tty-prompt"
   spec.add_runtime_dependency "tty-screen"
   spec.add_runtime_dependency "tty-table"
+  spec.add_runtime_dependency "xdg"
   spec.add_runtime_dependency "zeitwerk"
 end

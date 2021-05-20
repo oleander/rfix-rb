@@ -26,6 +26,7 @@ PATH
       tty-prompt
       tty-screen
       tty-table
+      xdg
       zeitwerk
 
 PATH
@@ -257,6 +258,7 @@ GEM
     unicode-display_width (2.0.0)
     unicode_utils (1.4.0)
     wisper (2.0.1)
+    xdg (3.1.1)
     zeitwerk (2.4.2)
 
 PLATFORMS
