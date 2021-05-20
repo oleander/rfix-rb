@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "dry/struct"
+
 module Rfix
   class Collector < Dry::Struct
     # https://github.com/libgit2/rugged/blob/master/lib/rugged/tree.rb

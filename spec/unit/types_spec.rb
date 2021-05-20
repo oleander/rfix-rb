@@ -44,7 +44,7 @@ RSpec.describe Rfix::Types::Status do
       it { is_expected.to eq(true) }
     end
 
-        context "when untracked" do
+    context "when untracked" do
       let(:status) { :untracked }
 
       it { is_expected.to eq(false) }
