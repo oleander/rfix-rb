@@ -18,22 +18,28 @@ module Rfix
     extend Dry::Initializer
     include Log
 
-    option :reported_offenses
+    NoSuchFileError = Class.new(Error)
+
+    using(Module.new do
+      refine String do
+        def surround(value)
+          value + self + value
+        end
+      end
+
+      refine RuboCop::Cop::Offense.const_get(:PseudoSourceRange) do
+        def source_buffer
+          raise NoSuchFileError
+        end
+      end
+    end)
+
+
+    option :reported_offenses, default: -> { EMPTY_ARRAY.dup }
+    option :options, default: -> { EMPTY_HASH.dup }
     option :progress
     option :options
     option :output
-
-    # rubocop:disable Style/ClassAndModuleChildren
-    class ::TTY::ProgressBar
-      concerning :Log, prepend: true do
-        def log(input)
-          input.each_line do |line|
-            super(line.strip)
-          end
-        end
-      end
-    end
-    # rubocop:enable Style/ClassAndModuleChildren
 
     SURROUNDING_LINES = 2
     NEWLINE = "\n"
@@ -41,23 +47,21 @@ module Rfix
     PADDING = 1
 
     def initialize(output, options = EMPTY_HASH)
-      super(
-        progress: TTY::ProgressBar.new("[:bar]"),
-        reported_offenses: EMPTY_ARRAY.dup,
-        options: options,
-        output: output
-      )
+      TTY::ProgressBar.new("[:bar]", output: output).then do |bar|
+        super(output, output: output, options: options, progress: bar)
+      end
     end
 
     def started(files)
       progress.configure do |config|
         config.bar_format = :block
         config.total = files.count
-        config.clear_head = true
-        config.clear = true
+        config.clear_head = false
+        config.clear = false
         config.width = width
       end
     end
+
 
     # @file [File]
     # @offenses [Array<Offence>]
@@ -67,14 +71,18 @@ module Rfix
       progress.advance
 
       offenses.each_with_index do |offense, index|
-        next unless offense.location.respond_to?(:source_buffer)
-
         progress.log(NEWLINE) unless index.zero?
 
         framed(offense) do
           report_line_with_highlight(offense)
         end
+      rescue NoSuchFileError
+        # NOP
       end
+    end
+
+    def file_started(file, options)
+      progress.log "FILE: #{file}"
     end
 
     # @files [Array<File>]
@@ -86,19 +94,12 @@ module Rfix
 
     private
 
-    using(Module.new do
-      refine String do
-        def surround(value)
-          value + self + value
-        end
-      end
-    end)
-
     def width
       TTY::Screen.width
     end
 
     def framed(offense, &block)
+      puts block.call
       progress.log TTY::Box.frame({
         width: width,
         padding: [PADDING, PADDING, 0, PADDING],
@@ -106,7 +107,7 @@ module Rfix
           top_left: "#{offense.icon} #{offense.msg}".surround(SPACE),
           bottom_left: offense.clickable_severity&.surround(SPACE),
           bottom_right: offense.clickable_path&.surround(SPACE)
-        }.compact
+        }
       }, &block)
     end
 
@@ -146,7 +147,8 @@ module Rfix
         visible: visible
       )
 
-      (progress.method(:log) << highlighter).call(source)
+      progress.log("Okokokokokok")
+      (method(:report) << highlighter).call(source)
     end
 
     def corrected
