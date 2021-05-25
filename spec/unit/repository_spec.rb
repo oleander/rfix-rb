@@ -68,7 +68,7 @@ RSpec.describe Rfix::Repository do
           context "then deleted" do
             let(:file) { super().delete }
 
-            it { is_expected.not_to skip(file) }
+            it { is_expected.to skip(file) }
           end
         end
       end
