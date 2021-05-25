@@ -2,8 +2,6 @@
 
 require "active_support/core_ext/module/concerning"
 require "active_support/core_ext/module/delegation"
-require "rubocop/formatter/simple_text_formatter"
-require "rubocop/cop/offense"
 require "dry/core/constants"
 require "dry/initializer"
 require "tty/progressbar"
@@ -11,6 +9,7 @@ require "tty/screen"
 require "tty/prompt"
 require "tty/table"
 require "tty/box"
+require "rubocop"
 
 module Rfix
   class Formatter < RuboCop::Formatter::SimpleTextFormatter

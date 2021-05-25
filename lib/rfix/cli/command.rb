@@ -18,6 +18,7 @@ module Rfix
       register "status", Status
 
       def setup
+        raise "ok"
         Dry::CLI.new(self).call
       rescue Error => e
         abort e.message

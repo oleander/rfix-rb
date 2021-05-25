@@ -23,3 +23,5 @@ loader.setup
 module Rfix
   mattr_accessor :repo, :test
 end
+
+loader.eager_load

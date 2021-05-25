@@ -1,41 +1,11 @@
-#!/usr/bin/env -S ruby -W0
+#!/usr/bin/env -S ruby -W0 --disable-all --enable=gems
 # frozen_string_literal: true
 
-require "bootsnap"
-require "xdg"
+require_relative "../lib/rfix"
+
+require "rubocop"
+require "dry/cli"
 require "rainbow"
-
-Bootsnap.setup(
-  cache_dir: XDG::Cache.new.home.join("rfix").to_s,
-  development_mode: "development",
-  load_path_cache: true,
-  compile_cache_iseq: true,
-  compile_cache_yaml: true
-)
-
-require "rfix"
-
-unless defined?(Rfix)
-  require "bundler"
-  require "rubygems"
-  if $PROGRAM_NAME.end_with?("exe/rfix")
-    require "bundler/setup"
-    Bundler.require(:test, :default)
-  else
-    lockfile = Bundler::LockfileParser.new(Bundler.default_lockfile.read)
-    if (rfix = lockfile.specs.detect { |spec| spec.name == "rfix" })
-      Gem.use_paths Gem.dir, Bundler.bundle_path.to_s, *Gem.path
-      gem "rfix", rfix.version
-    else
-      abort "No rfix"
-    end
-  end
-
-  require "rfix"
-  require "dry/cli"
-end
-
-require "rfix"
 
 begin
   exit Rfix::CLI::Command.setup

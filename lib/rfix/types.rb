@@ -2,6 +2,7 @@
 
 require "dry/types"
 require "dry/logic"
+require "pathname"
 require "rugged"
 
 module Rfix
