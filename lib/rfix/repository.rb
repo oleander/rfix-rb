@@ -95,6 +95,7 @@ module Rfix
       cache[path].exists?
     end
     alias_method :contains?, :include_file?
+    alias_method :include?, :include_file?
 
     # TODO: Refactor
     def origin

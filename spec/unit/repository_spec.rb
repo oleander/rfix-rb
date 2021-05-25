@@ -6,6 +6,7 @@ RSpec.describe Rfix::Repository do
     its(:paths) { is_expected.to be_empty }
     its(:to_s) { is_expected.to be_a(String) }
     its(:path) { is_expected.to be_a(Pathname) }
+    it { is_expected.not_to include(repository.path.join("does-not-exist.rb")) }
   end
 
   context "when HEAD~10", repository: "HEAD~10" do
@@ -14,9 +15,19 @@ RSpec.describe Rfix::Repository do
     its(:to_s) { is_expected.to be_a(String) }
     its(:path) { is_expected.to be_a(Pathname) }
     its("paths.first") { is_expected.to be_a(String) }
+
+    describe "#include?" do
+      context "when file exists" do
+        let(:file) { repository.path.join(repository.paths.first) }
+        before do
+          # binding.pry
+        end
+        it { is_expected.to include(file) }
+      end
+    end
   end
 
-  context "given a file", repository: "HEAD" do
+  xcontext "given a file", repository: "HEAD" do
     let(:file) { Blob.new(name: "file.rb", path: repository.path) }
 
     context "given an untracked file" do
