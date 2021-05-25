@@ -18,7 +18,7 @@ module Rfix
     attribute :reference, Types.Instance(Branch::Base)
 
     INCLUDED = [File::Untracked, File::Tracked].to_set.freeze
-    INIT = Hash.new { |h, k| h[k] = EMPTY_ARRAY.dup }
+    INIT = Hash.new { |h, k| h[k] = EMPTY_ARRAY.dup }.freeze
 
     delegate_missing_to :repository
 
@@ -73,7 +73,7 @@ module Rfix
     end
 
     def to_s
-      files.each_with_object(INIT) do |file, object|
+      files.each_with_object(INIT.dup) do |file, object|
         object[file.class] << file
       end.map do |type, files|
         "%<type>s[%<count>i]:%<files>s" % {
