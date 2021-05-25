@@ -62,6 +62,10 @@ module Rfix
       def self.include?(*)
         false
       end
+
+      def self.exists?
+        false
+      end
     end
 
     def cache
@@ -102,7 +106,7 @@ module Rfix
     end
 
     def include_file?(path)
-      !!cache[path]
+      cache[path].exists?
     end
 
     # TODO: Refactor

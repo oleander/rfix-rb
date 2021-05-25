@@ -66,6 +66,10 @@ module Rfix
         "<#{self.class.name.demodulize}(#{status.join(', ')}:#{self})>"
       end
 
+      def exists?
+        true
+      end
+
       %i[untracked? tracked? ignored? deleted?].each do |name|
         define_method(name) do
           false
