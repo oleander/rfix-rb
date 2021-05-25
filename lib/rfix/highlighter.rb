@@ -71,10 +71,8 @@ module Rfix
 
       lines.reduce([0, 1]) do |(position, lineno), tokens|
         print_line_number = lambda do
-          block.call(SPACE * 2)
-
           style = is_h[lineno] ? pastel.yellow.detach : pastel.dim.detach
-          (block << style).call(lineno.to_s.ljust(4, SPACE) + SPACE)
+          block.call((SPACE * 2) + style.call(lineno.to_s.ljust(4, SPACE)) + SPACE)
         end
 
         tokens.reduce(position) do |index, (token, value)|

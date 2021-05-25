@@ -50,16 +50,18 @@ module RuboCop
         Rainbow("#{relative_path}:#{where}").italic
       end
 
-      def clickable_plain_severity
+      def href
         cop_name.split("/", 2).then do |department, cop|
           return nil if [cop, department].any?(&:nil?)
 
           { type: department.parameterize, cop: cop.parameterize }
         end.then do |options|
           "https://docs.rubocop.org/rubocop/cops_%<type>s.html#%<type>s%<cop>s" % options
-        end.then do |url|
-          TTY::Link.link_to(cop_name, url)
         end
+      end
+
+      def clickable_plain_severity
+        TTY::Link.link_to(cop_name, href)
       end
 
       def clickable_severity

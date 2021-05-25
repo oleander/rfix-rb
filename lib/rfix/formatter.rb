@@ -98,8 +98,8 @@ module Rfix
         padding: [PADDING, PADDING, 0, PADDING],
         title: {
           top_left: "#{offense.icon} #{offense.msg}".surround(SPACE),
-          bottom_left: offense.clickable_severity&.surround(SPACE),
-          bottom_right: offense.clickable_path&.surround(SPACE)
+          bottom_left: offense.clickable_path&.surround(SPACE),
+          top_right: offense.cop_name.surround(SPACE)
         }
       }, &block)
     end
