@@ -13,12 +13,11 @@ module Rfix
       register "setup", Setup
       register "lint", Lint
       register "info", Info
-      register "help", Help
+      # register "help", Help
       register "all", All
       register "status", Status
 
       def setup
-        raise "ok"
         Dry::CLI.new(self).call
       rescue Error => e
         abort e.message
