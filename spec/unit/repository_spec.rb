@@ -22,11 +22,11 @@ RSpec.describe Rfix::Repository do
     end
 
     describe "#paths" do
-      subject(:paths)  { repository.paths }
+      subject(:paths) { repository.paths }
 
-      it { is_expected.to all(be_a(String))}
+      it { is_expected.to all(be_a(String)) }
 
-      it 'only contains relative paths' do
+      it "only contains relative paths" do
         paths = repository.paths.map { |p| Pathname(p) }
         expect(paths).to all(be_relative)
       end
@@ -35,11 +35,13 @@ RSpec.describe Rfix::Repository do
     describe "#include?" do
       context "when file exists" do
         let(:file) { repository.path.join(repository.paths.first) }
+
         it { is_expected.to include(file) }
       end
 
       context "when file does not exists" do
         let(:file) { repository.path.join("does-not-exist.rb") }
+
         it { is_expected.not_to include(file) }
       end
 

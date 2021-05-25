@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 require "concurrent/map"
 require "dry/types"
-
 
 map = Concurrent::Map.new do |map, key|
   map.fetch(Dry::Types["coercible.string"].call(key), nil)

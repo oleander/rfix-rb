@@ -97,8 +97,8 @@ module Rfix
       cache[path].include?(line)
     end
 
-    alias_method :contains?, :include_file?
-    alias_method :include?, :include_file?
+    alias contains? include_file?
+    alias include? include_file?
 
     # TODO: Refactor
     def origin
