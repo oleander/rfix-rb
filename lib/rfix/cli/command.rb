@@ -15,7 +15,7 @@ module Rfix
       register "info", Info
       register "all", All
       register "status", Status
-      
+
       # register "help", Help
 
       def setup

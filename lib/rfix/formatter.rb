@@ -33,7 +33,6 @@ module Rfix
       end
     end)
 
-
     option :reported_offenses, default: -> { EMPTY_ARRAY.dup }
     option :options, default: -> { EMPTY_HASH.dup }
     option :progress
@@ -61,10 +60,9 @@ module Rfix
       end
     end
 
-
     # @file [File]
     # @offenses [Array<Offence>]
-    def file_finished(file, offenses)
+    def file_finished(_file, offenses)
       @reported_offenses += offenses
 
       progress.advance

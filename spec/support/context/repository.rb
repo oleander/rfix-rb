@@ -14,7 +14,7 @@ RSpec.shared_context "repository", shared_context: :metadata, type: :aruba do
     system "rm", "-rf", repo_path.to_s
     system "mkdir", "-p", repo_path.to_s
     system "git", "clone", bundle_path.to_s, repo_path.to_s, "--quiet"
-    system "rm", repo_path + "/.rubocop.yml"
+    system "rm", "#{repo_path}/.rubocop.yml"
     cd repo_path.to_s
   end
 end

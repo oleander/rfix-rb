@@ -29,7 +29,6 @@ module Rfix
 
         private
 
-
         def define(reference, args: Undefined, **params)
           handler = Rfix::Repository.new(
             repository: reference.repository,
