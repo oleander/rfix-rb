@@ -45,7 +45,7 @@ module Rfix
     PADDING = 1
 
     def initialize(output, options = EMPTY_HASH)
-      TTY::ProgressBar.new("[:bar]", output: output).then do |bar|
+      TTY::ProgressBar.new(":current/:total (:eta) [:bar]", output: output).then do |bar|
         super(output, output: output, options: options, progress: bar)
       end
     end
