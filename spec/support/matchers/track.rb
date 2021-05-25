@@ -2,11 +2,11 @@
 
 RSpec::Matchers.define :track do |file|
   match do |repository|
-    repository.include_file?(file.name)
+    repository.include_file?(file.absolute_path)
   end
 
   match_when_negated do |repository|
-    !repository.include_file?(file.name)
+    !repository.include_file?(file.absolute_path)
   end
 
   failure_message do |repository|

@@ -30,10 +30,6 @@ module Rfix
       cache[path].include?(line)
     end
 
-    def contains?(path)
-      cache.key?(path)
-    end
-
     def skipped
       ignored + deleted
     end
@@ -58,19 +54,9 @@ module Rfix
       Pathname(workdir)
     end
 
-    class NullFile
-      def self.include?(*)
-        false
-      end
-
-      def self.exists?
-        false
-      end
-    end
-
     def cache
       Concurrent::Map.new do |storage, path|
-        storage.fetch(Types::Path::Relative.call(path).to_s, NullFile)
+        storage.fetch(Types::Path::Absolute.call(path), File::Null)
       end.tap do |storage|
         files.each { |file| storage.compute_if_absent(file.key) { file } }
       end
@@ -108,6 +94,7 @@ module Rfix
     def include_file?(path)
       cache[path].exists?
     end
+    alias_method :contains?, :include_file?
 
     # TODO: Refactor
     def origin

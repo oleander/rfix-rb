@@ -14,7 +14,7 @@ module Rfix
       delegate :include?, to: :lines
 
       def key
-        path.to_s
+        repository.path.join(path)
       end
 
       def exists?

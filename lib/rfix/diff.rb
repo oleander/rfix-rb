@@ -2,7 +2,6 @@
 
 require "dry/struct"
 require "rugged"
-require "pry"
 
 module Rfix
   class Diff < Dry::Struct

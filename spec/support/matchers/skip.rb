@@ -2,7 +2,7 @@
 
 RSpec::Matchers.define :skip do |file|
   match do |repository|
-    !repository.include_file?(file.name)
+    !repository.include_file?(file.absolute_path)
   end
 
   failure_message do |repository|
