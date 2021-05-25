@@ -27,7 +27,7 @@ module Rfix
     end
 
     def include?(path, line)
-      !!cache[path]&.include?(line)
+      cache[path].include?(line)
     end
 
     def contains?(path)
@@ -58,9 +58,17 @@ module Rfix
       Pathname(workdir)
     end
 
+    class NullFile
+      def self.include?(*)
+        false
+      end
+    end
+
     def cache
-      Concurrent::Map.new.tap do |map|
-        files.each { |file| map[file.key] ||= file }
+      Concurrent::Map.new do |storage, path|
+        storage.fetch(Types::Path::Relative.call(path), NullFile)
+      end.tap do |storage|
+        files.each { |file| storage.compute_if_absent(file.key) { file } }
       end
     end
 
@@ -94,7 +102,7 @@ module Rfix
     end
 
     def include_file?(path)
-      Types::Path::Relative.call(path) && cache[path.to_s]
+      !!cache[path]
     end
 
     # TODO: Refactor
