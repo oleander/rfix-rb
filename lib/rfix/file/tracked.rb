@@ -14,7 +14,11 @@ module Rfix
       delegate :include?, to: :lines
 
       def key
-        repository.path.join(path).to_s
+        path.to_s
+      end
+
+      def exists?
+        true
       end
 
       def tracked?
