@@ -14,15 +14,39 @@ RSpec.describe Rfix::Repository do
     its(:paths) { is_expected.not_to be_empty }
     its(:to_s) { is_expected.to be_a(String) }
     its(:path) { is_expected.to be_a(Pathname) }
-    its("paths.first") { is_expected.to be_a(String) }
+
+    describe "#files" do
+      subject { repository.files }
+
+      it { is_expected.to all(exist) }
+    end
+
+    describe "#paths" do
+      subject(:paths)  { repository.paths }
+
+      it { is_expected.to all(be_a(String))}
+
+      it 'only contains relative paths' do
+        paths = repository.paths.map { |p| Pathname(p) }
+        expect(paths).to all(be_relative)
+      end
+    end
 
     describe "#include?" do
       context "when file exists" do
         let(:file) { repository.path.join(repository.paths.first) }
-        before do
-          # binding.pry
-        end
         it { is_expected.to include(file) }
+      end
+
+      context "when file does not exists" do
+        let(:file) { repository.path.join("does-not-exist.rb") }
+        it { is_expected.not_to include(file) }
+      end
+
+      context "when path is relative" do
+        it "raises an error" do
+          expect { repository.include?("relative.rb") }.to raise_error(Dry::Types::ConstraintError)
+        end
       end
     end
   end
