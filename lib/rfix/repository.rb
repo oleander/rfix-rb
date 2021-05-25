@@ -91,9 +91,12 @@ module Rfix
       permitted.map(&:path).map(&:to_path).to_a
     end
 
-    def include_file?(path)
-      cache[path].exists?
+    def include_file?(path, line = Undefined)
+      return cache[path].exists? if line == Undefined
+
+      cache[path].include?(line)
     end
+
     alias_method :contains?, :include_file?
     alias_method :include?, :include_file?
 
