@@ -56,7 +56,7 @@ module Rfix
 
     def cache
       Concurrent::Map.new do |storage, path|
-        storage.fetch(Types::Path::Absolute.call(path), File::Null)
+        storage.fetch(Types::Path::Absolute.call(path).to_s, File::Null)
       end.tap do |storage|
         files.each { |file| storage.compute_if_absent(file.key) { file } }
       end

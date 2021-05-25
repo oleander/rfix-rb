@@ -51,7 +51,7 @@ module Rfix
       end
 
       def key
-        path.to_s
+        raise NotImplementedError
       end
 
       def lines
@@ -67,7 +67,7 @@ module Rfix
       end
 
       def exists?
-        true
+        false
       end
 
       %i[untracked? tracked? ignored? deleted?].each do |name|

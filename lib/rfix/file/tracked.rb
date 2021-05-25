@@ -14,7 +14,7 @@ module Rfix
       delegate :include?, to: :lines
 
       def key
-        repository.path.join(path)
+        repository.path.join(path).to_s
       end
 
       def exists?
@@ -35,7 +35,6 @@ module Rfix
           .sort
           .chunk_while { |i, j| i + 1 == j }
           .map { |a| a.length < 3 ? a : "#{a.first}-#{a.last}" }
-          .to_a
           .join(",")
           .then { |res| res.empty? ? "-" : res }
       end
