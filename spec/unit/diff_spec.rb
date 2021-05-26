@@ -37,9 +37,6 @@ RSpec.describe Rfix::Diff, repository: "HEAD~50" do
   end
 
   context "when given a file instead of a directory" do
-    before do
-      pp repository.paths
-    end
     let(:current_file) { Pathname(repository.paths.first).relative_path_from(repository.path) }
     subject { described_class.new(current_path: current_file, repository: repository) }
 
