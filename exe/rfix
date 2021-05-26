@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require_relative "../lib/rfix"
+require_relative "../vendor/strings-ansi/lib/strings-ansi"
 
 require "rubocop"
 require "dry/cli"
