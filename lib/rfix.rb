@@ -14,7 +14,6 @@ loader.ignore("#{__dir__}/rfix/rake")
 
 loader.inflector.inflect "cli" => "CLI"
 
-# Lazy ...
 loader.on_load("Rfix::Formatter") do
   Pathname(__dir__).glob("rfix/extension/*", &method(:require))
 end
