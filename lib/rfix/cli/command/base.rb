@@ -31,6 +31,7 @@ module Rfix
 
         def define(reference, args: Undefined, **params)
           handler = Rfix::Repository.new(
+            current_path: Pathname.pwd.relative_path_from(reference.repository.workdir),
             repository: reference.repository,
             reference: reference
           )

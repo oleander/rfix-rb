@@ -5,7 +5,7 @@ require "tempfile"
 require "parser/current"
 
 RSpec.describe Rfix::Formatter, repository: "HEAD" do
-  subject(:formatter) { described_class.new(io, {}) }
+  subject(:formatter) { described_class.new(io, { repository: repository }) }
 
   let(:io) { StringIO.new }
   let(:file) { Blob.new(name: "example.rb", path: expand_path("repository")) }

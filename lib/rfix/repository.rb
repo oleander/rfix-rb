@@ -16,6 +16,7 @@ module Rfix
 
     attribute :repository, Types.Instance(Rugged::Repository)
     attribute :reference, Types.Instance(Branch::Base)
+    attribute :current_path, Types::Path::Relative.default { Pathname(".").freeze }
 
     INCLUDED = [File::Untracked, File::Tracked].to_set.freeze
     INIT = Hash.new { |h, k| h[k] = EMPTY_ARRAY.dup }.freeze
@@ -60,10 +61,6 @@ module Rfix
       end.tap do |storage|
         files.each { |file| storage.compute_if_absent(file.key) { file } }
       end
-    end
-
-    def current_path
-      Pathname.pwd.relative_path_from(path)
     end
 
     def files

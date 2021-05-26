@@ -40,7 +40,6 @@ module Rfix
 
     option :params do
       option :repository
-      option :debug
     end
 
     SURROUNDING_LINES = 2
@@ -48,8 +47,7 @@ module Rfix
     SPACE = " "
     PADDING = 1
 
-    delegate :repository, :debug, to: :params
-    alias_method :debug?, :debug
+    delegate :repository, to: :params
 
     def initialize(output, options = EMPTY_HASH)
       TTY::ProgressBar.new(":current/:total (:eta) [:bar]", output: output).then do |bar|
