@@ -295,6 +295,7 @@ DEPENDENCIES
   rfix!
   rspec
   rspec-its
+  rubocop (~> 1.5)
   rubocop-rake
   rubocop-rspec
   strings-ansi!

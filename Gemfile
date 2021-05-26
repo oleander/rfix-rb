@@ -38,3 +38,5 @@ end
 path "vendor" do
   gem "strings-ansi", require: true
 end
+
+gem "rubocop", "~> 1.5"

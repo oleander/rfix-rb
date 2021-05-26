@@ -42,7 +42,7 @@ require "pathname"
 namespace :bundle do
   task :rspec do
     Pathname(__dir__).join("gemfiles").glob("*.lock") do |lockfile|
-      sh "bundle", "exec", "--lockfile", lockfile.to_s, "rspec"
+      sh "bundle", "exec", "--gemfile", lockfile.to_s, "rspec"
     end
   end
 
