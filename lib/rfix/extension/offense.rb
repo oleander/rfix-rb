@@ -36,18 +36,14 @@ module RuboCop
         message.split(": ", 2).first
       end
 
-      def relative_path
+      def relative_path(root_path)
         return EMPTY_STRING unless location.respond_to?(:source_buffer)
 
-        location.source_buffer.name.sub(Dir.pwd, EMPTY_STRING).chars.drop_while do |char|
-          char == "/"
-        end.join
-      rescue ArgumentError
-        nil
+        Pathname(location.source_buffer.name).relative_path_from(root_path)
       end
 
-      def clickable_path
-        Rainbow("#{relative_path}:#{where}").italic
+      def clickable_path(root_path)
+        Rainbow("#{relative_path(root_path)}:#{where}").italic
       end
 
       def href
