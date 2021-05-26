@@ -5,6 +5,7 @@ RSpec.shared_examples "a command" do |command|
     let(:bin_path) { root_path.join("exe/rfix") }
 
     before do
+      cd repository.path.to_s
       run_command("#{bin_path} #{command}")
     end
 
