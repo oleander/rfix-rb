@@ -88,7 +88,7 @@ module Rfix
     alias inspect to_s
 
     def paths
-      permitted.map(&:path).map(&:to_path).to_a
+      permitted.map(&:key).to_a
     end
 
     def include_file?(path, line = Undefined)
