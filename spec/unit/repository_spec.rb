@@ -27,7 +27,7 @@ RSpec.describe Rfix::Repository do
       it { is_expected.to all(be_a(String)) }
 
       it "only contains relative paths" do
-        paths = repository.paths.map { |p| Pathname(p) }
+        paths = repository.paths.map { |p| Pathname(p).relative_path_from(repository.path) }
         expect(paths).to all(be_relative)
       end
     end
