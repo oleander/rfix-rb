@@ -41,26 +41,14 @@ require "pathname"
 
 namespace :bundle do
   task :rspec do
-    Pathname(__dir__).join("gemfiles").then do |root_path|
-      Rfix::Rake::Gemfile.files(root_path).each_slice(5) do |gemfiles|
-        gemfiles.map do |gemfile|
-          Thread.new do
-            sh "bundle", "exec", "--gemfile", gemfile.to_s, "rspec"
-          end
-        end.each(&:join)
-      end
+    Pathname(__dir__).join("gemfiles").glob("*.lock") do |lockfile|
+      sh "bundle", "exec", "--lockfile", lockfile.to_s, "rspec"
     end
   end
 
-  task :install do
-    Pathname(__dir__).join("gemfiles").then do |root_path|
-      Rfix::Rake::Gemfile.files(root_path).each_slice(5) do |gemfiles|
-        gemfiles.map do |gemfile|
-          Thread.new do
-            gemfile.call
-          end
-        end.each(&:join)
-      end
+  task :gemfile do
+    Pathname(__dir__).join("gemfiles").glob("*.lock") do |lockfile|
+      sh "bundle", "lock", "--lockfile", lockfile.to_s, "--local"
     end
   end
 end

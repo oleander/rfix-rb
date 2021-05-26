@@ -1,9 +1,11 @@
 PATH
   remote: ..
   specs:
-    rfix (1.4.2)
+    rfix (2.0.4)
       activesupport
+      bootsnap
       bundler
+      concurrent-ruby
       dry-cli
       dry-core
       dry-initializer
@@ -14,37 +16,45 @@ PATH
       rake
       rouge (~> 3.20)
       rubocop (>= 0.82.0, != 0.85.0)
-      rubocop-ast
       rugged
       strings
+      strings-ansi
       tty-box
       tty-link
+      tty-logger
+      tty-progressbar
       tty-prompt
       tty-screen
+      tty-table
+      tty-tree
+      xdg
       zeitwerk
 
 PATH
   remote: ../vendor
   specs:
-    dry-cli (0.6.0)
     strings-ansi (0.2.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (6.1.3.1)
+    activesupport (6.1.3.2)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
       zeitwerk (~> 2.3)
-    aruba (1.1.0)
+    aruba (1.1.1)
       childprocess (>= 2.0, < 5.0)
-      contracts (~> 0.16.0)
+      contracts (>= 0.16.0, < 0.18.0)
       cucumber (>= 2.4, < 7.0)
       rspec-expectations (~> 3.4)
       thor (~> 1.0)
     ast (2.4.2)
+    binding_of_caller (1.0.0)
+      debug_inspector (>= 0.0.1)
+    bootsnap (1.7.5)
+      msgpack (~> 1.0)
     builder (3.2.4)
     childprocess (4.0.0)
     coderay (1.1.3)
@@ -83,7 +93,9 @@ GEM
       cucumber-core (~> 9.0, >= 9.0.0)
       cucumber-cucumber-expressions (~> 12.1, >= 12.1.1)
       cucumber-messages (~> 15.0, >= 15.0.0)
+    debug_inspector (1.1.0)
     diff-lcs (1.4.4)
+    dry-cli (0.7.0)
     dry-configurable (0.12.1)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.5, >= 0.5.0)
@@ -107,14 +119,16 @@ GEM
       dry-core (~> 0.5, >= 0.5)
       dry-inflector (~> 0.1, >= 0.1.2)
       dry-logic (~> 1.0, >= 1.0.2)
-    faker (2.17.0)
+    factory_bot (6.2.0)
+      activesupport (>= 5.0.0)
+    faker (2.18.0)
       i18n (>= 1.6, < 2)
     ffi (1.15.0)
     formatador (0.2.5)
     gem-release (2.2.1)
     git (1.8.1)
       rchardet (~> 1.8)
-    guard (2.16.2)
+    guard (2.17.0)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
       lumberjack (>= 1.0.12, < 2.0)
@@ -131,6 +145,7 @@ GEM
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
+    interception (0.5)
     jsonpath (1.1.0)
       multi_json
     listen (3.5.1)
@@ -143,6 +158,7 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2021.0225)
     minitest (5.14.4)
+    msgpack (1.4.2)
     multi_json (1.15.0)
     multi_test (0.1.2)
     nenv (0.3.0)
@@ -162,9 +178,17 @@ GEM
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    pry-rescue (1.5.2)
+      interception (>= 0.5)
+      pry (>= 0.12.0)
+    pry-stack_explorer (0.6.1)
+      binding_of_caller (~> 1.0)
+      pry (~> 0.13)
+    pry-theme (1.3.1)
+      coderay (~> 1.1)
     rainbow (3.0.0)
     rake (13.0.3)
-    rb-fsevent (0.10.4)
+    rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     rchardet (1.8.0)
@@ -187,13 +211,13 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
-    rubocop (1.8.0)
+    rubocop (1.15.0)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 1.2.0, < 2.0)
+      rubocop-ast (>= 1.5.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.5.0)
@@ -221,6 +245,13 @@ GEM
     tty-color (0.6.0)
     tty-cursor (0.7.1)
     tty-link (0.1.1)
+    tty-logger (0.6.0)
+      pastel (~> 0.8)
+    tty-progressbar (0.18.2)
+      strings-ansi (~> 0.2)
+      tty-cursor (~> 0.7)
+      tty-screen (~> 0.8)
+      unicode-display_width (>= 1.6, < 3.0)
     tty-prompt (0.23.1)
       pastel (~> 0.8)
       tty-reader (~> 0.8)
@@ -229,11 +260,17 @@ GEM
       tty-screen (~> 0.8)
       wisper (~> 2.0)
     tty-screen (0.8.1)
+    tty-table (0.12.0)
+      pastel (~> 0.8)
+      strings (~> 0.2.0)
+      tty-screen (~> 0.8)
+    tty-tree (0.4.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.0.0)
     unicode_utils (1.4.0)
     wisper (2.0.1)
+    xdg (3.1.1)
     zeitwerk (2.4.2)
 
 PLATFORMS
@@ -242,22 +279,25 @@ PLATFORMS
 DEPENDENCIES
   aruba
   colorize
-  dry-cli!
+  factory_bot
   faker
   gem-release
   git
   guard
   guard-rspec
   jsonpath
+  listen
   pry
+  pry-rescue
+  pry-stack_explorer
+  pry-theme
   rake
   rfix!
   rspec
   rspec-its
-  rubocop (= 1.8.0)
   rubocop-rake
   rubocop-rspec
   strings-ansi!
 
 BUNDLED WITH
-   2.1.2
+   2.2.16
