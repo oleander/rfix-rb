@@ -62,8 +62,12 @@ module Rfix
       end
     end
 
+    def current_path
+      Pathname.pwd.relative_path_from(path)
+    end
+
     def files
-      Diff.new(repository: self).deltas.map do |delta|
+      Diff.new(repository: self, current_path: current_path).deltas.map do |delta|
         File::Tracked.call(**delta.new_file, repository: self, status: delta.status)
       end
     end
