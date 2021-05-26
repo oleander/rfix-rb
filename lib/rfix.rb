@@ -6,11 +6,11 @@ require "zeitwerk"
 
 loader = Zeitwerk::Loader.for_gem
 
-loader.ignore("#{__dir__}/rfix/rake/paths")
 loader.ignore("#{__dir__}/rfix/rake/support")
-loader.ignore("#{__dir__}/rfix/rake")
+loader.ignore("#{__dir__}/rfix/rake/paths")
 loader.ignore("#{__dir__}/rfix/extension")
 loader.ignore("#{__dir__}/rfix/commands")
+loader.ignore("#{__dir__}/rfix/rake")
 
 loader.inflector.inflect "cli" => "CLI"
 
@@ -23,5 +23,3 @@ loader.setup
 module Rfix
   mattr_accessor :repo, :test
 end
-
-loader.eager_load
