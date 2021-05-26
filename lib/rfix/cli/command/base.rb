@@ -41,11 +41,6 @@ module Rfix
             end
           end
 
-          Formatter.class_eval do
-            define_method(:repository, &handler.method(:itself))
-            define_method(:debug?) { params.fetch(:debug, false) }
-          end
-
           paths = handler.paths
 
           variadic_args = Undefined.default(args, EMPTY_ARRAY)
@@ -71,6 +66,8 @@ module Rfix
               cache_path.rmtree if cache_path.exist?
             end
           end
+
+          params.merge!(repository: handler)
 
           env = RuboCop::CLI::Environment.new(params, config, paths)
           RuboCop::CLI::Command::ExecuteRunner.new(env).run

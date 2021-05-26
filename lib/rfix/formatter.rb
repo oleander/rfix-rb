@@ -34,19 +34,26 @@ module Rfix
     end)
 
     option :reported_offenses, default: -> { EMPTY_ARRAY.dup }
-    option :options, default: -> { EMPTY_HASH.dup }
     option :progress
     option :options
     option :output
+
+    option :params do
+      option :repository
+      option :debug
+    end
 
     SURROUNDING_LINES = 2
     NEWLINE = "\n"
     SPACE = " "
     PADDING = 1
 
+    delegate :repository, :debug, to: :params
+    alias_method :debug?, :debug
+
     def initialize(output, options = EMPTY_HASH)
       TTY::ProgressBar.new(":current/:total (:eta) [:bar]", output: output).then do |bar|
-        super(output, output: output, options: options, progress: bar)
+        super(output, output: output, options: options, params: options, progress: bar)
       end
     end
 
@@ -153,15 +160,6 @@ module Rfix
 
     def offenses?
       reported_offenses.any?
-    end
-
-    def debug(files, header)
-      return if files.none? || !debug?
-
-      progress.log TTY::Table.new(header, files.map(&:to_table).to_a, {
-        padding: PADDING,
-        width: width
-      }).render(:unicode)
     end
   end
 end
