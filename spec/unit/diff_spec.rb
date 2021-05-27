@@ -1,9 +1,10 @@
+# frozen_string_literal: true
 
- RSpec.shared_examples_for "a diff" do
+RSpec.shared_examples_for "a diff" do
   its("lines.to_a") { is_expected.not_to be_empty }
   its("files.to_a") { is_expected.not_to be_empty }
   its("deltas.to_a") { is_expected.not_to be_empty }
- end
+end
 
 RSpec.describe Rfix::Diff, repository: "HEAD~50" do
   context "when in non-empty sub folder" do
@@ -15,9 +16,7 @@ RSpec.describe Rfix::Diff, repository: "HEAD~50" do
   end
 
   context "when in an empty sub folder" do
-    its("lines.to_a") { is_expected.to be_empty }
-    its("files.to_a") { is_expected.to be_empty }
-    its("deltas.to_a") { is_expected.to be_empty }
+    subject { described_class.new(current_path: "empty", repository: repository) }
 
     let(:empty_path) { repository.path.join("empty") }
 
@@ -25,7 +24,9 @@ RSpec.describe Rfix::Diff, repository: "HEAD~50" do
       empty_path.mkdir
     end
 
-    subject { described_class.new(current_path: "empty", repository: repository) }
+    its("lines.to_a") { is_expected.to be_empty }
+    its("files.to_a") { is_expected.to be_empty }
+    its("deltas.to_a") { is_expected.to be_empty }
   end
 
   context "when in an non-existing sub folder" do
@@ -37,8 +38,9 @@ RSpec.describe Rfix::Diff, repository: "HEAD~50" do
   end
 
   context "when given a file instead of a directory" do
-    let(:current_file) { Pathname(repository.paths.first).relative_path_from(repository.path) }
     subject { described_class.new(current_path: current_file, repository: repository) }
+
+    let(:current_file) { Pathname(repository.paths.first).relative_path_from(repository.path) }
 
     its("lines.to_a") { will raise_error(Rfix::Error) }
     its("files.to_a") { will raise_error(Rfix::Error) }

@@ -50,7 +50,7 @@ module Rfix
       def lines
         Diff.new(repository: repository, options: {
           paths: [path.to_path],
-          disable_pathspec_match: true,
+          disable_pathspec_match: true
         }).lines.lazy.map(&:new_lineno).select(&:positive?)
       end
     end

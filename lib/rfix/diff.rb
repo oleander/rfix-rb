@@ -63,7 +63,7 @@ module Rfix
         raise Error, "#{current_path} is not a directory"
       end
 
-      OPTIONS.merge(**options, paths: [current_path.join("**/*").to_s])
+      OPTIONS.merge(paths: [current_path.join("**/*").to_s], **options)
     end
   end
 end
