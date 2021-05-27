@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rfix (2.0.4)
+    rfix (3.0.0)
       activesupport
       bootsnap
       bundler
