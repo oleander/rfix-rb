@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rfix (3.0.0)
+    rfix (3.0.1)
       activesupport
       bootsnap
       bundler
@@ -266,7 +266,7 @@ GEM
     unicode-display_width (2.0.0)
     unicode_utils (1.4.0)
     wisper (2.0.1)
-    xdg (3.1.1)
+    xdg (4.5.0)
     zeitwerk (2.4.2)
 
 PLATFORMS
