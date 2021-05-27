@@ -1,4 +1,5 @@
-# :bug: rfix [![pre-release](https://github.com/oleander/rfix-rb/actions/workflows/main.yml/badge.svg)](https://github.com/oleander/rfix-rb/actions/workflows/main.yml)  [![Gem](https://img.shields.io/gem/dt/rfix)](https://rubygems.org/gems/rfix)
+# :bug: rfix [![pre-release](https://github.com/oleander/rfix-rb/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/oleander/rfix-rb/actions/workflows/main.yml) [![Gem](https://img.shields.io/gem/dt/rfix)](https://rubygems.org/gems/rfix)
+
 
 
 RuboCop CLI that only lints and auto-fixes code you committed by utilizing `git-log` and `git-diff`. Rfix CLI makes it possible to lint (`rfix lint`) and auto-fix (`rfix local|origin|branch`) code changes since a certain point in history. You can auto-fix code committed since creating the current branch (`rfix origin`) or since pushing to upstream (`rfix local`).
